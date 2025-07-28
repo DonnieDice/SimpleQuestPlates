@@ -1,0 +1,2 @@
+- Updated - TOC version bump [QuestPlates.toc]
+- Updated - Email address updated in TOC [QuestPlates.toc]

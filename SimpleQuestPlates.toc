@@ -1,0 +1,15 @@
+## Interface: 110002
+## Title: |cff58be81Simple Quest Plates|r
+## Version: 1.0.0
+## Author: DonnieDice
+## Notes: Displays quest progress icons on enemy nameplates|nPart of the |cff58be81RGX|r Mods collection|nJoin us at discord.gg/N7kdKAHVVF
+## SavedVariables: SQPSettings
+## IconTexture: Interface\AddOns\SimpleQuestPlates\images\icon
+## DefaultState: Enabled
+## X-Category: Quest
+## X-Website: https://github.com/donniedice/SimpleQuestPlates
+## X-Curse-Project-ID: 
+## X-WoWI-ID: 
+
+data\locales.lua
+data\core.lua
