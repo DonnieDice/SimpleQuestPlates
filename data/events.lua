@@ -47,7 +47,7 @@ end
 -- PLAYER_LOGIN: Initialize addon systems
 function SQP:PLAYER_LOGIN()
     -- Welcome message
-    self:PrintMessage(self.L["WELCOME_MESSAGE"])
+    self:PrintMessage(self.L["MSG_LOADED"])
     
     -- Create options panel
     self:CreateOptionsPanel()
@@ -123,6 +123,23 @@ end
 
 function SQP:PLAYER_ENTERING_WORLD()
     self.eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
+    -- Refresh all nameplates when entering world
+    self:RefreshAllNameplates()
+end
+
+-- Combat state changes
+function SQP:PLAYER_REGEN_DISABLED()
+    -- Entered combat
+    if SQPSettings.hideInCombat then
+        self:RefreshAllNameplates()
+    end
+end
+
+function SQP:PLAYER_REGEN_ENABLED()
+    -- Left combat
+    if SQPSettings.hideInCombat then
+        self:RefreshAllNameplates()
+    end
 end
 
 -- Register all events
@@ -138,3 +155,5 @@ SQP.eventFrame:RegisterEvent("QUEST_REMOVED")
 SQP.eventFrame:RegisterEvent("QUEST_WATCH_LIST_CHANGED")
 SQP.eventFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
 SQP.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+SQP.eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+SQP.eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")

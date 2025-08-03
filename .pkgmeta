@@ -1,2 +1,2 @@
-package-as: QuestPlates
+package-as: SimpleQuestPlates
 manual-changelog: docs/CHANGES.md

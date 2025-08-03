@@ -9,7 +9,11 @@
       "Bash(xcopy:*)",
       "Bash(robocopy:*)",
       "Bash(git add:*)",
-      "Bash(del \"C:\\Users\\JosephGettings\\SimpleQuestPlates\\data\\options.lua\")"
+      "Bash(del \"C:\\Users\\JosephGettings\\SimpleQuestPlates\\data\\options.lua\")",
+      "Bash(mkdir:*)",
+      "Bash(del \"C:\\Users\\JosephGettings\\SimpleQuestPlates\\data\\locales.lua\")",
+      "Bash(del \"C:\\Users\\JosephGettings\\SimpleQuestPlates\\data\\options_sections.lua\")",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

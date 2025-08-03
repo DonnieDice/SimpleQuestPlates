@@ -112,6 +112,21 @@ function SQP:UpdateQuestIcon(plate, unitID)
     unitID = unitID or plate._unitID
     if not unitID then return end
     
+    -- Check if should hide in combat
+    if SQPSettings.hideInCombat and InCombatLockdown() then
+        Q:Hide()
+        return
+    end
+    
+    -- Check if should hide in instance
+    if SQPSettings.hideInInstance then
+        local inInstance, instanceType = IsInInstance()
+        if inInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "scenario" or instanceType == "pvp" or instanceType == "arena") then
+            Q:Hide()
+            return
+        end
+    end
+    
     -- Hide in mythic+
     local scenarioName, currentStage, numStages, flags, _, _, _, xp, money, scenarioType = C_Scenario.GetInfo()
     if scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE then
@@ -121,7 +136,11 @@ function SQP:UpdateQuestIcon(plate, unitID)
     
     local progressGlob, questType, objectiveCount, questLogIndex, questID = self:GetQuestProgress(unitID)
     if progressGlob and questType ~= 2 then
-        -- Update icon text
+        -- Update icon text (check if it exists first)
+        if not Q.iconText then
+            return
+        end
+        
         if questType == 3 then
             Q.iconText:SetText(objectiveCount > 0 and objectiveCount or '?')
         else
@@ -131,13 +150,13 @@ function SQP:UpdateQuestIcon(plate, unitID)
         -- Color based on quest type
         if questType == 1 then
             Q.icon:SetDesaturated(false)
-            Q.iconText:SetTextColor(1, 0.82, 0)
+            Q.iconText:SetTextColor(unpack(SQPSettings.killColor or {1, 0.82, 0}))
         elseif questType == 2 then
             Q.icon:SetDesaturated(true)
             Q.iconText:SetTextColor(1, 1, 1)
         elseif questType == 3 then
             Q.icon:SetDesaturated(false)
-            Q.iconText:SetTextColor(0.2, 1, 1)
+            Q.iconText:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
         end
         
         -- Check for loot items and adjust display priority
@@ -194,7 +213,8 @@ function SQP:UpdateQuestIcon(plate, unitID)
         if hasItemObjective and itemsNeeded > 0 then
             -- Prioritize item count display
             Q.iconText:SetText(itemsNeeded)
-            Q.iconText:SetTextColor(0.2, 1, 0.2) -- Green for items
+            Q.iconText:SetTextColor(unpack(SQPSettings.itemColor or {0.2, 1, 0.2}))
+            Q.hasItem = true
         elseif objectiveCount > 0 then
             -- Show kill count
             Q.iconText:SetText(objectiveCount)
@@ -207,6 +227,13 @@ function SQP:UpdateQuestIcon(plate, unitID)
             Q.ani:Stop()
             Q:Show()
             Q.ani:Play()
+            
+            -- Apply icon tinting if enabled
+            if SQPSettings.iconTint and SQPSettings.iconTintColor and Q.icon then
+                Q.icon:SetVertexColor(unpack(SQPSettings.iconTintColor))
+            else
+                Q.icon:SetVertexColor(1, 1, 1, 1)
+            end
             
             -- Debug: Print when showing quest plate
             if SQPSettings.debug then

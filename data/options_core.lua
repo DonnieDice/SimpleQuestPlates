@@ -8,7 +8,7 @@
 local addonName, SQP = ...
 
 -- Constants
-SQP.PANEL_NAME = "|TInterface\\AddOns\\SimpleQuestPlates\\images\\icon:0|t Simple Quest Plates"
+SQP.PANEL_NAME = "|TInterface\\AddOns\\SimpleQuestPlates\\images\\icon:0|t |cff58be81S|r|cffffffffimple|r |cff58be81Q|r|cffffffffuest|r |cff58be81P|r|cfffffffflates!|r"
 SQP.SECTION_COLOR = {0.345, 0.745, 0.506} -- #58be81
 SQP.PANEL_WIDTH = 700
 SQP.PANEL_HEIGHT = 600
@@ -38,16 +38,30 @@ function SQP:CreateOptionsPanel()
     container:SetBackdropBorderColor(unpack(self.SECTION_COLOR))
     
     -- Create header
-    self:CreatePanelHeader(container)
+    local header = self:CreatePanelHeader(container)
     
-    -- Create content area
-    local content = self:CreateContentArea(container)
+    -- Create preview section at the top
+    local previewContainer = CreateFrame("Frame", nil, container, "BackdropTemplate")
+    previewContainer:SetHeight(180)
+    previewContainer:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, -10)
+    previewContainer:SetPoint("TOPRIGHT", header, "BOTTOMRIGHT", 0, -10)
+    previewContainer:SetBackdrop(self.BACKDROP_DARK)
+    previewContainer:SetBackdropColor(0.08, 0.08, 0.08, 0.8)
+    previewContainer:SetBackdropBorderColor(unpack(self.SECTION_COLOR))
     
-    -- Add all option elements
-    self:CreateDisplayOptions(content)
-    self:CreatePositionOptions(content)
-    self:CreateActionButtons(content)
-    self:CreateDiscordSection(content)
+    -- Create preview inside the container
+    self.previewFrame = self:CreatePreviewSection(previewContainer)
+    self.previewFrame:SetPoint("CENTER", previewContainer, "CENTER", 0, 0)
+    
+    -- Initialize tabs below preview
+    local tabs, tabPanels = self:InitializeTabs(container, previewContainer)
+    
+    -- Populate tab content
+    self:CreateGeneralOptions(tabPanels.general.content)
+    self:CreateFontOptions(tabPanels.font.content)
+    self:CreateIconOptions(tabPanels.icon.content)
+    self:CreateAboutSection(tabPanels.about.content)
+    self:CreateRGXSection(tabPanels.rgx.content)
     
     -- Register the panel
     if Settings and Settings.RegisterCanvasLayoutCategory then
@@ -75,7 +89,7 @@ end
 
 -- Create reset confirmation dialog
 StaticPopupDialogs["SQP_RESET_CONFIRM"] = {
-    text = "|cff58be81Simple Quest Plates|r\n\nAre you sure you want to reset all settings to defaults?",
+    text = "|cff58be81Simple Quest Plates!|r\n\nAre you sure you want to reset all settings to defaults?",
     button1 = "Yes",
     button2 = "No",
     OnAccept = function()

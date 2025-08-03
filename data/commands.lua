@@ -14,16 +14,16 @@ local CHAT_COMMAND = "sqp"
 
 -- Show help information
 function SQP:ShowHelp()
-    self:PrintMessage(self.L["HELP_HEADER"])
-    print(self.L["HELP_TEST"])
-    print(self.L["HELP_ENABLE"])
-    print(self.L["HELP_DISABLE"])
-    print(self.L["HELP_STATUS"])
-    print(self.L["HELP_SCALE"])
-    print(self.L["HELP_OFFSET"])
-    print(self.L["HELP_ANCHOR"])
-    print(self.L["HELP_RESET"])
-    print(self.L["HELP_OPTIONS"] or "  /sqp options - Open the options panel")
+    self:PrintMessage(self.L["CMD_HELP_HEADER"])
+    print(self.L["CMD_HELP_TEST"])
+    print(self.L["CMD_HELP_ENABLE"])
+    print(self.L["CMD_HELP_DISABLE"])
+    print(self.L["CMD_HELP_STATUS"])
+    print(self.L["CMD_HELP_SCALE"])
+    print(self.L["CMD_HELP_OFFSET"])
+    print(self.L["CMD_HELP_ANCHOR"] or "  /sqp anchor <LEFT|RIGHT> - Set icon position")
+    print(self.L["CMD_HELP_RESET"])
+    print(self.L["CMD_HELP_OPTIONS"] or "  /sqp options - Open the options panel")
     self:PrintMessage(self.L["COMMUNITY_MESSAGE"])
 end
 

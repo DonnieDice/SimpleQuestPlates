@@ -62,6 +62,10 @@ function SQP:CreateQuestPlate(nameplate)
     iconText:SetPoint('CENTER', icon, 0.8, 0)
     iconText:SetShadowOffset(1, -1)
     iconText:SetTextColor(1, 0.82, 0)
+    
+    -- Apply font settings
+    self:UpdateQuestFont(iconText)
+    
     questFrame.iconText = iconText
     
     -- Quest complete animation
@@ -128,6 +132,26 @@ function SQP:OnPlateHide(nameplate, unitID)
     end
 end
 
+-- Update font for quest text
+function SQP:UpdateQuestFont(fontString)
+    local fontName, _, fontFlags = fontString:GetFont()
+    
+    -- If no font is set, use default game font
+    if not fontName then
+        fontName = STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF"
+    end
+    
+    local fontSize = SQPSettings.fontSize or 12
+    local fontOutline = SQPSettings.fontOutline or "OUTLINE"
+    
+    -- Set font with outline
+    fontString:SetFont(fontName, fontSize, fontOutline)
+    
+    -- Set standard shadow
+    fontString:SetShadowOffset(1, -1)
+    fontString:SetShadowColor(0, 0, 0, 1)
+end
+
 -- Refresh all nameplate positions and settings
 function SQP:RefreshAllNameplates()
     -- Update settings for all quest plates
@@ -142,10 +166,39 @@ function SQP:RefreshAllNameplates()
                 SQPSettings.offsetY or 0
             )
             questFrame:SetScale(SQPSettings.scale or 1)
+            
+            -- Update font settings
+            if questFrame.iconText then
+                self:UpdateQuestFont(questFrame.iconText)
+                
+                -- Re-apply text color based on stored quest info
+                if questFrame.hasItem then
+                    -- Item quest
+                    questFrame.iconText:SetTextColor(unpack(SQPSettings.itemColor or {0.2, 1, 0.2}))
+                elseif questFrame.questType then
+                    if questFrame.questType == 1 then
+                        -- Kill quest
+                        questFrame.iconText:SetTextColor(unpack(SQPSettings.killColor or {1, 0.82, 0}))
+                    elseif questFrame.questType == 2 then
+                        -- Completed quest
+                        questFrame.iconText:SetTextColor(1, 1, 1)
+                    elseif questFrame.questType == 3 then
+                        -- Progress quest
+                        questFrame.iconText:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
+                    end
+                end
+            end
+            
+            -- Update icon tinting
+            if SQPSettings.iconTintColor then
+                questFrame.icon:SetVertexColor(unpack(SQPSettings.iconTintColor))
+            else
+                questFrame.icon:SetVertexColor(1, 1, 1, 1)
+            end
         end
     end
     
-    -- Update quest display
+    -- Force update quest display
     for plate in pairs(self.ActiveNameplates) do
         self:UpdateQuestIcon(plate, plate._unitID)
     end

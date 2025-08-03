@@ -27,7 +27,25 @@ local DEFAULTS = {
     offsetY = 0,
     anchor = "RIGHT",
     relativeTo = "LEFT",
-    debug = false
+    debug = false,
+    -- Font settings
+    fontSize = 12,
+    fontOutline = "OUTLINE",
+    outlineWidth = 1,
+    -- Color settings
+    killColor = {1, 0.82, 0},      -- Yellow/gold
+    itemColor = {0.2, 1, 0.2},     -- Green
+    percentColor = {0.2, 1, 1},    -- Cyan
+    customColors = false,
+    -- Icon tinting
+    iconTint = false,
+    iconTintColor = {1, 1, 1},      -- White (no tint by default)
+    -- Text outline color
+    outlineColor = {0, 0, 0},        -- Black outline by default
+    -- Additional settings
+    showMessages = true,
+    hideInCombat = false,
+    hideInInstance = false
 }
 
 -- Load settings from saved variables
@@ -51,20 +69,22 @@ function SQP:ResetSettings()
     for key, value in pairs(DEFAULTS) do
         SQPSettings[key] = value
     end
-    self:PrintMessage(self.L["SETTINGS_RESET"])
+    self:PrintMessage(self.L["CMD_RESET"])
     self:RefreshAllNameplates()
 end
 
 -- Print formatted message to chat
 function SQP:PrintMessage(message)
-    print(format("%s %s %s", ADDON_ICON, ADDON_PREFIX, message))
+    if message then
+        print(format("%s %s %s", ADDON_ICON, ADDON_PREFIX, message))
+    end
 end
 
 -- Enable addon
 function SQP:Enable()
     SQPSettings.enabled = true
     self:SaveSettings()
-    self:PrintMessage(self.L["ADDON_ENABLED"])
+    self:PrintMessage(self.L["CMD_ENABLED"])
     self:RefreshAllNameplates()
 end
 
@@ -72,7 +92,7 @@ end
 function SQP:Disable()
     SQPSettings.enabled = false
     self:SaveSettings()
-    self:PrintMessage(self.L["ADDON_DISABLED"])
+    self:PrintMessage(self.L["CMD_DISABLED"])
     
     -- Hide all quest plates
     for plate, frame in pairs(self.QuestPlates or {}) do
