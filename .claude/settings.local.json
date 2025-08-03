@@ -13,7 +13,12 @@
       "Bash(mkdir:*)",
       "Bash(del \"C:\\Users\\JosephGettings\\SimpleQuestPlates\\data\\locales.lua\")",
       "Bash(del \"C:\\Users\\JosephGettings\\SimpleQuestPlates\\data\\options_sections.lua\")",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git push:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git tag:*)"
     ],
     "deny": []
   }

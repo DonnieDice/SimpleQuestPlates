@@ -1,7 +1,7 @@
 # Simple Quest Plates - Change Log
 
 <p align="center">
-  <img src="../images/icon.tga" alt="SQP Icon" width="128" height="128">
+  <img src="../images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
 ## Version 1.0.0 - 2025-01-03

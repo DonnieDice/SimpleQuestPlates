@@ -1,7 +1,7 @@
 # Simple Quest Plates - Development Roadmap
 
 <p align="center">
-  <img src="images/icon.tga" alt="SQP Icon" width="128" height="128">
+  <img src="images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
 ## 🎯 Project Complete
