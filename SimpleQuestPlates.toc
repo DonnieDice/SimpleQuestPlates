@@ -1,15 +1,28 @@
 ## Interface: 110002
-## Title: |cff58be81Simple Quest Plates|r
+## Title: - |cff58be81S|r|cffffffffimple|r |cff58be81Q|r|cffffffffuest|r |cff58be81P|r|cfffffffflates|r
+## Notes: Displays quest progress icons on enemy nameplates.|n|r   |cff58be81By DonnieDice|r
 ## Version: 1.0.0
 ## Author: DonnieDice
-## Notes: Displays quest progress icons on enemy nameplates|nPart of the |cff58be81RGX|r Mods collection|nJoin us at discord.gg/N7kdKAHVVF
+## Email: joseph@donniedice.com
 ## SavedVariables: SQPSettings
 ## IconTexture: Interface\AddOns\SimpleQuestPlates\images\icon
 ## DefaultState: Enabled
-## X-Category: Quest
+
+## X-Category: UI Media, Questing & Leveling, Miscellaneous
 ## X-Website: https://github.com/donniedice/SimpleQuestPlates
-## X-Curse-Project-ID: 
+## X-Curse-Project-ID: 1319776
+## X-Wago-ID: 
 ## X-WoWI-ID: 
 
+## Core files (load order matters)
 data\locales.lua
 data\core.lua
+data\nameplates.lua
+data\quest.lua
+data\events.lua
+data\commands.lua
+
+## Options panel
+data\options_core.lua
+data\options_widgets.lua
+data\options_sections.lua

@@ -5,8 +5,9 @@
 -- Description: Multi-language localization system for Simple Quest Plates
 --=====================================================================================
 
--- Ensure global addon namespace exists
-SQP = SQP or {}
+-- Get addon namespace
+local addonName, SQP = ...
+_G.SQP = _G.SQP or SQP
 
 -- Initialize localization table
 SQP.L = SQP.L or {}
@@ -21,7 +22,7 @@ local L = {
     ["ADDON_DISABLED"] = "Addon |cffff0000disabled|r",
     ["QUEST_TRACKING_ENABLED"] = "Quest tracking |cff00ff00enabled|r",
     ["QUEST_TRACKING_DISABLED"] = "Quest tracking |cffff0000disabled|r",
-    ["WELCOME_MESSAGE"] = "Welcome to Simple Quest Plates! Type |cffffffff/sqp help|r for commands",
+    ["WELCOME_MESSAGE"] = "|cff58be81S|r|cffffffffimple|r |cff58be81Q|r|cffffffffuest|r |cff58be81P|r|cfffffffflates|r |cff58be81Loaded!|r Type |cffffffff/sqp|r to open options",
     
     -- Error Messages
     ["ERROR_PREFIX"] = "|cffff0000SQP Error:|r",
@@ -39,6 +40,7 @@ local L = {
     ["HELP_OFFSET"] = "|cffffffff/sqp offset <x> <y>|r - Set icon position",
     ["HELP_ANCHOR"] = "|cffffffff/sqp anchor <left/right>|r - Set anchor side",
     ["HELP_RESET"] = "|cffffffff/sqp reset|r - Reset all settings",
+    ["HELP_OPTIONS"] = "|cffffffff/sqp options|r - Open the options panel",
     
     -- Status Display
     ["STATUS_HEADER"] = "|cff58be81=== SQP Status ===|r",
@@ -67,7 +69,23 @@ local L = {
     
     -- RGX Mods Branding
     ["RGX_MODS_PREFIX"] = "|cff58be81RGX Mods|r",
-    ["COMMUNITY_MESSAGE"] = "Part of the RealmGX Community - join us at discord.gg/N7kdKAHVVF"
+    ["COMMUNITY_MESSAGE"] = "Part of the RealmGX Community - join us at discord.gg/N7kdKAHVVF",
+    
+    -- Options Panel
+    ["OPTIONS_SUBTITLE"] = "Quest tracking overlay for enemy nameplates",
+    ["OPTIONS_ENABLE"] = "Enable Simple Quest Plates",
+    ["OPTIONS_ENABLE_DESC"] = "Toggle quest icon display on enemy nameplates",
+    ["OPTIONS_SCALE"] = "Icon Scale",
+    ["OPTIONS_OFFSET_X"] = "Horizontal Offset",
+    ["OPTIONS_OFFSET_Y"] = "Vertical Offset",
+    ["OPTIONS_ANCHOR"] = "Anchor Side",
+    ["OPTIONS_TEST"] = "Test Detection",
+    ["OPTIONS_RESET"] = "Reset Settings",
+    ["OPTIONS_COMMUNITY"] = "RGX Mods Community",
+    ["OPTIONS_GENERAL"] = "General Settings",
+    ["OPTIONS_DISPLAY"] = "Display Settings",
+    ["OPTIONS_POSITION"] = "Position Settings",
+    ["OPTIONS_ACTIONS"] = "Actions"
 }
 
 -- Russian localization by ZamestoTV (Hubbotu)

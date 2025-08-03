@@ -1,3 +1,4 @@
+
 [![](https://img.shields.io/static/v1?label=Donate&message=CashApp&color=brightgreen)](https://bit.ly/3fyxxSU)
 
 # Simple Quest Plates
@@ -94,8 +95,15 @@ If you enjoy our addons, consider supporting future development:
 
 ## 📝 Version History
 
+### v1.1.0 - Architecture Rewrite (Current)
+- Complete codebase restructure into modular files
+- Implemented proper nameplate tracking system
+- Enhanced quest detection with caching
+- Beautiful Narcissus-style options panel
+- Fixed quest number display issues
+
 ### v1.0.0 - Initial Release
-- Complete rewrite with professional architecture
+- Quest progress icons on nameplates
 - Multi-language support
 - Comprehensive slash command system
 - Performance optimizations
