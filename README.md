@@ -3,8 +3,7 @@
 
 <div align="center">
 
-**SQP**<br>
-*Simple Quest Plates*
+<img src="https://github.com/donniedice/SimpleQuestPlates/blob/main/images/icon.tga?raw=true" alt="SQP Logo" width="128" height="128">
 
 [![SQP Icon](https://img.shields.io/badge/SQP-Simple%20Quest%20Plates-58be81?style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==&logoColor=white)](https://github.com/donniedice/SimpleQuestPlates)
 
@@ -79,7 +78,7 @@
 **SQP | Simple Quest Plates** enhances your World of Warcraft experience by displaying quest progress icons directly on enemy nameplates. Know at a glance which enemies you need to defeat for your quests, how many items they drop, and your overall progress - all without cluttering your interface.
 
 <div align="center">
-![SQP Options Panel](images/in-game-options.png)
+<img src="https://github.com/donniedice/SimpleQuestPlates/blob/main/images/in-game-options.png?raw=true" alt="SQP Options Panel" width="600">
 </div>
 
 ## ✨ Features
