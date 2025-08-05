@@ -1,0 +1,23 @@
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude configuration
+.claude/
+
+# Build and release files
+.release/
+*.zip
+release.sh
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
