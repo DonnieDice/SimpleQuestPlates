@@ -14,6 +14,8 @@ env:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Clone Project
         uses: actions/checkout@v4
@@ -30,18 +32,18 @@ jobs:
         run: |
           TAG_NAME=${{ github.ref }}
           if [[ "$TAG_NAME" == *"beta"* ]]; then
-            echo "::set-output name=release_type::beta"
+            echo "release_type=beta" >> $GITHUB_OUTPUT
           elif [[ "$TAG_NAME" == *"alpha"* ]]; then
-            echo "::set-output name=release_type::alpha"
+            echo "release_type=alpha" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=release_type::release"
+            echo "release_type=release" >> $GITHUB_OUTPUT
           fi
 
       - name: Extract Version from TOC
         id: extract_version
         run: |
           version=$(grep -oP '^## Version: \K(.*)' ./*.toc)
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Package and Release
         uses: BigWigsMods/packager@master
