@@ -1,2 +1,25 @@
 package-as: SimpleQuestPlates
-manual-changelog: docs/CHANGES.md
+
+manual-changelog:
+  filename: docs/CHANGES.md
+  markup-type: markdown
+
+ignore:
+  - README.md
+  - CHANGELOG.md
+  - CLAUDE.md
+  - ROADMAP.md
+  - .git
+  - .github
+  - .gitignore
+  - .gitattributes
+  - .pkgmeta
+  - .release
+  - .docmeta
+  - .claude
+  - pkgmeta.yaml
+  - "*.bat"
+  - "*.sh"
+  - "*.py"
+
+enable-nolib-creation: no

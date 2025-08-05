@@ -19,7 +19,9 @@
       "Bash(git commit:*)",
       "Bash(git config:*)",
       "Bash(git tag:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git reset:*)",
+      "Bash(del \"C:\\Users\\JosephGettings\\SimpleQuestPlates\\pkgmeta.yaml\")"
     ],
     "deny": []
   }
