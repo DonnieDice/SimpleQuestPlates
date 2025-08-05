@@ -2,6 +2,16 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.3] - 2025-08-05
+
+### Added
+- WakaTime development statistics to README
+- Comprehensive coding activity tracking badges
+
+### Fixed
+- CurseForge packaging configuration (.pkgmeta)
+- Removed duplicate pkgmeta.yaml file
+
 ## [1.0.2] - 2025-08-05
 
 ### Added
