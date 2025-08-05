@@ -28,6 +28,10 @@
 [![GitHub repo size](https://img.shields.io/github/repo-size/donniedice/SimpleQuestPlates?style=flat-square&logo=github)](https://github.com/donniedice/SimpleQuestPlates)
 [![GitHub code size](https://img.shields.io/github/languages/code-size/donniedice/SimpleQuestPlates?style=flat-square&logo=github)](https://github.com/donniedice/SimpleQuestPlates)
 
+<!-- WakaTime Stats -->
+[![wakatime](https://wakatime.com/badge/user/a0b54ba5-f8b2-4aba-82f9-a1e1ad1a1e6e.svg?style=flat-square)](https://wakatime.com/@donniedice)
+[![GitHub Stats](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Total%20Coding%20Time&query=data.total_seconds_including_other_language&url=https://wakatime.com/api/v1/users/donniedice/stats/last_7_days&suffix=%20hours&style=flat-square)](https://wakatime.com/@donniedice)
+
 <!-- Platform Badges -->
 [![CurseForge Downloads](https://img.shields.io/badge/CurseForge-Downloads-orange?style=flat-square&logo=curseforge)](https://www.curseforge.com/wow/addons/simple-quest-plates)
 [![Wago Downloads](https://img.shields.io/badge/Wago.io-Downloads-purple?style=flat-square&logo=wago)](https://addons.wago.io/addons/simple-quest-plates)
@@ -216,6 +220,34 @@ SQP supports multiple languages:
 Found a bug? Report it:
 - [GitHub Issues](https://github.com/donniedice/SimpleQuestPlates/issues)
 - Join our Discord for instant support
+
+## 💻 Development Activity
+
+<div align="center">
+
+### 📊 WakaTime Development Stats
+
+[![wakatime](https://wakatime.com/badge/user/a0b54ba5-f8b2-4aba-82f9-a1e1ad1a1e6e.svg?style=for-the-badge)](https://wakatime.com/@donniedice)
+
+### 📈 Weekly Coding Activity
+[![DonnieDice's WakaTime stats](https://github-readme-stats.vercel.app/api/wakatime?username=donniedice&theme=tokyonight&hide_border=true&layout=compact&langs_count=10)](https://wakatime.com/@donniedice)
+
+### ⏱️ Time Tracking
+<a href="https://wakatime.com/@donniedice">
+  <img src="https://github-readme-stats.vercel.app/api/wakatime?username=donniedice&theme=tokyonight&hide_border=true&layout=default&range=last_7_days&custom_title=Last%207%20Days%20Coding%20Activity" />
+</a>
+
+### 💻 Languages Used This Week
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=donniedice&layout=compact&theme=tokyonight&hide_border=true)](https://github.com/donniedice)
+
+### 📅 Coding Consistency
+<!--START_SECTION:waka-->
+<!--END_SECTION:waka-->
+
+### 🔥 Streak Stats
+[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=donniedice&theme=tokyonight&hide_border=true)](https://github.com/donniedice)
+
+</div>
 
 ## 📊 Repository Statistics
 
