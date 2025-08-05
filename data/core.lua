@@ -1,6 +1,6 @@
 --=====================================================================================
 -- SQP | Simple Quest Plates - core.lua
--- Version: 1.0.1
+-- Version: 1.0.2
 -- Author: DonnieDice
 -- Description: Main initialization and core functions
 --=====================================================================================
@@ -9,7 +9,7 @@
 local addonName, SQP = ...
 _G.SQP = SQP
 SQP.L = SQP.L or {}
-SQP.VERSION = "1.0.1"
+SQP.VERSION = "1.0.2"
 
 -- Constants
 local ADDON_NAME = "Simple Quest Plates"

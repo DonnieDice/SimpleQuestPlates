@@ -18,7 +18,8 @@
       "Bash(git rm:*)",
       "Bash(git commit:*)",
       "Bash(git config:*)",
-      "Bash(git tag:*)"
+      "Bash(git tag:*)",
+      "Bash(dir:*)"
     ],
     "deny": []
   }
