@@ -2,6 +2,12 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.4] - 2025-08-05
+
+### Added
+- GitHub Actions workflow for automated packaging and releases
+- Automated deployment to CurseForge, WoWInterface, and Wago
+
 ## [1.0.3] - 2025-08-05
 
 ### Added

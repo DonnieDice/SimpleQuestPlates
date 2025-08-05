@@ -4,15 +4,11 @@
   <img src="../images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
-## Version 1.0.3 - 2025-08-05
+## Version 1.0.4 - 2025-08-05
 
 ### Added
-- WakaTime development statistics to README
-- Comprehensive coding activity tracking badges
-
-### Fixed
-- CurseForge packaging configuration (.pkgmeta)
-- Removed duplicate pkgmeta.yaml file
+- GitHub Actions workflow for automated packaging and releases
+- Automated deployment to CurseForge, WoWInterface, and Wago
 
 ---
 
