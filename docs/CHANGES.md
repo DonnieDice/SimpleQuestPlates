@@ -4,12 +4,12 @@
   <img src="../images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
-## Version 1.0.0 - 2025-01-03
+## Version 1.0.1 - 2025-08-05
 
-### Initial Release
-- First public release of Simple Quest Plates
-- Full quest tracking functionality for World of Warcraft: The War Within
-- RGX Mods community addon
+### Fixed
+- Updated addon packaging metadata for better compatibility with addon hosting sites
+- Fixed outline width buttons - "None" button now properly removes outline instead of applying thin outline
+- Fixed exclamation point color in options menu sidebar to use brand color
 
 ---
 

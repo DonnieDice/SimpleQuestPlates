@@ -114,3 +114,17 @@ This addon follows RGX Mods community standards with Discord integration and pro
 8. Reset buttons functionality
 9. Slash commands
 10. Localization
+
+## Version Management
+
+When updating the addon version:
+
+1. **Update version in these files:**
+   - `SimpleQuestPlates.toc` - Update `## Version:` line
+   - `data/core.lua` - Update both the comment header and `SQP.VERSION` variable
+
+2. **Update changelogs:**
+   - `CHANGELOG.md` - Add new version entry with all changes since previous version
+   - `docs/CHANGES.md` - **IMPORTANT**: This file should ONLY contain the current version changes (gets displayed on push). Remove all previous version entries when updating.
+
+3. **Version format:** Use semantic versioning (e.g., 1.0.1, 1.1.0, 2.0.0)

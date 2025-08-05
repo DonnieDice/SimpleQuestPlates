@@ -57,7 +57,7 @@ function SQP:CreateFontOptions(content)
     yOffset = yOffset - 25
     
     -- Create outline buttons (only 3 options in WoW)
-    local thinButton = self:CreateStyledButton(leftColumn, "Thin", 80, 25)
+    local thinButton = self:CreateStyledButton(leftColumn, "None", 80, 25)
     thinButton:SetPoint("TOPLEFT", 20, yOffset)
     
     local normalButton = self:CreateStyledButton(leftColumn, "Normal", 80, 25)
@@ -78,7 +78,7 @@ function SQP:CreateFontOptions(content)
     
     thinButton:SetScript("OnClick", function()
         SQPSettings.outlineWidth = 1
-        SQPSettings.fontOutline = "OUTLINE"
+        SQPSettings.fontOutline = ""
         UpdateOutlineButtons()
         SQP:RefreshAllNameplates()
     end)
@@ -108,7 +108,7 @@ function SQP:CreateFontOptions(content)
     resetAllBtn:SetScript("OnClick", function()
         -- Reset all font settings
         SQPSettings.fontSize = 12
-        SQPSettings.fontOutline = "OUTLINE"
+        SQPSettings.fontOutline = ""
         SQPSettings.outlineWidth = 1
         SQPSettings.killColor = {1, 0.82, 0}
         SQPSettings.itemColor = {0.2, 1, 0.2}
