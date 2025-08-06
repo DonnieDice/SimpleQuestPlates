@@ -49,3 +49,100 @@ jobs:
         uses: BigWigsMods/packager@master
         with:
           release-type: ${{ steps.set_release_type.outputs.release_type }}
+
+      - name: Extract Changelog
+        id: extract_changelog
+        run: |
+          # Extract the current version's changelog from docs/CHANGES.md
+          # We need to find the section between the current version header and the next version header or EOF
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          
+          # Read the changelog and extract the current version's content
+          CHANGELOG=$(awk -v version="$VERSION" '
+            BEGIN { found = 0; content = "" }
+            /^## Version/ {
+              if ($3 == version) {
+                found = 1
+                next
+              } else if (found) {
+                exit
+              }
+            }
+            found && /^---/ { exit }
+            found { content = content $0 "\n" }
+            END { print content }
+          ' docs/CHANGES.md)
+          
+          # Escape special characters for JSON
+          CHANGELOG="${CHANGELOG//$'\n'/\\n}"
+          CHANGELOG="${CHANGELOG//\"/\\\"}"
+          
+          # Save to output
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send Discord Notification
+        if: success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+          
+          # Determine release type emoji and color
+          RELEASE_TYPE="${{ steps.set_release_type.outputs.release_type }}"
+          if [ "$RELEASE_TYPE" = "alpha" ]; then
+            EMOJI="🔬"
+            COLOR="16711680"  # Red
+            TYPE_TEXT="Alpha"
+          elif [ "$RELEASE_TYPE" = "beta" ]; then
+            EMOJI="🧪"
+            COLOR="16744448"  # Orange
+            TYPE_TEXT="Beta"
+          else
+            EMOJI="🚀"
+            COLOR="65280"     # Green
+            TYPE_TEXT="Release"
+          fi
+          
+          # Format the changelog for Discord
+          CHANGELOG="${{ steps.extract_changelog.outputs.changelog }}"
+          
+          # Create the Discord embed
+          DISCORD_PAYLOAD=$(cat <<EOF
+          {
+            "embeds": [{
+              "title": "$EMOJI Simple Quest Plates v${{ steps.extract_version.outputs.version }} $TYPE_TEXT",
+              "description": "A new version of Simple Quest Plates has been released!",
+              "color": $COLOR,
+              "fields": [
+                {
+                  "name": "📝 Changelog",
+                  "value": "$CHANGELOG"
+                },
+                {
+                  "name": "📦 Download",
+                  "value": "[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates) • [WoWInterface](https://www.wowinterface.com/downloads/info26786-SimpleQuestPlates.html) • [Wago](https://addons.wago.io/addons/simple-quest-plates) • [GitHub](https://github.com/donniedice/SimpleQuestPlates/releases/tag/${{ github.ref_name }})"
+                }
+              ],
+              "footer": {
+                "text": "RGX Mods Collection",
+                "icon_url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/icon.png"
+              },
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)",
+              "thumbnail": {
+                "url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png"
+              }
+            }]
+          }
+          EOF
+          )
+          
+          # Send to Discord
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "$DISCORD_PAYLOAD" \
+               "$DISCORD_WEBHOOK"

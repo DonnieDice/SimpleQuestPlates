@@ -2,6 +2,27 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.2] - 2025-08-06
+
+### Added
+- RealmGX branding throughout README
+- Kiwi mascot image and quotes
+- Multi-column layouts for better organization
+- RealmGX.com links throughout documentation
+- README formatting guide documentation
+- Additional GitHub stats badges
+- Support links for Buy Me a Coffee and PayPal
+
+### Changed
+- Updated README with comprehensive brand colors
+- Improved visual organization with table layouts
+- Enhanced community section with mascot
+- Replaced generic quotes with RealmGX branding
+
+### Fixed
+- Removed non-functional repository activity badges
+- Fixed color consistency throughout README
+
 ## [1.0.1] - 2025-08-05
 
 ### Added

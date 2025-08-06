@@ -4,21 +4,26 @@
   <img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
-## Version 1.0.1 - 2025-08-05
+## Version 1.0.2 - 2025-08-06
 
 ### Added
-- GitHub Actions workflow for automated packaging and releases
-- Automated deployment to CurseForge, WoWInterface, and Wago
-- WakaTime development statistics to README
-- Comprehensive coding activity tracking badges
+- RealmGX branding throughout README
+- Kiwi mascot image and quotes
+- Multi-column layouts for better organization
+- RealmGX.com links throughout documentation
+- README formatting guide documentation
+- Additional GitHub stats badges
+- Support links for Buy Me a Coffee and PayPal
+
+### Changed
+- Updated README with comprehensive brand colors
+- Improved visual organization with table layouts
+- Enhanced community section with mascot
+- Replaced generic quotes with RealmGX branding
 
 ### Fixed
-- Outline width buttons - "None" button now properly removes outline instead of applying thin outline
-- Exclamation point color in options menu sidebar to use brand color
-- CurseForge packaging configuration (.pkgmeta)
-- Removed duplicate pkgmeta.yaml file
-- Version number consistency across all files
-- Updated addon packaging metadata for better compatibility with addon hosting sites
+- Removed non-functional repository activity badges
+- Fixed color consistency throughout README
 
 ---
 
