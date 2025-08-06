@@ -47,14 +47,14 @@ jobs:
                -d "{
                  \"content\": \"\",
                  \"username\": \"SQP Update\",
-                 \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/SQP_logo_400x400.png\",
+                 \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\",
                  \"embeds\": [{
                    \"title\": \"🎯 SimpleQuestPlates - ${{ steps.release_info.outputs.version }}\",
                    \"description\": \"**Clean. Simple. Effective.** - A new version of SimpleQuestPlates has been released!\\n\\n✨ **What's New:**\\n• Check the release notes for full details\\n• Bug fixes and performance improvements\\n\\n**The minimalist nameplate addon that keeps your UI clean and your focus sharp!**\",
                    \"url\": \"${{ steps.release_info.outputs.url }}\",
                    \"color\": 5168588,
                    \"thumbnail\": {
-                     \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/SQP_logo_400x400.png\"
+                     \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
                    },
                    \"fields\": [
                      {
