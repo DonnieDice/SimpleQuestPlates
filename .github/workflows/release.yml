@@ -104,7 +104,7 @@ jobs:
             TYPE_TEXT="Beta"
           else
             EMOJI="🚀"
-            COLOR="65280"     # Green
+            COLOR="5816961"   # Green (#58be81 in decimal)
             TYPE_TEXT="Release"
           fi
           
