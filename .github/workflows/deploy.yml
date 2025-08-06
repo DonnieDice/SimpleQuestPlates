@@ -59,7 +59,7 @@ jobs:
                    \"fields\": [
                      {
                        \"name\": \"📥 Downloads\",
-                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simplequestplates)\\n[Wago.io](https://addons.wago.io/addons/simplequestplates)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
+                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/sqp-simplequestplates)\\n[Wago.io](https://addons.wago.io/addons/simplequestplates)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
                        \"inline\": true
                      },
                      {
