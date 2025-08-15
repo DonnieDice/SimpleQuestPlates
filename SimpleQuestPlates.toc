@@ -1,7 +1,7 @@
 ## Interface: 110002
 ## Title: |cff58be81S|r|cffffffffimple|r |cff58be81Q|r|cffffffffuest|r |cff58be81P|r|cfffffffflates|r
 ## Notes: Displays quest progress icons on enemy nameplates.|n|r   |cff58be81By DonnieDice|r
-## Version: 1.0.7
+## Version: 1.0.8
 ## Author: DonnieDice
 ## Email: donniedice@protonmail.com
 ## SavedVariables: SQPSettings

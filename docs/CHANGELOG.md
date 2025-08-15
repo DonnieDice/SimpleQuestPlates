@@ -2,6 +2,19 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.8] - 2025-08-15
+
+### Fixed
+- Completely rewrote Discord notification workflow to match working SRLU format
+- Fixed changelog extraction and formatting for Discord embeds
+- Proper handling of newlines in Discord webhook payload
+- Simplified changelog processing to avoid complex escaping issues
+
+### Changed
+- Discord notifications now embed changelog directly in description field
+- Improved awk script for more reliable changelog extraction
+- Better handling of empty changelog scenarios
+
 ## [1.0.7] - 2025-08-15
 
 ### Fixed
