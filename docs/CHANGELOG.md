@@ -2,6 +2,26 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.1.0] - 2025-08-15 - Production Release
+
+### Added
+- Full support for MoP Classic (5.4.8)
+- Multi-version compatibility (Retail, MoP, Cata, Wrath, Vanilla)
+- Dynamic nameplate detection based on WoW version
+- Integrated compatibility layer for all versions
+
+### Fixed
+- MoP nameplate detection using NamePlate1-40 frames
+- Quest icon attachment to nameplates in Classic versions
+- Target detection using alpha values in MoP
+- Complete cleanup of codebase removing all debug and test files
+
+### Changed
+- Consolidated all compatibility code into single compat.lua
+- Removed all debug and test files for production
+- Streamlined codebase for better performance
+- Optimized file structure
+
 ## [1.1.0-alpha] - 2025-08-15
 
 ### Added
