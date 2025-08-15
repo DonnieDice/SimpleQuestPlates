@@ -4,15 +4,17 @@
   <img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
-## Version 1.0.5 - 2025-08-15
+## Version 1.0.6 - 2025-08-15
 
 ### Fixed
-- Restored complete GitHub Actions workflow with Discord notifications
-- Fixed workflow file truncation issue  
-- Ensured Discord webhook runs even if some upload steps fail (if: always())
+- Fixed Discord webhook changelog extraction to properly parse version from CHANGES.md
+- Improved changelog content formatting for Discord embeds
+- Added fallback changelog content if extraction fails
+- Enhanced JSON escaping for special characters in Discord payload
 
 ### Changed
-- Improved workflow reliability with proper error handling
+- Discord notifications now properly display release changelog content
+- Improved markdown to Discord formatting conversion
 
 ---
 

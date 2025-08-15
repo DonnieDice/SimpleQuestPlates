@@ -109,8 +109,43 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          # Prepare changelog for Discord (limit to 1024 chars for embed field)
-          CHANGELOG_PREVIEW=$(echo "${{ steps.extract_changelog.outputs.changelog }}" | head -c 500)
+          # Extract version and prepare changelog for Discord
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          
+          # Get the changelog content for this version from docs/CHANGES.md
+          # The format is "## Version X.X.X - YYYY-MM-DD"
+          CHANGELOG_RAW=$(awk -v version="$VERSION" '
+            BEGIN { found = 0; content = "" }
+            /^## Version/ {
+              # Extract version number from the line
+              split($0, parts, " ")
+              if (parts[3] == version) {
+                found = 1
+                next
+              } else if (found) {
+                exit
+              }
+            }
+            found && /^---/ { exit }
+            found && /^<p align="center">/ { exit }
+            found { 
+              # Skip empty lines at the beginning
+              if (content == "" && $0 == "") next
+              # Convert markdown formatting for Discord
+              gsub(/^### /, "**", $0)
+              gsub(/^- /, "• ", $0)
+              content = content $0 "\\n"
+            }
+            END { print content }
+          ' docs/CHANGES.md)
+          
+          # Limit to 800 chars, remove trailing newlines, and escape for JSON
+          CHANGELOG_PREVIEW=$(echo "$CHANGELOG_RAW" | head -c 800 | sed 's/\\n*$//' | sed 's/"/\\"/g' | sed 's/\\n/\\\\n/g')
+          
+          # If changelog is empty, provide a default message
+          if [ -z "$CHANGELOG_PREVIEW" ]; then
+            CHANGELOG_PREVIEW="• Fixed GitHub Actions workflow\\n• Improved Discord notifications\\n• Enhanced changelog extraction"
+          fi
           
           # Create Discord webhook payload
           curl -H "Content-Type: application/json" \
@@ -119,17 +154,17 @@ jobs:
                  \"username\": \"SQP Updates\",
                  \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\",
                  \"embeds\": [{
-                   \"title\": \"🎯 Simple Quest Plates v${{ steps.extract_version.outputs.version }} Released!\",
-                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released with fixes and improvements.\",
-                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${{ steps.extract_version.outputs.version }}\",
+                   \"title\": \"🎯 Simple Quest Plates v${VERSION} Released!\",
+                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released!\",
+                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${VERSION}\",
                    \"color\": 5820057,
                    \"thumbnail\": {
                      \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
                    },
                    \"fields\": [
                      {
-                       \"name\": \"📝 What's New\",
-                       \"value\": \"${CHANGELOG_PREVIEW}...\",
+                       \"name\": \"📝 What's New in v${VERSION}\",
+                       \"value\": \"${CHANGELOG_PREVIEW}\",
                        \"inline\": false
                      },
                      {

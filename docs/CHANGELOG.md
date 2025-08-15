@@ -2,6 +2,18 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.6] - 2025-08-15
+
+### Fixed
+- Fixed Discord webhook changelog extraction to properly parse version from CHANGES.md
+- Improved changelog content formatting for Discord embeds
+- Added fallback changelog content if extraction fails
+- Enhanced JSON escaping for special characters in Discord payload
+
+### Changed
+- Discord notifications now properly display release changelog content
+- Improved markdown to Discord formatting conversion
+
 ## [1.0.5] - 2025-08-15
 
 ### Fixed
