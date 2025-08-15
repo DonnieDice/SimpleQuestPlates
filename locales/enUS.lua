@@ -19,7 +19,11 @@ local L = {
     ["OPTIONS_ANCHOR"] = "Icon Position",
     ["OPTIONS_TEST"] = "Test Detection",
     ["OPTIONS_RESET"] = "Reset All Settings",
+    ["OPTIONS_RESET_FONT"] = "Reset Font Settings",
+    ["OPTIONS_RESET_ICON"] = "Reset Icon Settings",
     ["OPTIONS_FONT_SIZE"] = "Font Size",
+    ["OPTIONS_FONT_FAMILY"] = "Font Family",
+    ["OPTIONS_GLOBAL_SCALE"] = "Global Scale",
     ["OPTIONS_FONT_OUTLINE"] = "Text Outline",
     ["OPTIONS_CUSTOM_COLORS"] = "Use Custom Colors",
     ["OPTIONS_COLORS"] = "Colors",
@@ -65,6 +69,8 @@ local L = {
     ["QUEST_PROGRESS_ITEM"] = "Collect: %d/%d",
     ["QUEST_TEST_ACTIVE"] = "Active quest objectives found: %d",
     ["QUEST_TEST_NONE"] = "No active quest objectives found",
+    ["TEST_FOUND_QUESTS"] = "Found %d units with quest objectives",
+    ["TEST_NO_QUESTS"] = "No quest objectives found on visible nameplates",
     
     -- Messages
     ["MSG_LOADED"] = "|cff58be81Simple Quest Plates!|r loaded successfully. Type |cfffff569/sqp help|r for commands.",

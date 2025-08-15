@@ -6,9 +6,15 @@
 --=====================================================================================
 
 local addonName, SQP = ...
+local format = string.format
 
 -- Create icon settings section
 function SQP:CreateIconOptions(content)
+    -- Initialize control storage if not exists
+    if not self.optionControls then
+        self.optionControls = {}
+    end
+    
     -- Create two-column layout
     local leftColumn = CreateFrame("Frame", nil, content)
     leftColumn:SetPoint("TOPLEFT")
@@ -27,7 +33,7 @@ function SQP:CreateIconOptions(content)
     local positionLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     positionLabel:SetPoint("TOPLEFT", 20, yOffset)
     positionLabel:SetText("|cff58be81" .. (self.L["OPTIONS_ICON_POSITION"] or "Icon Position") .. "|r")
-    yOffset = yOffset - 25
+    yOffset = yOffset - 20  -- Condensed
     
     -- X Offset
     local xLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -37,6 +43,7 @@ function SQP:CreateIconOptions(content)
     local xSlider = self:CreateStyledSlider(leftColumn, -50, 50, 1, 200)
     xSlider:SetPoint("TOPLEFT", xLabel, "BOTTOMLEFT", 0, -5)
     xSlider:SetValue(SQPSettings.offsetX)
+    self.optionControls.offsetX = xSlider  -- Store reference
     
     local xValue = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     xValue:SetPoint("LEFT", xSlider, "RIGHT", 10, 0)
@@ -58,7 +65,7 @@ function SQP:CreateIconOptions(content)
         xValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
-    yOffset = yOffset - 60
+    yOffset = yOffset - 50  -- Condensed
     
     -- Y Offset
     local yLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -68,6 +75,7 @@ function SQP:CreateIconOptions(content)
     local ySlider = self:CreateStyledSlider(leftColumn, -50, 50, 1, 200)
     ySlider:SetPoint("TOPLEFT", yLabel, "BOTTOMLEFT", 0, -5)
     ySlider:SetValue(SQPSettings.offsetY)
+    self.optionControls.offsetY = ySlider  -- Store reference
     
     local yValue = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     yValue:SetPoint("LEFT", ySlider, "RIGHT", 10, 0)
@@ -89,13 +97,13 @@ function SQP:CreateIconOptions(content)
         yValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
-    yOffset = yOffset - 60
+    yOffset = yOffset - 50  -- Condensed
     
     -- Anchor selection
     local anchorLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     anchorLabel:SetPoint("TOPLEFT", 20, yOffset)
     anchorLabel:SetText(self.L["OPTIONS_ANCHOR"] or "Nameplate Side")
-    yOffset = yOffset - 25
+    yOffset = yOffset - 20  -- Condensed
     
     -- Create buttons
     local leftButton = self:CreateStyledButton(leftColumn, "Left Side", 90, 25)
@@ -103,6 +111,9 @@ function SQP:CreateIconOptions(content)
     
     local rightButton = self:CreateStyledButton(leftColumn, "Right Side", 90, 25)
     rightButton:SetPoint("LEFT", leftButton, "RIGHT", 10, 0)
+    
+    -- Store anchor buttons for refresh
+    self.optionControls.anchorButtons = {left = leftButton, right = rightButton}
     
     -- Create button state update function
     local function UpdateButtonStates()
@@ -114,6 +125,7 @@ function SQP:CreateIconOptions(content)
             rightButton:SetAlpha(1)
         end
     end
+    self.optionControls.updateAnchorButtons = UpdateButtonStates
     
     -- Set button scripts
     leftButton:SetScript("OnClick", function()
@@ -133,6 +145,9 @@ function SQP:CreateIconOptions(content)
     -- Set initial button states
     UpdateButtonStates()
     
+    -- Store references for reset functionality
+    self.optionControls.anchorUpdateFunc = UpdateButtonStates
+    
     -- RIGHT COLUMN - Icon Style
     local rightYOffset = -20
     
@@ -140,16 +155,17 @@ function SQP:CreateIconOptions(content)
     local styleLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     styleLabel:SetPoint("TOPLEFT", 20, rightYOffset)
     styleLabel:SetText("|cff58be81" .. (self.L["OPTIONS_ICON_STYLE"] or "Icon Style") .. "|r")
-    rightYOffset = rightYOffset - 25
+    rightYOffset = rightYOffset - 20  -- Condensed
     
-    -- Scale setting
+    -- Global Scale setting
     local scaleLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     scaleLabel:SetPoint("TOPLEFT", 20, rightYOffset)
-    scaleLabel:SetText(self.L["OPTIONS_SCALE"] or "Icon Scale")
+    scaleLabel:SetText(self.L["OPTIONS_GLOBAL_SCALE"] or "Global Scale")
     
-    local scaleSlider = self:CreateStyledSlider(rightColumn, 0.5, 2.0, 0.1, 200)
+    local scaleSlider = self:CreateStyledSlider(rightColumn, 0.5, 3.0, 0.1, 200)  -- Increased max to 3.0
     scaleSlider:SetPoint("TOPLEFT", scaleLabel, "BOTTOMLEFT", 0, -5)
     scaleSlider:SetValue(SQPSettings.scale)
+    self.optionControls.scale = scaleSlider  -- Store reference
     
     local scaleValue = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     scaleValue:SetPoint("LEFT", scaleSlider, "RIGHT", 10, 0)
@@ -161,7 +177,7 @@ function SQP:CreateIconOptions(content)
         scaleValue:SetText(format("%.1f", value))
         SQP:RefreshAllNameplates()
     end)
-    rightYOffset = rightYOffset - 60
+    rightYOffset = rightYOffset - 50  -- Condensed spacing after scale slider
     
     -- Icon tint color picker
     local iconColorBtn = CreateFrame("Button", nil, rightColumn)
@@ -177,6 +193,9 @@ function SQP:CreateIconOptions(content)
     iconSwatch:SetPoint("CENTER")
     local iconColor = SQPSettings.iconTintColor or {1, 1, 1}
     iconSwatch:SetColorTexture(unpack(iconColor))
+    
+    -- Store color swatch reference
+    self.optionControls.iconTintColorSwatch = iconSwatch
     
     local iconColorText = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     iconColorText:SetPoint("LEFT", iconColorBtn, "RIGHT", 5, 0)
@@ -226,6 +245,7 @@ function SQP:CreateIconOptions(content)
         SQP:SetSetting('offsetY', 0)
         SQP:SetSetting('anchor', "RIGHT")
         SQP:SetSetting('relativeTo', "LEFT")
+        SQP:SetSetting('scale', 1.0)
         SQP:SetSetting('iconTint', false)
         SQP:SetSetting('iconTintColor', {1, 1, 1})
         
@@ -233,6 +253,8 @@ function SQP:CreateIconOptions(content)
         xValue:SetText("0")
         ySlider:SetValue(0)
         yValue:SetText("0")
+        scaleSlider:SetValue(1.0)
+        scaleValue:SetText("1.0")
         iconSwatch:SetColorTexture(1, 1, 1)
         UpdateButtonStates()
         

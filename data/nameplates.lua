@@ -134,12 +134,8 @@ end
 
 -- Update font for quest text
 function SQP:UpdateQuestFont(fontString)
-    local fontName, _, fontFlags = fontString:GetFont()
-    
-    -- If no font is set, use default game font
-    if not fontName then
-        fontName = STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF"
-    end
+    -- Use selected font or default
+    local fontName = SQPSettings.fontFamily or STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF"
     
     local fontSize = SQPSettings.fontSize or 12
     local fontOutline = SQPSettings.fontOutline or "OUTLINE"

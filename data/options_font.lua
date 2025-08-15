@@ -48,13 +48,75 @@ function SQP:CreateFontOptions(content)
         fontValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
-    yOffset = yOffset - 60
+    yOffset = yOffset - 50  -- Condensed from 60
+    
+    -- Font Family Dropdown
+    local fontFamilyLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    fontFamilyLabel:SetPoint("TOPLEFT", 20, yOffset)
+    fontFamilyLabel:SetText(self.L["OPTIONS_FONT_FAMILY"] or "Font Family")
+    yOffset = yOffset - 25
+    
+    -- Create dropdown frame
+    local fontDropdown = CreateFrame("Frame", "SQPFontDropdown", leftColumn, "UIDropDownMenuTemplate")
+    fontDropdown:SetPoint("TOPLEFT", 5, yOffset)
+    UIDropDownMenu_SetWidth(fontDropdown, 180)
+    
+    -- Store reference for refresh
+    self.optionControls.fontFamily = fontDropdown
+    
+    -- Font options
+    local fontOptions = {
+        {text = "Default", value = "GameFontNormal", font = "Fonts\\FRIZQT__.TTF"},
+        {text = "Friz Quadrata", value = "FrizQuadrata", font = "Fonts\\FRIZQT__.TTF"},
+        {text = "Arial", value = "Arial", font = "Fonts\\ARIALN.TTF"},
+        {text = "Arial Narrow", value = "ArialN", font = "Fonts\\ARIALN.TTF"},
+        {text = "Skurri", value = "Skurri", font = "Fonts\\SKURRI.TTF"},
+        {text = "Morpheus", value = "Morpheus", font = "Fonts\\MORPHEUS.TTF"},
+        {text = "2002 (Pixel)", value = "2002", font = "Fonts\\2002.TTF"},
+        {text = "2002 Bold (Pixel)", value = "2002B", font = "Fonts\\2002B.TTF"},
+        {text = "Nimrod MT", value = "NIM", font = "Fonts\\NIM_____.ttf"},
+        {text = "Friend or Foe", value = "FRIZQT", font = "Fonts\\FRIENDS.TTF"},
+        {text = "bLEI00D (Chinese)", value = "bLEI00D", font = "Fonts\\bLEI00D.TTF"},
+        {text = "K_Damage (Korean)", value = "K_Damage", font = "Fonts\\K_Damage.TTF"},
+        {text = "K_Pagetext (Korean)", value = "K_Pagetext", font = "Fonts\\K_Pagetext.TTF"},
+    }
+    
+    -- Initialize dropdown
+    local function InitializeFontDropdown(self, level)
+        for _, option in ipairs(fontOptions) do
+            local info = UIDropDownMenu_CreateInfo()
+            info.text = option.text
+            info.value = option.value
+            info.fontObject = CreateFont("TempFont")
+            info.fontObject:SetFont(option.font, 12, "OUTLINE")
+            info.func = function()
+                SQP:SetSetting('fontFamily', option.font)
+                UIDropDownMenu_SetText(fontDropdown, option.text)
+                SQP:RefreshAllNameplates()
+            end
+            info.checked = (SQPSettings.fontFamily == option.font)
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end
+    
+    UIDropDownMenu_Initialize(fontDropdown, InitializeFontDropdown)
+    
+    -- Set current value
+    local currentFont = SQPSettings.fontFamily or "Fonts\\FRIZQT__.TTF"
+    for _, option in ipairs(fontOptions) do
+        if option.font == currentFont then
+            UIDropDownMenu_SetText(fontDropdown, option.text)
+            break
+        end
+    end
+    
+    yOffset = yOffset - 40  -- Condensed from 50
     
     -- Outline Width
     local outlineLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     outlineLabel:SetPoint("TOPLEFT", 20, yOffset)
     outlineLabel:SetText(self.L["OPTIONS_OUTLINE_WIDTH"] or "Outline Width")
-    yOffset = yOffset - 25
+    yOffset = yOffset - 20  -- Condensed from 25
     
     -- Create outline buttons (only 3 options in WoW)
     local thinButton = self:CreateStyledButton(leftColumn, "None", 80, 25)
@@ -99,29 +161,6 @@ function SQP:CreateFontOptions(content)
     
     -- Set initial button states
     UpdateOutlineButtons()
-    yOffset = yOffset - 40
-    
-    -- Reset All Font Settings button
-    local resetAllBtn = self:CreateStyledButton(leftColumn, "Reset All Font Settings", 160, 25)
-    resetAllBtn:SetPoint("TOPLEFT", 20, yOffset)
-    resetAllBtn:SetAlpha(0.8)
-    resetAllBtn:SetScript("OnClick", function()
-        -- Reset all font settings
-        SQP:SetSetting('fontSize', 12)
-        SQP:SetSetting('fontOutline', "")
-        SQP:SetSetting('outlineWidth', 1)
-        SQP:SetSetting('killColor', {1, 0.82, 0})
-        SQP:SetSetting('itemColor', {0.2, 1, 0.2})
-        SQP:SetSetting('percentColor', {0.2, 1, 1})
-        
-        -- Update UI elements
-        fontSlider:SetValue(12)
-        fontValue:SetText("12")
-        UpdateOutlineButtons()
-        
-        -- Refresh all nameplates
-        SQP:RefreshAllNameplates()
-    end)
     
     -- RIGHT COLUMN - Color Settings
     local rightYOffset = -20
@@ -130,7 +169,7 @@ function SQP:CreateFontOptions(content)
     local colorTitle = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     colorTitle:SetPoint("TOPLEFT", 20, rightYOffset)
     colorTitle:SetText("|cff58be81" .. (self.L["OPTIONS_TEXT_COLORS"] or "Text Colors") .. "|r")
-    rightYOffset = rightYOffset - 25
+    rightYOffset = rightYOffset - 20  -- Condensed from 25
     
     -- Note: Custom colors always enabled
     
@@ -203,9 +242,33 @@ function SQP:CreateFontOptions(content)
         return container
     end
     
-    -- Quest type colors
+    -- Quest type colors (condensed spacing)
     CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_KILL"] or "Kill Quests", "killColor", 20, rightYOffset)
-    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_ITEM"] or "Item Quests", "itemColor", 20, rightYOffset - 30)
-    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_PERCENT"] or "Progress Quests", "percentColor", 20, rightYOffset - 60)
-    -- Outline color removed - WoW outlines are always black
+    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_ITEM"] or "Item Quests", "itemColor", 20, rightYOffset - 25)
+    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_PERCENT"] or "Progress Quests", "percentColor", 20, rightYOffset - 50)
+    rightYOffset = rightYOffset - 85  -- Space for reset button
+    
+    -- Reset Font Settings button (in right column)
+    local resetFontBtn = self:CreateStyledButton(rightColumn, self.L["OPTIONS_RESET_FONT"] or "Reset Font Settings", 160, 30)
+    resetFontBtn:SetPoint("TOPLEFT", 20, rightYOffset)
+    resetFontBtn:SetAlpha(0.8)
+    resetFontBtn:SetScript("OnClick", function()
+        -- Reset all font settings
+        SQP:SetSetting('fontSize', 12)
+        SQP:SetSetting('fontFamily', "Fonts\\FRIZQT__.TTF")
+        SQP:SetSetting('fontOutline', "")
+        SQP:SetSetting('outlineWidth', 1)
+        SQP:SetSetting('killColor', {1, 0.82, 0})
+        SQP:SetSetting('itemColor', {0.2, 1, 0.2})
+        SQP:SetSetting('percentColor', {0.2, 1, 1})
+        
+        -- Update UI elements
+        fontSlider:SetValue(12)
+        fontValue:SetText("12")
+        UIDropDownMenu_SetText(fontDropdown, "Default")
+        UpdateOutlineButtons()
+        
+        -- Refresh all nameplates
+        SQP:RefreshAllNameplates()
+    end)
 end

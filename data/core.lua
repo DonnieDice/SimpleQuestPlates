@@ -1,6 +1,6 @@
 --=====================================================================================
 -- SQP | Simple Quest Plates - core.lua
--- Version: 1.0.8
+-- Version: 1.0.7
 -- Author: DonnieDice
 -- Description: Main initialization and core functions
 --=====================================================================================
@@ -9,7 +9,7 @@
 local addonName, SQP = ...
 _G.SQP = SQP
 SQP.L = SQP.L or {}
-SQP.VERSION = "1.0.8"
+SQP.VERSION = "1.0.7"
 
 -- Constants
 local ADDON_NAME = "Simple Quest Plates"
@@ -30,6 +30,7 @@ local DEFAULTS = {
     debug = false,
     -- Font settings
     fontSize = 12,
+    fontFamily = "Fonts\\FRIZQT__.TTF",  -- Default WoW font
     fontOutline = "",
     outlineWidth = 1,
     -- Color settings
@@ -121,6 +122,57 @@ function SQP:ResetSettings()
     SQPSettings = _G.SQPSettings
     self:PrintMessage(self.L["CMD_RESET"])
     self:RefreshAllNameplates()
+    
+    -- Refresh the options panel if it exists
+    if self.optionsPanel and self.optionsPanel:IsShown() then
+        self:RefreshOptionsPanel()
+    end
+end
+
+-- Refresh all options panel UI elements
+function SQP:RefreshOptionsPanel()
+    -- Store references to all checkboxes and controls during creation
+    if not self.optionControls then 
+        return 
+    end
+    
+    -- Update all controls based on type
+    for settingName, control in pairs(self.optionControls) do
+        if type(control) == "table" and control.SetChecked then
+            -- Handle checkboxes
+            if settingName == "showMessages" then
+                control:SetChecked(SQPSettings[settingName] ~= false)
+            else
+                control:SetChecked(SQPSettings[settingName])
+            end
+        elseif type(control) == "table" and control.SetValue then
+            -- Handle sliders
+            control:SetValue(SQPSettings[settingName])
+        elseif type(control) == "table" and control.SetColorTexture then
+            -- Handle color swatches
+            local colorSetting = settingName:gsub("Swatch", "")
+            local color = SQPSettings[colorSetting]
+            if color then
+                control:SetColorTexture(unpack(color))
+            end
+        elseif type(control) == "function" then
+            -- Handle update functions
+            control()
+        elseif settingName == "fontFamily" and control.SetText then
+            -- Handle dropdown menus
+            UIDropDownMenu_SetText(control, "Default")
+        end
+    end
+    
+    -- Update anchor buttons if the function exists
+    if self.optionControls.anchorUpdateFunc then
+        self.optionControls.anchorUpdateFunc()
+    end
+    
+    -- Update preview if visible
+    if self.UpdatePreview then
+        self:UpdatePreview()
+    end
 end
 
 -- Print formatted message to chat
