@@ -136,6 +136,13 @@ else
             if IsQuestLogUnit then
                 return IsQuestLogUnit(unitID)
             end
+            -- Try UnitIsQuestBoss for MoP
+            if UnitIsQuestBoss then
+                local isQuestBoss = UnitIsQuestBoss(unitID)
+                if isQuestBoss then
+                    return true
+                end
+            end
             -- Fallback to tooltip scanning
             local tooltip = CreateFrame("GameTooltip", "SQPQuestTooltip", nil, "GameTooltipTemplate")
             tooltip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -184,15 +191,19 @@ else
 end
 
 -- Nameplate API compatibility
--- These will be overridden by nameplates_unified.lua with proper version detection
-SQP.Compat.GetNamePlateForUnit = function(unitID)
-    -- Placeholder - will be overridden by nameplates_unified.lua
-    return nil
-end
-
-SQP.Compat.GetNamePlates = function()
-    -- Placeholder - will be overridden by nameplates_unified.lua
-    return {}
+if C_NamePlate and C_NamePlate.GetNamePlateForUnit then
+    -- Modern API exists
+    SQP.Compat.GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
+    SQP.Compat.GetNamePlates = C_NamePlate.GetNamePlates
+else
+    -- Fallback for older versions (will be overridden by compat_mop.lua for MoP)
+    SQP.Compat.GetNamePlateForUnit = function(unitID)
+        return nil
+    end
+    
+    SQP.Compat.GetNamePlates = function()
+        return {}
+    end
 end
 
 -- Color Picker compatibility
