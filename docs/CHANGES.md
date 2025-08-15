@@ -4,26 +4,31 @@
   <img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
-## Version 1.0.7 - 2025-08-15
+## Version 1.1.0-alpha - 2025-08-15
 
 ### Added
-- Font family dropdown selector with 13 different WoW fonts including pixel styles
-- More font options: Arial Narrow, 2002 Bold, Nimrod MT, Friend or Foe, and regional fonts
+- Unified nameplate detection system that works across all WoW versions
+- Dynamic version detection for Retail, Classic Era, Wrath, Cata, and MoP
+- Compatibility layer with low resource usage
+- Modern event-based detection for Legion+ clients
+- Classic OnUpdate scanning with throttling for pre-Legion clients
+- Debug command `/sqpnameplates` to check nameplate system status
 
 ### Changed
-- Increased maximum Global Scale from 2.0 to 3.0 for larger icon sizes
-- Improved options panel UI layout with condensed spacing for better usability
-- Moved Test Detection button to right column in General tab
-- Enhanced font dropdown to show "(Pixel)" label for pixel-style fonts
+- Replaced multiple MoP-specific detection files with single unified system
+- Improved nameplate detection reliability across all WoW versions
+- Optimized CPU usage with throttled scanning for Classic versions
+- Better unit tracking with cached nameplate lookups
 
 ### Fixed
-- Test detection function missing localization strings
-- Reset buttons not properly updating UI elements after settings reset
-- Removed duplicate 2002 font entries (both pointed to same file)
-- Font dropdown not properly reflecting selected font after reset
+- Quest icons not automatically appearing on nameplates in MoP Classic
+- Nameplate detection failing in various Classic WoW versions
+- Lua syntax errors in debug files
+- Performance issues from unthrottled nameplate scanning
 
 ### Removed
-- Redundant "Reset Icon Settings" button (keeping only "Reset All Icon Settings")
+- Old debug files (mop_test.lua, debug_mop.lua, debug_icons.lua, force_icons.lua)
+- Redundant compatibility files (compat_mop.lua, compat_mop_v2.lua, compat_mop_final.lua)
 
 ---
 

@@ -8,6 +8,7 @@
     
     <!-- Core files -->
     <Script file="data\core.lua"/>
+    <Script file="data\compat.lua"/>
     <Script file="data\nameplates.lua"/>
     <Script file="data\quest.lua"/>
     <Script file="data\events.lua"/>

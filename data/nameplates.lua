@@ -122,9 +122,12 @@ end
 function SQP:OnPlateHide(nameplate, unitID)
     self.ActiveNameplates[nameplate] = nil
     
-    local guid = UnitGUID(unitID)
-    if guid then
-        self.PlateGUIDs[guid] = nil
+    -- Only try to get GUID if we have a valid unitID
+    if unitID then
+        local guid = UnitGUID(unitID)
+        if guid then
+            self.PlateGUIDs[guid] = nil
+        end
     end
     
     if self.QuestPlates[nameplate] then
