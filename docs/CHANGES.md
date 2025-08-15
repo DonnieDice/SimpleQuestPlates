@@ -1,8 +1,8 @@
-## Version 1.1.0-alpha
+## Version 1.1.0
 
-### 🎮 Alpha Release - MoP Classic Support
+### 🎮 Full Release - MoP Classic Support
 
-This alpha release adds full support for Mists of Pandaria Classic with performance optimizations.
+This release adds full support for Mists of Pandaria Classic with performance optimizations.
 
 ### ✨ New Features
 - **MoP Classic Compatibility**: Full nameplate quest tracking support for MoP Classic
@@ -28,5 +28,3 @@ Copy the SimpleQuestPlates folder to your Interface/AddOns directory for:
 - Classic Era
 - **MoP Classic** (NEW!)
 
-### ⚠️ Alpha Notice
-This is an alpha release. Please report any issues on our GitHub page.
