@@ -1,6 +1,6 @@
 --=====================================================================================
 -- SQP | Simple Quest Plates - core.lua
--- Version: 1.0.7
+-- Version: 1.1.0
 -- Author: DonnieDice
 -- Description: Main initialization and core functions
 --=====================================================================================
@@ -9,7 +9,16 @@
 local addonName, SQP = ...
 _G.SQP = SQP
 SQP.L = SQP.L or {}
-SQP.VERSION = "1.0.7"
+SQP.VERSION = "1.1.0"
+
+-- Version detection
+local tocversion = select(4, GetBuildInfo())
+SQP.isRetail = tocversion >= 110000
+SQP.isCata = tocversion >= 40400 and tocversion < 50000
+SQP.isWrath = tocversion >= 30400 and tocversion < 40000
+SQP.isVanilla = tocversion < 20000
+SQP.isClassic = tocversion < 110000  -- Any non-retail version
+SQP.isMoP = tocversion >= 50400 and tocversion < 60000
 
 -- Constants
 local ADDON_NAME = "Simple Quest Plates"

@@ -139,6 +139,10 @@ function SQP:ProcessSlashCommand(input)
     elseif input == "debug" then
         SQPSettings.debug = not SQPSettings.debug
         self:PrintMessage(format("Debug mode: %s", SQPSettings.debug and "ON" or "OFF"))
+    elseif input == "debug target" then
+        self:DebugTarget()
+    elseif input == "debug nameplates" then
+        self:DebugNameplates()
     else
         self:PrintMessage(self.L["ERROR_UNKNOWN_COMMAND"])
     end

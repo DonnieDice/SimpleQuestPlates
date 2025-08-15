@@ -6,9 +6,6 @@
 --=====================================================================================
 
 local addonName, SQP = ...
-local C_NamePlate = C_NamePlate
-local C_QuestLog = C_QuestLog
-local C_TaskQuest = C_TaskQuest
 
 -- Create main event frame
 SQP.eventFrame = CreateFrame("Frame", "SQPEventFrame", UIParent)
@@ -65,14 +62,14 @@ function SQP:NAME_PLATE_CREATED(plate)
 end
 
 function SQP:NAME_PLATE_UNIT_ADDED(unitID)
-    local plate = C_NamePlate.GetNamePlateForUnit(unitID)
+    local plate = SQP.Compat.GetNamePlateForUnit(unitID)
     if plate then
         self:OnPlateShow(plate, unitID)
     end
 end
 
 function SQP:NAME_PLATE_UNIT_REMOVED(unitID)
-    local plate = C_NamePlate.GetNamePlateForUnit(unitID)
+    local plate = SQP.Compat.GetNamePlateForUnit(unitID)
     if plate then
         self:OnPlateHide(plate, unitID)
     end
@@ -95,8 +92,8 @@ function SQP:QUEST_LOG_UPDATE()
 end
 
 function SQP:QUEST_ACCEPTED(questLogIndex, questID)
-    if questID and C_QuestLog.IsQuestTask(questID) then
-        local questName = C_TaskQuest.GetQuestInfoByQuestID(questID)
+    if questID and C_QuestLog and C_QuestLog.IsQuestTask and C_QuestLog.IsQuestTask(questID) then
+        local questName = C_TaskQuest and C_TaskQuest.GetQuestInfoByQuestID and C_TaskQuest.GetQuestInfoByQuestID(questID)
         if questName then
             self.ActiveWorldQuests[questName] = questID
         end
@@ -105,9 +102,11 @@ function SQP:QUEST_ACCEPTED(questLogIndex, questID)
 end
 
 function SQP:QUEST_REMOVED(questID)
-    local questName = C_TaskQuest.GetQuestInfoByQuestID(questID)
-    if questName and self.ActiveWorldQuests[questName] then
-        self.ActiveWorldQuests[questName] = nil
+    if C_TaskQuest and C_TaskQuest.GetQuestInfoByQuestID then
+        local questName = C_TaskQuest.GetQuestInfoByQuestID(questID)
+        if questName and self.ActiveWorldQuests[questName] then
+            self.ActiveWorldQuests[questName] = nil
+        end
     end
     self:UNIT_QUEST_LOG_CHANGED('player')
 end
@@ -146,9 +145,16 @@ end
 SQP.eventFrame:SetScript("OnEvent", OnEvent)
 SQP.eventFrame:RegisterEvent("ADDON_LOADED")
 SQP.eventFrame:RegisterEvent("PLAYER_LOGIN")
-SQP.eventFrame:RegisterEvent("NAME_PLATE_CREATED")
-SQP.eventFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-SQP.eventFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+
+-- Register nameplate events based on version
+if C_NamePlate and C_NamePlate.GetNamePlateForUnit then
+    -- Modern nameplate API is available
+    SQP.eventFrame:RegisterEvent("NAME_PLATE_CREATED")
+    SQP.eventFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+    SQP.eventFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+end
+-- MoP and older versions use the OnUpdate script in compat_mop.lua
+
 SQP.eventFrame:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 SQP.eventFrame:RegisterEvent("QUEST_ACCEPTED")
 SQP.eventFrame:RegisterEvent("QUEST_REMOVED")

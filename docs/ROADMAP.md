@@ -36,6 +36,25 @@ Simple Quest Plates v1.0.0 has been successfully completed and is ready for rele
 
 Future updates will be based on community feedback. Join our Discord to suggest features!
 
+
+fix chat messages formatting to be like ccu and other addons loading messages with version numbers in chat
+
+
+
+
+### Version 1.1.0 - UI Enhancements
+- [x] Move Icon Scale to Icon tab as "Global Scale" (max increased to 3.0)
+- [ ] Add more background textures for quest text
+  - [ ] Solid backgrounds
+  - [ ] Gradient options
+  - [ ] Semi-transparent overlays
+  - [ ] Custom texture support
+- [ ] Custom font dropdown selection
+  - [ ] System fonts
+  - [ ] Popular WoW fonts (Friz Quadrata, etc.)
+  - [ ] User-imported fonts support
+  - [ ] Font preview in options
+
 ---
 
 ### Phase 5: README Enhancements & Integrations 🎨

@@ -2,6 +2,52 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.1.0] - 2025-08-15 - Production Release
+
+### Added
+- Full support for MoP Classic (5.4.8)
+- Multi-version compatibility (Retail, MoP, Cata, Wrath, Vanilla)
+- Dynamic nameplate detection based on WoW version
+- Integrated compatibility layer for all versions
+
+### Fixed
+- MoP nameplate detection using NamePlate1-40 frames
+- Quest icon attachment to nameplates in Classic versions
+- Target detection using alpha values in MoP
+- Complete cleanup of codebase removing all debug and test files
+
+### Changed
+- Consolidated all compatibility code into single compat.lua
+- Removed all debug and test files for production
+- Streamlined codebase for better performance
+- Optimized file structure
+
+## [1.1.0-alpha] - 2025-08-15
+
+### Added
+- Unified nameplate detection system that works across all WoW versions
+- Dynamic version detection for Retail, Classic Era, Wrath, Cata, and MoP
+- Compatibility layer with low resource usage
+- Modern event-based detection for Legion+ clients
+- Classic OnUpdate scanning with throttling for pre-Legion clients
+- Debug command `/sqpnameplates` to check nameplate system status
+
+### Changed
+- Replaced multiple MoP-specific detection files with single unified system
+- Improved nameplate detection reliability across all WoW versions
+- Optimized CPU usage with throttled scanning for Classic versions
+- Better unit tracking with cached nameplate lookups
+
+### Fixed
+- Quest icons not automatically appearing on nameplates in MoP Classic
+- Nameplate detection failing in various Classic WoW versions
+- Lua syntax errors in debug files
+- Performance issues from unthrottled nameplate scanning
+
+### Removed
+- Old debug files (mop_test.lua, debug_mop.lua, debug_icons.lua, force_icons.lua)
+- Redundant compatibility files (compat_mop.lua, compat_mop_v2.lua, compat_mop_final.lua)
+
 ## [1.0.7] - 2025-08-15
 
 ### Added

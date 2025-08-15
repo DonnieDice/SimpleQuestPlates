@@ -8,10 +8,8 @@
 local addonName, SQP = ...
 
 -- Cache frequently used globals
-local C_QuestLog = C_QuestLog
 local C_TaskQuest = C_TaskQuest
 local C_Scenario = C_Scenario
-local GetQuestObjectiveInfo = GetQuestObjectiveInfo or C_QuestLog.GetQuestObjectiveInfo
 local strmatch = string.match
 local tonumber = tonumber
 local ceil = math.ceil
@@ -28,8 +26,8 @@ local LE_SCENARIO_TYPE_CHALLENGE_MODE = LE_SCENARIO_TYPE_CHALLENGE_MODE or 2
 local function GetQuestObjectiveInfo(questID, index, isComplete)
     if not questID then return end
     
-    if C_QuestLog.GetQuestObjectives then
-        local objectives = C_QuestLog.GetQuestObjectives(questID)
+    if SQP.Compat.GetQuestObjectives then
+        local objectives = SQP.Compat.GetQuestObjectives(questID)
         if objectives and objectives[index] then
             local obj = objectives[index]
             return obj.text, obj.type, obj.finished
@@ -43,11 +41,11 @@ end
 
 -- Get quest progress from unit tooltip
 function SQP:GetQuestProgress(unitID)
-    if not unitID or not C_QuestLog.UnitIsRelatedToActiveQuest(unitID) then 
+    if not unitID or not SQP.Compat.UnitIsRelatedToActiveQuest(unitID) then 
         return 
     end
     
-    local tooltipData = C_TooltipInfo.GetUnit(unitID)
+    local tooltipData = SQP.Compat.GetTooltipData(unitID)
     if not tooltipData then return end
     
     local progressGlob = nil
@@ -56,6 +54,42 @@ function SQP:GetQuestProgress(unitID)
     local questLogIndex = nil
     local questID = nil
     
+    -- For Classic/MoP, use simpler parsing
+    if SQP.isClassic then
+        -- Scan tooltip lines for quest text
+        for i = 1, #tooltipData.lines do
+            local line = tooltipData.lines[i]
+            local text = line.leftText or (line.type == 17 and line.leftText)
+            
+            if text then
+                -- Look for quest progress patterns
+                local x, y = strmatch(text, '(%d+)/(%d+)')
+                if x and y then
+                    -- Found kill/collect quest
+                    local numLeft = tonumber(y) - tonumber(x)
+                    if numLeft > 0 then
+                        questType = 1  -- Kill quest
+                        objectiveCount = numLeft
+                        progressGlob = text
+                        break
+                    end
+                else
+                    -- Check for percentage
+                    local progress = tonumber(strmatch(text, '([%d%.]+)%%'))
+                    if progress and progress < 100 then
+                        questType = 3  -- Percent quest
+                        objectiveCount = ceil(100 - progress)
+                        progressGlob = text
+                        break
+                    end
+                end
+            end
+        end
+        
+        return progressGlob, questType, objectiveCount, questID
+    end
+    
+    -- Original retail code
     for i = 3, #tooltipData.lines do
         local line = tooltipData.lines[i]
         
@@ -88,7 +122,7 @@ function SQP:GetQuestProgress(unitID)
                     progressGlob = progressGlob and progressGlob .. '\n' .. progressText or progressText
                 end
             elseif self.ActiveWorldQuests[text] then
-                local progress = C_TaskQuest.GetQuestProgressBarInfo(questID)
+                local progress = C_TaskQuest and C_TaskQuest.GetQuestProgressBarInfo and C_TaskQuest.GetQuestProgressBarInfo(questID)
                 if progress then
                     questType = 3
                     return text, questType, ceil(100 - progress), questID
@@ -127,11 +161,13 @@ function SQP:UpdateQuestIcon(plate, unitID)
         end
     end
     
-    -- Hide in mythic+
-    local scenarioName, currentStage, numStages, flags, _, _, _, xp, money, scenarioType = C_Scenario.GetInfo()
-    if scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE then
-        Q:Hide()
-        return
+    -- Hide in mythic+ (only for retail)
+    if C_Scenario and C_Scenario.GetInfo then
+        local scenarioName, currentStage, numStages, flags, _, _, _, xp, money, scenarioType = C_Scenario.GetInfo()
+        if scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE then
+            Q:Hide()
+            return
+        end
     end
     
     local progressGlob, questType, objectiveCount, questLogIndex, questID = self:GetQuestProgress(unitID)
@@ -248,10 +284,15 @@ end
 -- Cache quest indexes for faster lookups
 function SQP:CacheQuestIndexes()
     wipe(self.QuestLogIndex)
-    for i = 1, C_QuestLog.GetNumQuestLogEntries() do
-        local info = C_QuestLog.GetInfo(i)
-        if info and not info.isHeader then
-            self.QuestLogIndex[info.title] = i
+    
+    -- Use compatibility layer for quest log
+    if SQP.Compat.GetNumQuestLogEntries then
+        local numQuests = SQP.Compat.GetNumQuestLogEntries()
+        for i = 1, numQuests do
+            local info = SQP.Compat.GetInfo(i)
+            if info and not info.isHeader then
+                self.QuestLogIndex[info.title] = i
+            end
         end
     end
     
@@ -263,7 +304,12 @@ end
 
 -- Load world quests for current zone
 function SQP:LoadWorldQuests()
-    local uiMapID = C_Map.GetBestMapForUnit('player')
+    -- World quests don't exist in MoP Classic
+    if not C_TaskQuest or not C_TaskQuest.GetQuestsForPlayerByMapID then
+        return
+    end
+    
+    local uiMapID = C_Map and C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit('player')
     if uiMapID then
         for _, task in pairs(C_TaskQuest.GetQuestsForPlayerByMapID(uiMapID) or {}) do
             if task.inProgress then

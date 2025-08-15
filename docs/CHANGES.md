@@ -1,34 +1,32 @@
-# Simple Quest Plates - Change Log
+## Version 1.1.0-alpha
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png" alt="SQP Icon" width="128" height="128">
-</p>
+### 🎮 Alpha Release - MoP Classic Support
 
-## Version 1.0.7 - 2025-08-15
+This alpha release adds full support for Mists of Pandaria Classic with performance optimizations.
 
-### Added
-- Font family dropdown selector with 13 different WoW fonts including pixel styles
-- More font options: Arial Narrow, 2002 Bold, Nimrod MT, Friend or Foe, and regional fonts
+### ✨ New Features
+- **MoP Classic Compatibility**: Full nameplate quest tracking support for MoP Classic
+- **Performance Optimizations**: Reduced lag from icon position updates
+- **Smart Update System**: Adaptive update intervals (faster out of combat, slower in combat)
+- **Nameplate Caching**: Improved performance through intelligent caching
 
-### Changed
-- Increased maximum Global Scale from 2.0 to 3.0 for larger icon sizes
-- Improved options panel UI layout with condensed spacing for better usability
-- Moved Test Detection button to right column in General tab
-- Enhanced font dropdown to show "(Pixel)" label for pixel-style fonts
+### 🔧 Technical Improvements
+- Created `compat_mop.lua` for MoP-specific nameplate handling
+- Implemented OnUpdate polling system for older nameplate API
+- Added UnitIsQuestBoss support for MoP quest detection
+- Fixed C_TaskQuest API compatibility issues
 
-### Fixed
-- Test detection function missing localization strings
-- Reset buttons not properly updating UI elements after settings reset
-- Removed duplicate 2002 font entries (both pointed to same file)
-- Font dropdown not properly reflecting selected font after reset
+### ⚡ Performance Enhancements
+- Update interval: 0.2s (normal) / 0.5s (combat)
+- Nameplate lookup caching reduces CPU usage
+- Skip redundant scans when nameplate count unchanged
 
-### Removed
-- Redundant "Reset Icon Settings" button (keeping only "Reset All Icon Settings")
+### 📦 Installation
+Copy the SimpleQuestPlates folder to your Interface/AddOns directory for:
+- Retail (The War Within)
+- Classic Cataclysm
+- Classic Era
+- **MoP Classic** (NEW!)
 
----
-
-<p align="center">
-  <strong>Simple Quest Plates</strong><br>
-  Part of the RGX Mods Collection<br>
-  <em>Discord: discord.gg/N7kdKAHVVF</em>
-</p>
+### ⚠️ Alpha Notice
+This is an alpha release. Please report any issues on our GitHub page.

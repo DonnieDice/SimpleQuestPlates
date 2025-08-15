@@ -42,7 +42,7 @@ jobs:
       - name: Extract Version from TOC
         id: extract_version
         run: |
-          version=$(grep -oP '^## Version: \K(.*)' ./*.toc)
+          version=$(grep -oP '^## Version: \K(.*)' ./SimpleQuestPlates.toc | head -1)
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Package and Release
@@ -185,7 +185,7 @@ jobs:
                      },
                      {
                        \"name\": \"🎮 Compatibility\",
-                       \"value\": \"✅ The War Within\\n✅ Retail Only\\n✅ All Nameplate Addons\",
+                       \"value\": \"✅ The War Within\\n✅ Classic Era\\n✅ Cataclysm\\n✅ MoP Classic\",
                        \"inline\": true
                      },
                      {
