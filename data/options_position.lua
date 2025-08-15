@@ -26,7 +26,7 @@ function SQP:CreatePositionOptions(content)
     
     xSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
-        SQPSettings.offsetX = value
+        SQP:SetSetting('offsetX', value)
         xValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
@@ -46,7 +46,7 @@ function SQP:CreatePositionOptions(content)
     
     ySlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
-        SQPSettings.offsetY = value
+        SQP:SetSetting('offsetY', value)
         yValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
@@ -78,15 +78,15 @@ function SQP:CreatePositionOptions(content)
     
     -- Set button scripts
     leftButton:SetScript("OnClick", function()
-        SQPSettings.anchor = "RIGHT"
-        SQPSettings.relativeTo = "LEFT"
+        SQP:SetSetting('anchor', "RIGHT")
+        SQP:SetSetting('relativeTo', "LEFT")
         SQP:RefreshAllNameplates()
         UpdateButtonStates()
     end)
     
     rightButton:SetScript("OnClick", function()
-        SQPSettings.anchor = "LEFT"
-        SQPSettings.relativeTo = "RIGHT"
+        SQP:SetSetting('anchor', "LEFT")
+        SQP:SetSetting('relativeTo', "RIGHT")
         SQP:RefreshAllNameplates()
         UpdateButtonStates()
     end)

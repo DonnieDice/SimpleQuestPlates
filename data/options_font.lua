@@ -44,7 +44,7 @@ function SQP:CreateFontOptions(content)
     
     fontSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
-        SQPSettings.fontSize = value
+        SQP:SetSetting('fontSize', value)
         fontValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
@@ -77,22 +77,22 @@ function SQP:CreateFontOptions(content)
     -- Set button scripts
     
     thinButton:SetScript("OnClick", function()
-        SQPSettings.outlineWidth = 1
-        SQPSettings.fontOutline = ""
+        SQP:SetSetting('outlineWidth', 1)
+        SQP:SetSetting('fontOutline', "")
         UpdateOutlineButtons()
         SQP:RefreshAllNameplates()
     end)
     
     normalButton:SetScript("OnClick", function()
-        SQPSettings.outlineWidth = 2
-        SQPSettings.fontOutline = "OUTLINE"
+        SQP:SetSetting('outlineWidth', 2)
+        SQP:SetSetting('fontOutline', "OUTLINE")
         UpdateOutlineButtons()
         SQP:RefreshAllNameplates()
     end)
     
     thickButton:SetScript("OnClick", function()
-        SQPSettings.outlineWidth = 3
-        SQPSettings.fontOutline = "THICKOUTLINE"
+        SQP:SetSetting('outlineWidth', 3)
+        SQP:SetSetting('fontOutline', "THICKOUTLINE")
         UpdateOutlineButtons()
         SQP:RefreshAllNameplates()
     end)
@@ -107,12 +107,12 @@ function SQP:CreateFontOptions(content)
     resetAllBtn:SetAlpha(0.8)
     resetAllBtn:SetScript("OnClick", function()
         -- Reset all font settings
-        SQPSettings.fontSize = 12
-        SQPSettings.fontOutline = ""
-        SQPSettings.outlineWidth = 1
-        SQPSettings.killColor = {1, 0.82, 0}
-        SQPSettings.itemColor = {0.2, 1, 0.2}
-        SQPSettings.percentColor = {0.2, 1, 1}
+        SQP:SetSetting('fontSize', 12)
+        SQP:SetSetting('fontOutline', "")
+        SQP:SetSetting('outlineWidth', 1)
+        SQP:SetSetting('killColor', {1, 0.82, 0})
+        SQP:SetSetting('itemColor', {0.2, 1, 0.2})
+        SQP:SetSetting('percentColor', {0.2, 1, 1})
         
         -- Update UI elements
         fontSlider:SetValue(12)
@@ -168,6 +168,7 @@ function SQP:CreateFontOptions(content)
         resetBtn:SetPoint("RIGHT", container, "RIGHT", 0, 0)
         resetBtn:SetAlpha(0.8)
         resetBtn:SetScript("OnClick", function()
+            _G.SQPSettings[colorKey] = defaultColors[colorKey]
             SQPSettings[colorKey] = defaultColors[colorKey]
             swatch:SetColorTexture(unpack(defaultColors[colorKey]))
             SQP:RefreshAllNameplates()
@@ -183,12 +184,14 @@ function SQP:CreateFontOptions(content)
             info.hasOpacity = false
             info.swatchFunc = function()
                 local r, g, b = ColorPickerFrame:GetColorRGB()
+                _G.SQPSettings[colorKey] = {r, g, b}
                 SQPSettings[colorKey] = {r, g, b}
                 swatch:SetColorTexture(r, g, b)
                 SQP:RefreshAllNameplates()
             end
             info.cancelFunc = function()
                 local prevR, prevG, prevB = r, g, b
+                _G.SQPSettings[colorKey] = {prevR, prevG, prevB}
                 SQPSettings[colorKey] = {prevR, prevG, prevB}
                 swatch:SetColorTexture(prevR, prevG, prevB)
                 SQP:RefreshAllNameplates()

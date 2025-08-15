@@ -46,7 +46,7 @@ function SQP:CreateIconOptions(content)
     xResetBtn:SetPoint("LEFT", xValue, "RIGHT", 10, 0)
     xResetBtn:SetAlpha(0.8)
     xResetBtn:SetScript("OnClick", function()
-        SQPSettings.offsetX = 0
+        SQP:SetSetting('offsetX', 0)
         xSlider:SetValue(0)
         xValue:SetText("0")
         SQP:RefreshAllNameplates()
@@ -54,7 +54,7 @@ function SQP:CreateIconOptions(content)
     
     xSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
-        SQPSettings.offsetX = value
+        SQP:SetSetting('offsetX', value)
         xValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
@@ -77,7 +77,7 @@ function SQP:CreateIconOptions(content)
     yResetBtn:SetPoint("LEFT", yValue, "RIGHT", 10, 0)
     yResetBtn:SetAlpha(0.8)
     yResetBtn:SetScript("OnClick", function()
-        SQPSettings.offsetY = 0
+        SQP:SetSetting('offsetY', 0)
         ySlider:SetValue(0)
         yValue:SetText("0")
         SQP:RefreshAllNameplates()
@@ -85,7 +85,7 @@ function SQP:CreateIconOptions(content)
     
     ySlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
-        SQPSettings.offsetY = value
+        SQP:SetSetting('offsetY', value)
         yValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
@@ -117,15 +117,15 @@ function SQP:CreateIconOptions(content)
     
     -- Set button scripts
     leftButton:SetScript("OnClick", function()
-        SQPSettings.anchor = "RIGHT"
-        SQPSettings.relativeTo = "LEFT"
+        SQP:SetSetting('anchor', "RIGHT")
+        SQP:SetSetting('relativeTo', "LEFT")
         SQP:RefreshAllNameplates()
         UpdateButtonStates()
     end)
     
     rightButton:SetScript("OnClick", function()
-        SQPSettings.anchor = "LEFT"
-        SQPSettings.relativeTo = "RIGHT"
+        SQP:SetSetting('anchor', "LEFT")
+        SQP:SetSetting('relativeTo', "RIGHT")
         SQP:RefreshAllNameplates()
         UpdateButtonStates()
     end)
@@ -157,7 +157,7 @@ function SQP:CreateIconOptions(content)
     
     scaleSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value * 10 + 0.5) / 10
-        SQPSettings.scale = value
+        SQP:SetSetting('scale', value)
         scaleValue:SetText(format("%.1f", value))
         SQP:RefreshAllNameplates()
     end)
@@ -192,12 +192,12 @@ function SQP:CreateIconOptions(content)
         info.hasOpacity = false
         info.swatchFunc = function()
             local r, g, b = ColorPickerFrame:GetColorRGB()
-            SQPSettings.iconTintColor = {r, g, b}
+            SQP:SetSetting('iconTintColor', {r, g, b})
             iconSwatch:SetColorTexture(r, g, b)
             SQP:RefreshAllNameplates()
         end
         info.cancelFunc = function()
-            SQPSettings.iconTintColor = {r, g, b}
+            SQP:SetSetting('iconTintColor', {r, g, b})
             iconSwatch:SetColorTexture(r, g, b)
             SQP:RefreshAllNameplates()
         end
@@ -210,7 +210,7 @@ function SQP:CreateIconOptions(content)
     iconResetBtn:SetPoint("LEFT", iconColorText, "RIGHT", 10, 0)
     iconResetBtn:SetAlpha(0.8)
     iconResetBtn:SetScript("OnClick", function()
-        SQPSettings.iconTintColor = {1, 1, 1}
+        SQP:SetSetting('iconTintColor', {1, 1, 1})
         iconSwatch:SetColorTexture(1, 1, 1)
         SQP:RefreshAllNameplates()
     end)
@@ -222,12 +222,12 @@ function SQP:CreateIconOptions(content)
     resetAllBtn:SetPoint("TOPLEFT", 20, rightYOffset)
     resetAllBtn:SetAlpha(0.8)
     resetAllBtn:SetScript("OnClick", function()
-        SQPSettings.offsetX = 0
-        SQPSettings.offsetY = 0
-        SQPSettings.anchor = "RIGHT"
-        SQPSettings.relativeTo = "LEFT"
-        SQPSettings.iconTint = false
-        SQPSettings.iconTintColor = {1, 1, 1}
+        SQP:SetSetting('offsetX', 0)
+        SQP:SetSetting('offsetY', 0)
+        SQP:SetSetting('anchor', "RIGHT")
+        SQP:SetSetting('relativeTo', "LEFT")
+        SQP:SetSetting('iconTint', false)
+        SQP:SetSetting('iconTintColor', {1, 1, 1})
         
         xSlider:SetValue(0)
         xValue:SetText("0")

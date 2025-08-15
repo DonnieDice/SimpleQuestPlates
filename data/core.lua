@@ -1,6 +1,6 @@
 --=====================================================================================
 -- SQP | Simple Quest Plates - core.lua
--- Version: 1.0.2
+-- Version: 1.0.3
 -- Author: DonnieDice
 -- Description: Main initialization and core functions
 --=====================================================================================
@@ -9,7 +9,7 @@
 local addonName, SQP = ...
 _G.SQP = SQP
 SQP.L = SQP.L or {}
-SQP.VERSION = "1.0.2"
+SQP.VERSION = "1.0.3"
 
 -- Constants
 local ADDON_NAME = "Simple Quest Plates"
@@ -50,12 +50,41 @@ local DEFAULTS = {
 
 -- Load settings from saved variables
 function SQP:LoadSettings()
-    SQPSettings = SQPSettings or {}
+    -- Ensure we're using the global saved variable
+    if not _G.SQPSettings then
+        _G.SQPSettings = {}
+    end
+    
+    -- Deep copy defaults for nested tables
+    local function deepCopy(orig)
+        local copy
+        if type(orig) == 'table' then
+            copy = {}
+            for k, v in pairs(orig) do
+                copy[k] = deepCopy(v)
+            end
+        else
+            copy = orig
+        end
+        return copy
+    end
+    
+    -- Apply defaults for missing values
     for key, value in pairs(DEFAULTS) do
-        if SQPSettings[key] == nil then
-            SQPSettings[key] = value
+        if _G.SQPSettings[key] == nil then
+            _G.SQPSettings[key] = deepCopy(value)
+        elseif type(value) == "table" and type(_G.SQPSettings[key]) == "table" then
+            -- Ensure color tables have all required fields
+            for k, v in pairs(value) do
+                if _G.SQPSettings[key][k] == nil then
+                    _G.SQPSettings[key][k] = v
+                end
+            end
         end
     end
+    
+    -- Create a reference for easier access
+    SQPSettings = _G.SQPSettings
 end
 
 -- Save settings (automatic via SavedVariables)
@@ -63,12 +92,33 @@ function SQP:SaveSettings()
     -- Settings are automatically saved by WoW
 end
 
+-- Helper function to update a setting value
+function SQP:SetSetting(key, value)
+    _G.SQPSettings[key] = value
+    SQPSettings[key] = value
+end
+
 -- Reset settings to defaults
 function SQP:ResetSettings()
-    SQPSettings = {}
-    for key, value in pairs(DEFAULTS) do
-        SQPSettings[key] = value
+    -- Deep copy defaults for nested tables
+    local function deepCopy(orig)
+        local copy
+        if type(orig) == 'table' then
+            copy = {}
+            for k, v in pairs(orig) do
+                copy[k] = deepCopy(v)
+            end
+        else
+            copy = orig
+        end
+        return copy
     end
+    
+    _G.SQPSettings = {}
+    for key, value in pairs(DEFAULTS) do
+        _G.SQPSettings[key] = deepCopy(value)
+    end
+    SQPSettings = _G.SQPSettings
     self:PrintMessage(self.L["CMD_RESET"])
     self:RefreshAllNameplates()
 end
@@ -82,6 +132,7 @@ end
 
 -- Enable addon
 function SQP:Enable()
+    _G.SQPSettings.enabled = true
     SQPSettings.enabled = true
     self:SaveSettings()
     self:PrintMessage(self.L["CMD_ENABLED"])
@@ -90,6 +141,7 @@ end
 
 -- Disable addon
 function SQP:Disable()
+    _G.SQPSettings.enabled = false
     SQPSettings.enabled = false
     self:SaveSettings()
     self:PrintMessage(self.L["CMD_DISABLED"])

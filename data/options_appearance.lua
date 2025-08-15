@@ -44,7 +44,7 @@ function SQP:CreateAppearanceOptions(content)
     
     fontSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
-        SQPSettings.fontSize = value
+        SQP:SetSetting('fontSize', value)
         fontValue:SetText(tostring(value))
         SQP:RefreshAllNameplates()
     end)
@@ -65,7 +65,7 @@ function SQP:CreateAppearanceOptions(content)
         btn.outline = outline
         
         btn:SetScript("OnClick", function()
-            SQPSettings.fontOutline = outline
+            SQP:SetSetting('fontOutline', outline)
             SQP:RefreshAllNameplates()
             -- Update button states
             for _, b in ipairs(outlineButtons) do
@@ -109,12 +109,12 @@ function SQP:CreateAppearanceOptions(content)
         info.hasOpacity = false
         info.swatchFunc = function()
             local r, g, b = ColorPickerFrame:GetColorRGB()
-            SQPSettings.outlineColor = {r, g, b}
+            SQP:SetSetting('outlineColor', {r, g, b})
             outlineSwatch:SetColorTexture(r, g, b)
             SQP:RefreshAllNameplates()
         end
         info.cancelFunc = function()
-            SQPSettings.outlineColor = {r, g, b}
+            SQP:SetSetting('outlineColor', {r, g, b})
             outlineSwatch:SetColorTexture(r, g, b)
             SQP:RefreshAllNameplates()
         end
@@ -127,7 +127,7 @@ function SQP:CreateAppearanceOptions(content)
     outlineResetBtn:SetPoint("LEFT", outlineColorBtn, "RIGHT", 10, 0)
     outlineResetBtn:SetAlpha(0.8)
     outlineResetBtn:SetScript("OnClick", function()
-        SQPSettings.outlineColor = {0, 0, 0}
+        SQP:SetSetting('outlineColor', {0, 0, 0})
         outlineSwatch:SetColorTexture(0, 0, 0)
         SQP:RefreshAllNameplates()
     end)
@@ -139,9 +139,9 @@ function SQP:CreateAppearanceOptions(content)
     fontResetBtn:SetPoint("TOPLEFT", 20, yOffset)
     fontResetBtn:SetAlpha(0.8)
     fontResetBtn:SetScript("OnClick", function()
-        SQPSettings.fontSize = 12
-        SQPSettings.fontOutline = "OUTLINE"
-        SQPSettings.outlineColor = {0, 0, 0}
+        SQP:SetSetting('fontSize', 12)
+        SQP:SetSetting('fontOutline', "OUTLINE")
+        SQP:SetSetting('outlineColor', {0, 0, 0})
         fontSlider:SetValue(12)
         fontValue:SetText("12")
         outlineSwatch:SetColorTexture(0, 0, 0)
@@ -167,7 +167,7 @@ function SQP:CreateAppearanceOptions(content)
     customColorFrame:SetPoint("TOPLEFT", 20, rightYOffset)
     customColorFrame.checkbox:SetChecked(SQPSettings.customColors)
     customColorFrame.checkbox:SetScript("OnClick", function(self)
-        SQPSettings.customColors = self:GetChecked()
+        SQP:SetSetting('customColors', self:GetChecked())
         SQP:RefreshAllNameplates()
     end)
     rightYOffset = rightYOffset - 35
@@ -207,6 +207,7 @@ function SQP:CreateAppearanceOptions(content)
         resetBtn:SetPoint("RIGHT", container, "RIGHT", 0, 0)
         resetBtn:SetAlpha(0.8)
         resetBtn:SetScript("OnClick", function()
+            _G.SQPSettings[colorKey] = defaultColors[colorKey]
             SQPSettings[colorKey] = defaultColors[colorKey]
             swatch:SetColorTexture(unpack(defaultColors[colorKey]))
             SQP:RefreshAllNameplates()
@@ -222,12 +223,14 @@ function SQP:CreateAppearanceOptions(content)
             info.hasOpacity = false
             info.swatchFunc = function()
                 local r, g, b = ColorPickerFrame:GetColorRGB()
+                _G.SQPSettings[colorKey] = {r, g, b}
                 SQPSettings[colorKey] = {r, g, b}
                 swatch:SetColorTexture(r, g, b)
                 SQP:RefreshAllNameplates()
             end
             info.cancelFunc = function()
                 local prevR, prevG, prevB = r, g, b
+                _G.SQPSettings[colorKey] = {prevR, prevG, prevB}
                 SQPSettings[colorKey] = {prevR, prevG, prevB}
                 swatch:SetColorTexture(prevR, prevG, prevB)
                 SQP:RefreshAllNameplates()
@@ -256,7 +259,7 @@ function SQP:CreateAppearanceOptions(content)
     iconTintFrame:SetPoint("TOPLEFT", 20, yOffset)
     iconTintFrame.checkbox:SetChecked(SQPSettings.iconTint)
     iconTintFrame.checkbox:SetScript("OnClick", function(self)
-        SQPSettings.iconTint = self:GetChecked()
+        SQP:SetSetting('iconTint', self:GetChecked())
         SQP:RefreshAllNameplates()
     end)
     yOffset = yOffset - 35
