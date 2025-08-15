@@ -2,6 +2,17 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.4] - 2025-08-15
+
+### Fixed
+- Updated WoWInterface description to properly mirror README content
+- Removed all problematic Unicode and special characters from distributor descriptions
+- Fixed GitHub Actions workflow for proper release deployment
+
+### Changed
+- Cleaned up WoWInterface BBCode formatting for better display
+- Improved distributor descriptions with complete feature lists
+
 ## [1.0.3] - 2025-08-15
 
 ### Added
