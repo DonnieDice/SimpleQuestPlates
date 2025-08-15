@@ -54,7 +54,6 @@ jobs:
         id: extract_changelog
         run: |
           # Extract the current version's changelog from docs/CHANGES.md
-          # We need to find the section between the current version header and the next version header or EOF
           VERSION="${{ steps.extract_version.outputs.version }}"
           
           # Read the changelog and extract the current version's content
@@ -71,4 +70,89 @@ jobs:
             found && /^---/ { exit }
             found { content = content $0 "\n" }
             END { print content }
+          ' docs/CHANGES.md | head -c 1500)
+          
+          # Escape for JSON
+          CHANGELOG="${CHANGELOG//$'\n'/\\n}"
+          CHANGELOG="${CHANGELOG//\"/\\\"}"
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Simple Quest Plates v${{ steps.extract_version.outputs.version }}
+          body: |
+            # Simple Quest Plates v${{ steps.extract_version.outputs.version }}
+            
+            ${{ steps.extract_changelog.outputs.changelog }}
+            
+            ---
+            
+            ## Download Links
+            - [CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)
+            - [Wago.io](https://addons.wago.io/addons/simple-quest-plates)
+            - [WoWInterface](https://www.wowinterface.com/downloads/info26957)
+            
+            ## Support
+            - [Discord](https://discord.gg/N7kdKAHVVF)
+            - [GitHub Issues](https://github.com/donniedice/SimpleQuestPlates/issues)
+          draft: false
+          prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
+          files: |
+            .release/*.zip
+
+      - name: Send Discord Notification
+        if: always()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          # Prepare changelog for Discord (limit to 1024 chars for embed field)
+          CHANGELOG_PREVIEW=$(echo "${{ steps.extract_changelog.outputs.changelog }}" | head -c 500)
+          
+          # Create Discord webhook payload
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{
+                 \"username\": \"SQP Updates\",
+                 \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\",
+                 \"embeds\": [{
+                   \"title\": \"🎯 Simple Quest Plates v${{ steps.extract_version.outputs.version }} Released!\",
+                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released with fixes and improvements.\",
+                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${{ steps.extract_version.outputs.version }}\",
+                   \"color\": 5820057,
+                   \"thumbnail\": {
+                     \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
+                   },
+                   \"fields\": [
+                     {
+                       \"name\": \"📝 What's New\",
+                       \"value\": \"${CHANGELOG_PREVIEW}...\",
+                       \"inline\": false
+                     },
+                     {
+                       \"name\": \"📥 Downloads\",
+                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🎮 Compatibility\",
+                       \"value\": \"✅ The War Within\\n✅ Retail Only\\n✅ All Nameplate Addons\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"💬 Support\",
+                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)\",
+                       \"inline\": true
+                     }
+                   ],
+                   \"footer\": {
+                     \"text\": \"RGX Mods - RealmGX Community | Made with ❤️ by DonnieDice\",
+                     \"icon_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif\"
+                   },
+                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+                 }]
+               }" \
+               "$DISCORD_WEBHOOK"

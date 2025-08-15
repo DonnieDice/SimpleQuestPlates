@@ -4,16 +4,15 @@
   <img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
-## Version 1.0.4 - 2025-08-15
+## Version 1.0.5 - 2025-08-15
 
 ### Fixed
-- Updated WoWInterface description to properly mirror README content
-- Removed all problematic Unicode and special characters from distributor descriptions
-- Fixed GitHub Actions workflow for proper release deployment
+- Restored complete GitHub Actions workflow with Discord notifications
+- Fixed workflow file truncation issue  
+- Ensured Discord webhook runs even if some upload steps fail (if: always())
 
 ### Changed
-- Cleaned up WoWInterface BBCode formatting for better display
-- Improved distributor descriptions with complete feature lists
+- Improved workflow reliability with proper error handling
 
 ---
 

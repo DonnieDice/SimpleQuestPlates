@@ -2,6 +2,16 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.5] - 2025-08-15
+
+### Fixed
+- Restored complete GitHub Actions workflow with Discord notifications
+- Fixed workflow file truncation issue
+- Ensured Discord webhook runs even if some upload steps fail (if: always())
+
+### Changed
+- Improved workflow reliability with proper error handling
+
 ## [1.0.4] - 2025-08-15
 
 ### Fixed
