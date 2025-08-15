@@ -2,6 +2,17 @@
 
 All notable changes to Simple Quest Plates will be documented in this file.
 
+## [1.0.7] - 2025-08-15
+
+### Fixed
+- Fixed Discord notification newline formatting (removed literal \n characters)
+- Corrected changelog text escaping for proper Discord embed display
+- Improved awk script to properly format changelog content
+
+### Changed
+- Simplified newline handling in Discord webhook payload
+- Better changelog extraction with proper line breaks
+
 ## [1.0.6] - 2025-08-15
 
 ### Fixed

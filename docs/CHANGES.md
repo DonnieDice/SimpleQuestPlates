@@ -4,17 +4,16 @@
   <img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png" alt="SQP Icon" width="128" height="128">
 </p>
 
-## Version 1.0.6 - 2025-08-15
+## Version 1.0.7 - 2025-08-15
 
 ### Fixed
-- Fixed Discord webhook changelog extraction to properly parse version from CHANGES.md
-- Improved changelog content formatting for Discord embeds
-- Added fallback changelog content if extraction fails
-- Enhanced JSON escaping for special characters in Discord payload
+- Fixed Discord notification newline formatting (removed literal \n characters)
+- Corrected changelog text escaping for proper Discord embed display
+- Improved awk script to properly format changelog content
 
 ### Changed
-- Discord notifications now properly display release changelog content
-- Improved markdown to Discord formatting conversion
+- Simplified newline handling in Discord webhook payload
+- Better changelog extraction with proper line breaks
 
 ---
 

@@ -134,13 +134,14 @@ jobs:
               # Convert markdown formatting for Discord
               gsub(/^### /, "**", $0)
               gsub(/^- /, "• ", $0)
-              content = content $0 "\\n"
+              if (content != "") content = content "\n"
+              content = content $0
             }
             END { print content }
           ' docs/CHANGES.md)
           
-          # Limit to 800 chars, remove trailing newlines, and escape for JSON
-          CHANGELOG_PREVIEW=$(echo "$CHANGELOG_RAW" | head -c 800 | sed 's/\\n*$//' | sed 's/"/\\"/g' | sed 's/\\n/\\\\n/g')
+          # Limit to 800 chars and escape for JSON (proper escaping for Discord)
+          CHANGELOG_PREVIEW=$(echo "$CHANGELOG_RAW" | head -c 800 | sed 's/$//' | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}' | sed '$ s/\\n$//')
           
           # If changelog is empty, provide a default message
           if [ -z "$CHANGELOG_PREVIEW" ]; then
