@@ -4,222 +4,221 @@
 [SIZE=5][COLOR="#8B1538"]RGX Mods[/COLOR] - [URL="https://realmgx.com"][COLOR="#8B1538"]RealmGX[/COLOR][/URL] Community Project[/SIZE]
 
 [SIZE=4][COLOR="#e67e23"][B]See quest progress at a glance on enemy nameplates![/B][/COLOR][/SIZE]
-
 ================================================================================
 [/CENTER]
 
-[SIZE=6][COLOR="#58be81"]About Simple Quest Plates[/COLOR][/SIZE]
+[SIZE=6][COLOR="#58be81"]What is SQP?[/COLOR][/SIZE]
 
-[COLOR="#58be81"][B]SQP | Simple Quest Plates![/B][/COLOR] is a professional World of Warcraft addon that displays quest progress icons directly on enemy nameplates. Never wonder if that mob is for your quest again! This lightweight addon seamlessly integrates with the default UI to show quest objectives right where you need them.
+[COLOR="#58be81"][B]SQP | Simple Quest Plates![/B][/COLOR] enhances your World of Warcraft experience by displaying quest progress icons directly on enemy nameplates. Know at a glance which enemies you need to defeat for your quests, how many items they drop, and your overall progress - all without cluttering your interface.
 
-As part of the [COLOR="#8B1538"][B]RGX Mods[/B][/COLOR] collection, SQP is actively maintained and supported by our vibrant [URL="https://discord.gg/N7kdKAHVVF"][COLOR="#7289DA"][B]Discord community[/B][/COLOR][/URL] of over 5,000 WoW players. Join us for instant support, feature requests, and to connect with fellow adventurers!
+As part of the [COLOR="#8B1538"][B]RGX Mods[/B][/COLOR] collection, SQP is actively maintained and supported by our vibrant [URL="https://discord.gg/N7kdKAHVVF"][COLOR="#7289DA"][B]Discord community[/B][/COLOR][/URL]. Join us for instant support, feature requests, and to connect with thousands of WoW players!
 
-[SIZE=6][COLOR="#58be81"]Key Features[/COLOR][/SIZE]
+[SIZE=6][COLOR="#58be81"]Features[/COLOR][/SIZE]
 
-[SIZE=5][COLOR="#4ecdc4"]Quest Detection System[/COLOR][/SIZE]
 [LIST]
-[*][B]Automatic Quest Tracking[/B] - Instantly identifies quest mobs and objectives
-[*][B]Smart Priority System[/B] - Shows item requirements before kill counts when both are needed
-[*][B]World Quest Support[/B] - Full compatibility with world quests and bonus objectives
-[*][B]Multi-Quest Tracking[/B] - Handles multiple quests requiring the same target
-[*][B]Progress Numbers[/B] - Clear display of remaining kills or items needed
-[*][B]Real-Time Updates[/B] - Icons update immediately as you complete objectives
+[*][B]Quest Icons[/B] - Display quest progress directly on enemy nameplates
+[*][B]Fully Customizable[/B] - Adjust colors, fonts, sizes, and positions
+[*][B]Item Priority[/B] - Shows item counts before kill counts when both are needed
+[*][B]Multi-Language[/B] - Supports English, German, Spanish, French, and Russian
+[*][B]Lightweight[/B] - Minimal performance impact with efficient caching
+[*][B]Combat Options[/B] - Hide icons during combat or in instances
+[*][B]Live Preview[/B] - See changes in real-time in the options panel
+[*][B]Smart Detection[/B] - Automatically tracks all active quests in your area
+[*][B]Position Control[/B] - Place icons on left or right side with X/Y offsets
+[*][B]Font Customization[/B] - Size, outline style, and shadow effects
+[*][B]Color Options[/B] - Different colors for kill, item, and progress quests
+[*][B]Icon Tinting[/B] - Optional icon color tinting
+[*][B]Account-Wide[/B] - Settings saved across all characters
+[*][B]Error-Free[/B] - Comprehensive error handling
+[*][B]Slash Commands[/B] - Quick access to all features
 [/LIST]
 
-[SIZE=5][COLOR="#4ecdc4"]Complete Customization System[/COLOR][/SIZE]
-[LIST]
-[*][B]Icon Positioning[/B] - Place icons on left or right of nameplates with pixel-perfect offset control
-[*][B]Icon Scaling[/B] - Adjust size from 50% to 200% of default
-[*][B]Font Customization[/B] - Choose font size (8-24), outline style (None/Normal/Thick)
-[*][B]Color Options[/B] - Separate colors for kill quests, item quests, and progress quests
-[*][B]Icon Tinting[/B] - Optional color overlay to match your UI theme
-[*][B]Outline Colors[/B] - Customize text outline color for better visibility
+[SIZE=6][COLOR="#58be81"]Quick Start[/COLOR][/SIZE]
+
+[LIST=1]
+[*][B]Install[/B] SQP from your preferred platform
+[*][B]Launch[/B] World of Warcraft
+[*][B]Type[/B] [COLOR="#4ecdc4"]/sqp[/COLOR] to open the options panel
+[*][B]Customize[/B] your quest display preferences
+[*][B]Quest[/B] with enhanced awareness!
 [/LIST]
 
-[SIZE=5][COLOR="#4ecdc4"]Professional Options Panel[/COLOR][/SIZE]
-[LIST]
-[*][B]Tab-Based Interface[/B] - Organized settings in General, Font, Icon, and About tabs
-[*][B]Live Preview System[/B] - See changes instantly with the built-in preview
-[*][B]Reset Options[/B] - Individual and global reset buttons for easy management
-[*][B]Settings Profiles[/B] - Account-wide settings that sync across all characters
-[*][B]Smooth Scrolling[/B] - Navigate long option lists with mouse wheel support
-[*][B]Professional Design[/B] - Clean, modern interface matching Blizzard standards
-[/LIST]
-
-[SIZE=5][COLOR="#4ecdc4"]Performance and Compatibility[/COLOR][/SIZE]
-[LIST]
-[*][B]Ultra Lightweight[/B] - ~200KB memory footprint
-[*][B]Optimized CPU Usage[/B] - < 0.1% impact during normal gameplay
-[*][B]Error Resilient[/B] - Protected calls prevent addon conflicts
-[*][B]Combat Ready[/B] - Option to hide icons during combat for cleaner fights
-[*][B]Instance Support[/B] - Option to disable in dungeons and raids
-[*][B]Nameplate Addon Compatible[/B] - Works with ElvUI, Plater, KUI, and more
-[/LIST]
-
-[SIZE=6][COLOR="#58be81"]Slash Commands[/COLOR][/SIZE]
+[SIZE=6][COLOR="#58be81"]Command Reference[/COLOR][/SIZE]
 
 [CODE]
-/sqp              - Open the options panel
-/sqp help         - Display all available commands
-/sqp on           - Enable the addon
-/sqp off          - Disable the addon
-/sqp test         - Run quest detection test
-/sqp status       - Show current settings
-/sqp scale <num>  - Quick adjust icon scale (0.5-2.0)
-/sqp offset <x> <y> - Quick adjust icon position
-/sqp reset        - Reset all settings to defaults
+/sqp                    - Open the options panel
+/sqp help               - Display all available commands
+/sqp test               - Test quest detection on current nameplates
+/sqp on                 - Enable the addon
+/sqp off                - Disable the addon
+/sqp status             - Show current settings
+/sqp scale <0.5-2.0>    - Set icon scale
+/sqp offset <x> <y>     - Set icon position offset
+/sqp anchor <left/right> - Set which side of nameplate to anchor to
+/sqp reset              - Reset all settings to defaults
 [/CODE]
 
-[SIZE=6][COLOR="#58be81"]Installation Guide[/COLOR][/SIZE]
+[SIZE=6][COLOR="#58be81"]Customization Options[/COLOR][/SIZE]
 
-[SIZE=4][B]Step-by-Step Installation:[/B][/SIZE]
+[SIZE=5][COLOR="#4ecdc4"]Position and Scale[/COLOR][/SIZE]
+[LIST]
+[*][B]Icon Scale[/B] - 0.5x to 2.0x size adjustment
+[*][B]X/Y Offset[/B] - -50 to +50 pixel positioning
+[*][B]Anchor Side[/B] - Left or right side attachment
+[/LIST]
+
+[SIZE=5][COLOR="#4ecdc4"]Color Customization[/COLOR][/SIZE]
+[LIST]
+[*][B]Kill Quests[/B] - Default golden yellow
+[*][B]Item Quests[/B] - Default green
+[*][B]Progress Quests[/B] - Default cyan
+[*][B]Icon Tinting[/B] - Optional color overlay
+[/LIST]
+
+[SIZE=5][COLOR="#4ecdc4"]Font Settings[/COLOR][/SIZE]
+[LIST]
+[*][B]Font Size[/B] - 8 to 20 point sizes
+[*][B]Outline Style[/B] - Thin, Normal, or Thick
+[*][B]Shadow Color[/B] - Colored shadow effects for depth
+[/LIST]
+
+[SIZE=5][COLOR="#4ecdc4"]Behavior Options[/COLOR][/SIZE]
+[LIST]
+[*][B]Hide in Combat[/B] - Keep your combat view clean
+[*][B]Hide in Instances[/B] - Disable in dungeons/raids
+[*][B]Debug Mode[/B] - Troubleshooting assistance
+[*][B]Chat Messages[/B] - Toggle addon notifications
+[/LIST]
+
+[SIZE=6][COLOR="#58be81"]How It Works[/COLOR][/SIZE]
+
+[SIZE=5][COLOR="#4ecdc4"]Quest Detection[/COLOR][/SIZE]
+SQP uses Blizzard's quest API to detect which enemies are related to your active quests:
+[LIST]
+[*]Automatically scans all nameplates in view
+[*]Updates in real-time as you accept/complete quests
+[*]Prioritizes item drops over kill counts for dual-objective quests
+[/LIST]
+
+[SIZE=5][COLOR="#4ecdc4"]Performance[/COLOR][/SIZE]
+[LIST]
+[*]Efficient caching system for quest data
+[*]Minimal CPU usage with smart update cycles
+[*]No impact on frame rates
+[/LIST]
+
+[SIZE=6][COLOR="#58be81"]Installation[/COLOR][/SIZE]
+
 [LIST=1]
-[*]Download Simple Quest Plates from this page
-[*]Close World of Warcraft completely
-[*]Extract the downloaded ZIP file
-[*]Copy the [COLOR="#4ecdc4"]SimpleQuestPlates[/COLOR] folder to:
-   [COLOR="#4ecdc4"]World of Warcraft\_retail_\Interface\AddOns\[/COLOR]
-[*]Ensure the folder is named exactly: [COLOR="#4ecdc4"]SimpleQuestPlates[/COLOR]
-[*]Launch World of Warcraft
-[*]At character select, click "AddOns" button
-[*]Verify "Simple Quest Plates" appears and is checked
-[*]Enter the game
-[*]Type [COLOR="#4ecdc4"]/sqp[/COLOR] to open configuration panel
+[*][B]Download[/B] from your preferred platform:
+   - [URL="https://www.curseforge.com/wow/addons/simple-quest-plates"][COLOR="#F16436"]CurseForge[/COLOR][/URL]
+   - [URL="https://addons.wago.io/addons/simple-quest-plates"][COLOR="#9B59B6"]Wago.io[/COLOR][/URL]
+   - [URL="https://www.wowinterface.com/downloads/info26957"][COLOR="#4169E1"]WoWInterface[/COLOR][/URL]
+   - [URL="https://github.com/donniedice/SimpleQuestPlates"][COLOR="#333333"]GitHub[/COLOR][/URL]
+[*][B]Extract[/B] to your WoW AddOns directory:
+   [COLOR="#4ecdc4"]World of Warcraft/_retail_/Interface/AddOns[/COLOR]
+[*][B]Restart[/B] WoW and configure with [COLOR="#4ecdc4"]/sqp[/COLOR]
 [/LIST]
 
-[SIZE=4][B]Quick Start:[/B][/SIZE]
-The addon works immediately upon installation! Just enable enemy nameplates (V key) and quest icons will appear automatically.
+[SIZE=6][COLOR="#58be81"]Localization[/COLOR][/SIZE]
 
-[SIZE=6][COLOR="#58be81"]Localization Support[/COLOR][/SIZE]
-
-SQP includes complete translations for multiple languages:
-
-[B]Supported Languages:[/B]
+SQP supports multiple languages:
 [LIST]
-[*][B]English[/B] (enUS) - Default language
-[*][B]German[/B] (deDE) - Vollständig übersetzt
-[*][B]Spanish[/B] (esES/esMX) - Completamente traducido
-[*][B]French[/B] (frFR) - Entièrement traduit
-[*][B]Russian[/B] (ruRU) - Полностью переведено
+[*][B]English[/B] (enUS)
+[*][B]German[/B] (deDE)
+[*][B]Spanish[/B] (esES)
+[*][B]French[/B] (frFR)
+[*][B]Russian[/B] (ruRU)
 [/LIST]
 
-The addon automatically detects your game client language and loads the appropriate translations. All interface elements, options, tooltips, and messages are fully localized.
+Want to help translate? Join our Discord or visit [URL="https://realmgx.com"][COLOR="#8B1538"]RealmGX[/COLOR][/URL]!
 
-[SIZE=6][COLOR="#58be81"]Troubleshooting Guide[/COLOR][/SIZE]
+[SIZE=6][COLOR="#58be81"]Configuration Tips[/COLOR][/SIZE]
 
-[SIZE=4][COLOR="#e67e23"][B]Icons Not Appearing?[/B][/COLOR][/SIZE]
+[SIZE=4][B]Recommended Settings:[/B][/SIZE]
 [LIST]
-[*]Ensure enemy nameplates are enabled (V key by default)
-[*]Check that the addon is enabled with [COLOR="#4ecdc4"]/sqp on[/COLOR]
-[*]Verify you have active quests with trackable objectives
-[*]Try [COLOR="#4ecdc4"]/sqp test[/COLOR] to verify detection is working
-[*]Check if "Hide in Combat" or "Hide in Instance" options are enabled
-[*]Ensure quest tracking is enabled in your quest log
+[*][B]Combat Players:[/B] Enable "Hide in Combat" for cleaner fights
+[*][B]Dungeon/Raid:[/B] Enable "Hide in Instances" to reduce clutter
+[*][B]Questing Focus:[/B] Larger scale (1.5x) and bright colors
+[*][B]Minimalist:[/B] Smaller scale (0.8x) with subtle positioning
 [/LIST]
 
-[SIZE=4][COLOR="#e67e23"][B]Performance Issues?[/B][/COLOR][/SIZE]
+[SIZE=4][B]Troubleshooting:[/B][/SIZE]
 [LIST]
-[*]Disable "Hide in Combat" if experiencing combat lag
-[*]Reduce icon scale for better performance
-[*]Check for conflicts with other nameplate addons
-[*]Try disabling other addons temporarily to isolate issues
-[*]Use [COLOR="#4ecdc4"]/sqp debug[/COLOR] to check for errors
+[*]Use [COLOR="#4ecdc4"]/sqp test[/COLOR] to verify quest detection
+[*]Enable Debug Mode for detailed logging
+[*]Join our Discord for instant support
+[*]Visit [URL="https://realmgx.com"][COLOR="#8B1538"]RealmGX[/COLOR][/URL] for community help
 [/LIST]
 
-[SIZE=4][COLOR="#e67e23"][B]Settings Not Saving?[/B][/COLOR][/SIZE]
+[SIZE=6][COLOR="#58be81"]Bug Reports[/COLOR][/SIZE]
+
+Found a bug? Report it:
 [LIST]
-[*]Ensure the addon has write permissions
-[*]Check that SavedVariables folder exists
-[*]Try [COLOR="#4ecdc4"]/reload[/COLOR] after making changes
-[*]Use [COLOR="#4ecdc4"]/sqp reset[/COLOR] if settings appear corrupted
-[*]Verify the addon folder name is exactly "SimpleQuestPlates"
+[*][URL="https://github.com/donniedice/SimpleQuestPlates/issues"][COLOR="#333333"]GitHub Issues[/COLOR][/URL]
+[*]Join our Discord for instant support
+[*]Visit [URL="https://realmgx.com"][COLOR="#8B1538"]RealmGX[/COLOR][/URL] community forums
 [/LIST]
 
 [SIZE=6][COLOR="#8B1538"]Join the RGX Mods Community![/COLOR][/SIZE]
 
 [CENTER][SIZE=5][URL="https://discord.gg/N7kdKAHVVF"][COLOR="#7289DA"][B]CLICK HERE TO JOIN OUR DISCORD[/B][/COLOR][/URL][/SIZE]
 
-[SIZE=4][COLOR="#8B1538"][B]RealmGX - Gamers eXtreme![/B][/COLOR][/SIZE]
+[SIZE=4][COLOR="#8B1538"][B]RealmGX - Where WoW Enthusiasts Unite![/B][/COLOR][/SIZE]
 
-[B]What awaits you in our community:[/B][/CENTER]
+[B]What awaits you in our Discord:[/B][/CENTER]
 
 [LIST]
-[*][COLOR="#2dc26b"][B]Instant Addon Support[/B][/COLOR] - Get help from developers and experienced users
-[*][COLOR="#58be81"][B]Feature Requests[/B][/COLOR] - Direct communication with the development team
-[*][COLOR="#b96ad9"][B]Beta Testing[/B][/COLOR] - Early access to new features and addons
-[*][COLOR="#4ecdc4"][B]Active WoW Community[/B][/COLOR] - Guides, tips, strategies, and discussions
-[*][COLOR="#58be81"][B]Exclusive Previews[/B][/COLOR] - First look at upcoming RGX Mods projects
-[*][COLOR="#e67e23"][B]Events and Giveaways[/B][/COLOR] - Regular community activities and prizes
-[*][COLOR="#7289DA"][B]Dedicated Support Channels[/B][/COLOR] - Specific help for each addon
-[*][COLOR="#ff6b6b"][B]Find Groups[/B][/COLOR] - LFG channels for dungeons, raids, and M+
+[*][COLOR="#2dc26b"][B]Instant addon support[/B][/COLOR] from the RGX Mods team
+[*][COLOR="#58be81"][B]Feature requests[/B][/COLOR] and direct dev communication
+[*][COLOR="#b96ad9"][B]Beta testing[/B][/COLOR] opportunities for new releases
+[*][COLOR="#4ecdc4"][B]Community of WoW players[/B][/COLOR] sharing tips and experiences
+[*][COLOR="#58be81"][B]First to know[/B][/COLOR] about new RGX Mods releases
+[*][COLOR="#e67e23"][B]Events, giveaways,[/B][/COLOR] and community activities
 [/LIST]
 
-[CENTER][SIZE=3][COLOR="#666666"]Over 5,000 members and growing daily![/COLOR][/SIZE][/CENTER]
+[CENTER][IMG]https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif[/IMG]
 
-[SIZE=6][COLOR="#58be81"]Support Development[/COLOR][/SIZE]
+[COLOR="#2dc26b"][B]The Kiwi Says:[/B][/COLOR] [COLOR="#b96ad9"]"Bwwiiiee."[/COLOR]
 
-Love Simple Quest Plates? Your support helps us continue development and add new features!
+[COLOR="#ff6b6b"][B]WARNING:[/B][/COLOR] May reduce social activity.[/CENTER]
+
+[SIZE=6][COLOR="#58be81"]Support RGX Mods[/COLOR][/SIZE]
+
+Your support helps keep RGX Mods alive and constantly improving!
 
 [CENTER]
 [SIZE=4][URL="https://www.buymeacoffee.com/donniedice"][COLOR="#FFDD00"][B]Buy Me a Coffee[/B][/COLOR][/URL][/SIZE]
+[URL="https://bit.ly/3fyxxSU"][COLOR="#00C853"]CashApp[/COLOR][/URL] | [URL="https://github.com/sponsors/donniedice"][COLOR="#ff69b4"]GitHub Sponsors[/COLOR][/URL] | [URL="https://paypal.me/donniedice"][COLOR="#00457C"]PayPal[/COLOR][/URL]
 
-[URL="https://bit.ly/3fyxxSU"][COLOR="#00C853"]CashApp Support[/COLOR][/URL] | [URL="https://github.com/donniedice/SimpleQuestPlates"][COLOR="#333333"]Star on GitHub[/COLOR][/URL]
+[URL="https://github.com/donniedice/SimpleQuestPlates"][COLOR="#333333"][B]Star this repository[/B][/COLOR][/URL]
+
+Every donation helps fund new features and improvements!
 [/CENTER]
-
-Every contribution, no matter the size, directly supports:
-[LIST]
-[*]New feature development
-[*]Compatibility updates for WoW patches
-[*]Bug fixes and performance improvements
-[*]Community support and documentation
-[*]Development of new RGX Mods addons
-[/LIST]
 
 [SIZE=6][COLOR="#58be81"]Version History[/COLOR][/SIZE]
 
-[B][SIZE=4]Version 1.0.3 - Current Release[/SIZE][/B]
+[B]Version 1.0.3 - Current Release[/B]
 [LIST]
 [*]Fixed settings persistence across all characters
 [*]Added WoWInterface and Wago.io distribution support
 [*]Improved SavedVariables handling system
 [*]Enhanced options panel functionality
-[*]Updated all setting panels to use centralized system
 [/LIST]
 
-[B][SIZE=4]Version 1.0.2[/SIZE][/B]
+[B]Version 1.0.2[/B]
 [LIST]
 [*]Added comprehensive RGX Mods branding
-[*]Updated all documentation and descriptions
-[*]Performance optimizations for nameplate updates
-[*]Fixed minor UI bugs in options panel
+[*]Updated all documentation
+[*]Performance optimizations
 [/LIST]
 
-[B][SIZE=4]Version 1.0.0 - Major Release[/SIZE][/B]
+[B]Version 1.0.0[/B]
 [LIST]
 [*]Complete rewrite with professional architecture
 [*]New tab-based options panel with live preview
 [*]Added multi-language support (5 languages)
 [*]Implemented advanced customization options
-[*]Optimized memory usage and performance
-[*]Added error resilience and protection
-[/LIST]
-
-[SIZE=6][COLOR="#58be81"]Additional Resources[/COLOR][/SIZE]
-
-[SIZE=4][B]Download Locations:[/B][/SIZE]
-[LIST]
-[*][URL="https://github.com/donniedice/SimpleQuestPlates"][COLOR="#333333"]GitHub Repository[/COLOR][/URL] - Source code and issue tracking
-[*][URL="https://www.curseforge.com/wow/addons/simple-quest-plates"][COLOR="#F16436"]CurseForge Page[/COLOR][/URL] - Auto-updater compatible
-[*][URL="https://addons.wago.io/addons/simple-quest-plates"][COLOR="#9B59B6"]Wago.io Page[/COLOR][/URL] - Alternative download
-[*][URL="https://www.wowinterface.com/downloads/info26957"][COLOR="#4169E1"]WoWInterface[/COLOR][/URL] - This page!
-[/LIST]
-
-[SIZE=4][B]Community Links:[/B][/SIZE]
-[LIST]
-[*][URL="https://discord.gg/N7kdKAHVVF"][COLOR="#7289DA"]Discord Server[/COLOR][/URL] - Join 5,000+ members
-[*][URL="https://realmgx.com"][COLOR="#8B1538"]RealmGX Website[/COLOR][/URL] - Community hub
-[*][URL="https://github.com/donniedice/SimpleQuestPlates/issues"][COLOR="#333333"]Report Issues[/COLOR][/URL] - Bug reports and suggestions
-[*][URL="https://github.com/donniedice/SimpleQuestPlates/wiki"][COLOR="#333333"]Wiki Documentation[/COLOR][/URL] - Detailed guides
 [/LIST]
 
 [SIZE=6][COLOR="#58be81"]Technical Information[/COLOR][/SIZE]
@@ -228,19 +227,10 @@ Every contribution, no matter the size, directly supports:
 [LIST]
 [*][B]Game Version:[/B] World of Warcraft - The War Within (11.0.2+)
 [*][B]Client:[/B] Retail only (no Classic support)
-[*][B]API Version:[/B] 110002
 [*][B]Dependencies:[/B] None - completely standalone
 [/LIST]
 
-[B]Performance Metrics:[/B]
-[LIST]
-[*][B]Memory Usage:[/B] ~200-300KB typical
-[*][B]CPU Impact:[/B] < 0.1% in normal gameplay
-[*][B]Load Time:[/B] < 50ms
-[*][B]FPS Impact:[/B] None measurable
-[/LIST]
-
-[B]Compatibility List:[/B]
+[B]Compatibility:[/B]
 [LIST]
 [*]Default Blizzard nameplates - [COLOR="#2dc26b"][B]FULLY COMPATIBLE[/B][/COLOR]
 [*]ElvUI nameplates - [COLOR="#2dc26b"][B]FULLY COMPATIBLE[/B][/COLOR]
@@ -250,42 +240,23 @@ Every contribution, no matter the size, directly supports:
 [*]Other nameplate addons - [COLOR="#58be81"][B]GENERALLY COMPATIBLE[/B][/COLOR]
 [/LIST]
 
-[SIZE=6][COLOR="#58be81"]Credits and Acknowledgments[/COLOR][/SIZE]
+[SIZE=6][COLOR="#58be81"]Credits[/COLOR][/SIZE]
 
-[SIZE=4][B]Development Team:[/B][/SIZE]
+[B]Development Team:[/B]
 [LIST]
 [*][B]DonnieDice[/B] - Lead Developer and Creator
-[*][B]RGX Mods Team[/B] - Testing, Support, and Community Management
-[*][B]RealmGX Community[/B] - Ideas, Feedback, and Beta Testing
-[/LIST]
-
-[SIZE=4][B]Special Thanks:[/B][/SIZE]
-[LIST]
-[*]All our beta testers who ensure quality releases
-[*]Discord community members for continuous feedback
-[*]Localization contributors for translations
-[*]Coffee supporters who keep development active
-[*]Every user of Simple Quest Plates!
-[/LIST]
-
-[SIZE=4][B]Localization Contributors:[/B][/SIZE]
-[LIST]
-[*]German (deDE) - Community translations team
-[*]Spanish (esES) - Community translations team
-[*]French (frFR) - Community translations team
-[*]Russian (ruRU) - Community translations team
+[*][B]RGX Mods Team[/B] - Testing and Support
+[*][B]RealmGX Community[/B] - Feedback and Ideas
 [/LIST]
 
 ================================================================================
 
-[CENTER][SIZE=4][COLOR="#58be81"][B]Simple Quest Plates is part of the RGX Mods Collection[/B][/COLOR][/SIZE]
-[SIZE=3][COLOR="#8B1538"]Made with dedication by the RealmGX Community[/COLOR][/SIZE]
+[CENTER][SIZE=5][COLOR="#4ecdc4"]Thank you for choosing RGX Mods![/COLOR][/SIZE]
 
-[IMG]https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif[/IMG]
+[SIZE=4][COLOR="#e67e23"]Made with love by the[/COLOR] [URL="https://realmgx.com"][COLOR="#8B1538"]RealmGX[/COLOR][/URL] [COLOR="#ff6b6b"]Community[/COLOR][/SIZE]
+[SIZE=3][COLOR="#2dc26b"]Lead Developer:[/COLOR] [COLOR="#b96ad9"]DonnieDice[/COLOR][/SIZE]
 
-[SIZE=3][COLOR="#b96ad9"][B]"Bwwiiiee." - The Kiwi[/B][/COLOR][/SIZE]
+[SIZE=4][COLOR="#58be81"][B]Simple Quest Plates is part of the RGX Mods Collection[/B][/COLOR][/SIZE]
 
-[SIZE=2][COLOR="#666666"]================================================================================
-World of Warcraft and Blizzard Entertainment are trademarks or registered trademarks 
-of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
-================================================================================[/COLOR][/SIZE][/CENTER]
+[SIZE=2][COLOR="#666666"]World of Warcraft and Blizzard Entertainment are trademarks or registered trademarks 
+of Blizzard Entertainment, Inc. in the U.S. and/or other countries.[/COLOR][/SIZE][/CENTER]
