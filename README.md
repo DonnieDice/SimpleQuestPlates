@@ -9,7 +9,7 @@
 [![RGX Mods](https://img.shields.io/badge/RGX-Mods%20Collection-8B1538?style=for-the-badge&logo=github&logoColor=white)](https://discord.gg/N7kdKAHVVF)
 
 ### <span style="color:#ff6b6b">🌟 Join the </span> <span style="color:#8B1538">R</span><span style="color:#7598b6">ealm</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#4ecdc4">Community</span> <span style="color:#3598db">-</span> <span style="color:#8B1538">G</span><span style="color:#7598b6">amers e</span><span style="color:#8B1538">X</span><span style="color:#7598b6">treme!</span> <span style="color:#ff6b6b">🌟</span>
-[![Discord](https://img.shields.io/discord/YOUR_DISCORD_ID?color=7289da&label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/N7kdKAHVVF)
+[![Discord](https://img.shields.io/discord/806673994224107520?color=7289da&label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/N7kdKAHVVF)
 
 ### <span style="color:#58be81">🎯 </span> <span style="color:#e67e23">See quest progress at a glance on enemy nameplates!</span> <span style="color:#58be81">🎯</span>
 
