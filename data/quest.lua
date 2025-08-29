@@ -171,112 +171,93 @@ function SQP:UpdateQuestIcon(plate, unitID)
     end
     
     local progressGlob, questType, objectiveCount, questLogIndex, questID = self:GetQuestProgress(unitID)
+
+    -- Decide if there is a relevant objective for this unit
+    local showIcon = false
+    local displayText = "?"
+    local displayColor = {1, 1, 1} -- Default white
+
     if progressGlob and questType ~= 2 then
-        -- Update icon text (check if it exists first)
-        if not Q.iconText then
-            return
-        end
-        
-        if questType == 3 then
-            Q.iconText:SetText(objectiveCount > 0 and objectiveCount or '?')
-        else
-            Q.iconText:SetText(objectiveCount > 0 and objectiveCount or '?')
-        end
-        
-        -- Color based on quest type
-        if questType == 1 then
-            Q.icon:SetDesaturated(false)
-            Q.iconText:SetTextColor(unpack(SQPSettings.killColor or {1, 0.82, 0}))
-        elseif questType == 2 then
-            Q.icon:SetDesaturated(true)
-            Q.iconText:SetTextColor(1, 1, 1)
-        elseif questType == 3 then
-            Q.icon:SetDesaturated(false)
-            Q.iconText:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
-        end
-        
-        -- Check for loot items and adjust display priority
-        Q.itemTexture:Hide()
-        Q.lootIcon:Hide()
-        
         local hasItemObjective = false
         local itemsNeeded = 0
-        
-        if questLogIndex or questID then
-            if questID then
+
+        -- Check for item objectives that drop from this unit
+        local tooltipData = SQP.Compat.GetTooltipData(unitID)
+        if (questLogIndex or questID) and tooltipData then
+            local questIdForItems = questID or (C_QuestLog.GetInfo and C_QuestLog.GetInfo(questLogIndex) and C_QuestLog.GetInfo(questLogIndex).questID)
+            if questIdForItems then
                 for i = 1, 10 do
-                    local text, objectiveType, finished = GetQuestObjectiveInfo(questID, i, false)
+                    local text, objectiveType, finished = GetQuestObjectiveInfo(questIdForItems, i, false)
                     if not text then break end
-                    
                     if not finished and (objectiveType == 'item' or objectiveType == 'object') then
-                        Q.lootIcon:Show()
-                        hasItemObjective = true
-                        
-                        -- Try to extract item count from text
-                        local x, y = text:match('(%d+)/(%d+)')
-                        if x and y then
-                            local numLeft = tonumber(y) - tonumber(x)
-                            if numLeft > itemsNeeded then
-                                itemsNeeded = numLeft
+                        local itemName = text:match("([^:]+):") or text:match("(.+)/(.+)") or text
+                        local unitDropsItem = false
+                        for _, line in ipairs(tooltipData.lines) do
+                            if line.leftText and line.leftText:find(itemName, 1, true) then
+                                unitDropsItem = true
+                                break
                             end
                         end
-                    end
-                end
-            else
-                local info = C_QuestLog.GetInfo(questLogIndex)
-                if info then
-                    for i = 1, GetNumQuestLeaderBoards(questLogIndex) or 0 do
-                        local text, objectiveType, finished = GetQuestObjectiveInfo(info.questID, i, false)
-                        if not finished and (objectiveType == 'item' or objectiveType == 'object') then
-                            Q.lootIcon:Show()
+                        if unitDropsItem then
                             hasItemObjective = true
-                            
-                            -- Try to extract item count from text
                             local x, y = text:match('(%d+)/(%d+)')
                             if x and y then
                                 local numLeft = tonumber(y) - tonumber(x)
-                                if numLeft > itemsNeeded then
-                                    itemsNeeded = numLeft
-                                end
+                                if numLeft > itemsNeeded then itemsNeeded = numLeft end
                             end
                         end
                     end
                 end
             end
         end
-        
-        -- Update text display based on priority
+
+        -- Priority: Item > Kill > Percent
         if hasItemObjective and itemsNeeded > 0 then
-            -- Prioritize item count display
-            Q.iconText:SetText(itemsNeeded)
-            Q.iconText:SetTextColor(unpack(SQPSettings.itemColor or {0.2, 1, 0.2}))
+            showIcon = true
+            displayText = itemsNeeded
+            displayColor = SQPSettings.itemColor or {0.2, 1, 0.2}
             Q.hasItem = true
+            Q.lootIcon:Show()
         elseif objectiveCount > 0 then
-            -- Show kill count
-            Q.iconText:SetText(objectiveCount)
-            -- Keep existing color based on quest type
-        else
-            Q.iconText:SetText('?')
+            showIcon = true
+            displayText = objectiveCount
+            if questType == 1 then
+                displayColor = SQPSettings.killColor or {1, 0.82, 0}
+            elseif questType == 3 then
+                 displayColor = SQPSettings.percentColor or {0.2, 1, 1}
+            end
+            Q.hasItem = false
+            Q.lootIcon:Hide()
+        elseif questType == 3 then -- Percent quest without a specific kill count
+            showIcon = true
+            displayText = objectiveCount > 0 and objectiveCount or '?'
+            displayColor = SQPSettings.percentColor or {0.2, 1, 1}
+            Q.hasItem = false
+            Q.lootIcon:Hide()
         end
-        
+    end
+
+    if showIcon then
+        -- Update and show the icon
+        Q.iconText:SetText(displayText)
+        Q.iconText:SetTextColor(unpack(displayColor))
+        Q.icon:SetDesaturated(false)
+
         if not Q:IsVisible() then
             Q.ani:Stop()
             Q:Show()
             Q.ani:Play()
-            
-            -- Apply icon tinting if enabled
             if SQPSettings.iconTint and SQPSettings.iconTintColor and Q.icon then
                 Q.icon:SetVertexColor(unpack(SQPSettings.iconTintColor))
             else
                 Q.icon:SetVertexColor(1, 1, 1, 1)
             end
-            
-            -- Debug: Print when showing quest plate
             if SQPSettings.debug then
                 self:PrintMessage(format("Showing quest plate for %s", UnitName(unitID) or "Unknown"))
             end
         end
     else
+        -- Hide the icon
         Q:Hide()
     end
 end
