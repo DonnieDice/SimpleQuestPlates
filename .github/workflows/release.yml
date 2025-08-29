@@ -50,31 +50,20 @@ jobs:
         with:
           release-type: ${{ steps.set_release_type.outputs.release_type }}
 
-      - name: Extract Changelog
+      - name: Generate Changelog from Commits
         id: extract_changelog
         run: |
-          # Extract the current version's changelog from docs/CHANGES.md
-          VERSION="${{ steps.extract_version.outputs.version }}"
+          # Get the previous tag, falling back to the first commit if no previous tag is found
+          PREVIOUS_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1` 2>/dev/null || git rev-list --max-parents=0 HEAD)
           
-          # Read the changelog and extract the current version's content
-          CHANGELOG=$(awk -v version="$VERSION" '
-            BEGIN { found = 0; content = "" }
-            /^## Version/ {
-              if ($3 == version) {
-                found = 1
-                next
-              } else if (found) {
-                exit
-              }
-            }
-            found && /^---/ { exit }
-            found { content = content $0 "\n" }
-            END { print content }
-          ' docs/CHANGES.md | head -c 1500)
+          # Generate a changelog from commits between the previous tag and the current one (HEAD)
+          # Format: • Commit message (short hash)
+          CHANGELOG=$(git log --pretty=format:"• %s (%h)" $PREVIOUS_TAG..HEAD)
           
           # Escape for JSON
-          CHANGELOG="${CHANGELOG//$'\n'/\\n}"
-          CHANGELOG="${CHANGELOG//\"/\\\"}"
+          CHANGELOG="${CHANGELOG//$'
+'/\n}"
+          CHANGELOG="${CHANGELOG//\"/\\"}"
           
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
@@ -142,7 +131,7 @@ jobs:
                 content = content $0 "\\n"
               }
             }
-            END { 
+            END {
               # Remove trailing newlines
               gsub(/\\n+$/, "", content)
               print content 
@@ -155,7 +144,7 @@ jobs:
           fi
           
           # Escape quotes for JSON
-          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//\"/\\\"}"
+          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//\"/\\"}"
           
           # If changelog is empty, provide default
           if [ -z "$CHANGELOG_CONTENT" ]; then
@@ -198,7 +187,7 @@ jobs:
                      \"text\": \"RGX Mods - RealmGX Community | Made with ❤️ by DonnieDice\",
                      \"icon_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif\"
                    },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\" 
                  }]
-               }" \
+               }" 
                "$DISCORD_WEBHOOK"
