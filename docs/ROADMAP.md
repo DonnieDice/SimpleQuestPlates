@@ -1,4 +1,4 @@
-# Simple Quest Plates - Development Roadmap
+# RGX | Simple Quest Plates! - Development Roadmap
 
 <p align="center">
   <img src="images/logo.png" alt="SQP Icon" width="128" height="128">

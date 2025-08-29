@@ -1,7 +1,7 @@
 ## Interface: 30403
-## Title: |cff58be81S|r|cffffffffimple|r |cff58be81Q|r|cffffffffuest|r |cff58be81P|r|cfffffffflates|r
+## Title: |cff8B1538RGX|r |cff58be81Simple Quest Plates!|r
 ## Notes: Displays quest progress icons on enemy nameplates.|n|r   |cff58be81By DonnieDice|r
-## Version: 1.2.0
+## Version: 1.2.1
 ## Author: DonnieDice
 ## Email: donniedice@protonmail.com
 ## SavedVariables: SQPSettings

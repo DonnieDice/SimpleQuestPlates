@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - frFR.lua
+-- RGX | Simple Quest Plates! - frFR.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: French localization
@@ -25,6 +25,6 @@ L["OPTIONS_RESET"] = "Réinitialiser tous les paramètres"
 L["CMD_ENABLED"] = "Simple Quest Plates est maintenant |cff00ff00ACTIVÉ|r"
 L["CMD_DISABLED"] = "Simple Quest Plates est maintenant |cffff0000DÉSACTIVÉ|r"
 L["CMD_VERSION"] = "Version de Simple Quest Plates: |cff58be81%s|r"
-L["CMD_HELP_HEADER"] = "|cff58be81Commandes Simple Quest Plates:|r"
+L["CMD_HELP_HEADER"] = "|cff58be81Commandes RGX | Simple Quest Plates!:|r"
 
 L["MSG_LOADED"] = "|cff58be81Simple Quest Plates!|r chargé avec succès. Tapez |cfffff569/sqp help|r pour les commandes."

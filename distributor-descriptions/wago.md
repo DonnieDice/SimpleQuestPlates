@@ -1,4 +1,4 @@
-# ![SQP Logo](https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png) SQP | Simple Quest Plates!
+# ![RGX Logo](https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png) RGX | Simple Quest Plates!
 
 ## RGX Mods - [RealmGX](https://realmgx.com) Community Project
 

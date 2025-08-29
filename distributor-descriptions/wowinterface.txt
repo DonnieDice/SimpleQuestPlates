@@ -1,6 +1,6 @@
 [CENTER][IMG]https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png[/IMG]
 
-[SIZE=7][COLOR="#58be81"]SQP | Simple Quest Plates![/COLOR][/SIZE]
+[SIZE=7][COLOR="#8B1538"]RGX | Simple Quest Plates![/COLOR][/SIZE]
 [SIZE=5][COLOR="#8B1538"]RGX Mods[/COLOR] - [URL="https://realmgx.com"][COLOR="#8B1538"]RealmGX[/COLOR][/URL] Community Project[/SIZE]
 
 [SIZE=4][COLOR="#e67e23"][B]See quest progress at a glance on enemy nameplates![/B][/COLOR][/SIZE]

@@ -1,4 +1,4 @@
-# README Formatting Guide for Simple Quest Plates
+# README Formatting Guide for RGX | Simple Quest Plates!
 
 This document provides comprehensive details about the formatting, color scheme, and structure of the Simple Quest Plates README.md file for recreation purposes.
 

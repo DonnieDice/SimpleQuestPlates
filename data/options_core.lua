@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - options_core.lua
+-- RGX | Simple Quest Plates! - options_core.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: Core options panel framework

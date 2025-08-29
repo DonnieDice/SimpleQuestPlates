@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - events.lua
+-- RGX | Simple Quest Plates! - events.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: Event handling and management

@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - enUS.lua
+-- RGX | Simple Quest Plates! - enUS.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: English localization
@@ -73,11 +73,11 @@ local L = {
     ["TEST_NO_QUESTS"] = "No quest objectives found on visible nameplates",
     
     -- Messages
-    ["MSG_LOADED"] = "|cff58be81Simple Quest Plates!|r loaded successfully. Type |cfffff569/sqp help|r for commands.",
+    ["MSG_LOADED"] = "|cff58be81RGX | Simple Quest Plates!|r loaded successfully. Type |cfffff569/sqp help|r for commands.",
     ["MSG_DISCORD"] = "Join our Discord: |cff58be81discord.gg/N7kdKAHVVF|r",
 }
 
 -- Set English as default
 for k, v in pairs(L) do
     SQP.L[k] = v
-end
+endd

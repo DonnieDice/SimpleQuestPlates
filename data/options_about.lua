@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - options_about.lua
+-- RGX | Simple Quest Plates! - options_about.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: About options tab content
@@ -14,7 +14,7 @@ function SQP:CreateAboutSection(content)
     -- About title
     local aboutTitle = content:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     aboutTitle:SetPoint("TOPLEFT", 20, yOffset)
-    aboutTitle:SetText("|cff58be81About Simple Quest Plates|r")
+    aboutTitle:SetText("|cff8B1538RGX |cff58be81Simple Quest Plates!|r")
     yOffset = yOffset - 20
     
     -- Description

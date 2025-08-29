@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - options_widgets.lua
+-- RGX | Simple Quest Plates! - options_widgets.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: Custom widget creation functions

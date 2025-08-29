@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - core.lua
+-- RGX | Simple Quest Plates! - core.lua
 -- Version: 1.1.0
 -- Author: DonnieDice
 -- Description: Main initialization and core functions
@@ -9,7 +9,7 @@
 local addonName, SQP = ...
 _G.SQP = SQP
 SQP.L = SQP.L or {}
-SQP.VERSION = "1.2.0"
+SQP.VERSION = "1.2.1"
 
 -- Version detection
 local tocversion = select(4, GetBuildInfo())

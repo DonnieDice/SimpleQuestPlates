@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - options_icon.lua
+-- RGX | Simple Quest Plates! - options_icon.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: Icon options tab content

@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - options_rgx.lua
+-- RGX | Simple Quest Plates! - options_rgx.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: RGX Mods community tab content

@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - compat.lua
+-- RGX | Simple Quest Plates! - compat.lua
 -- Version: 1.1.0
 -- Author: DonnieDice
 -- Description: API compatibility layer for different WoW versions

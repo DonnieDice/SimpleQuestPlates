@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - compat_mop.lua
+-- RGX | Simple Quest Plates! - compat_mop.lua
 -- Version: 1.1.0
 -- Author: DonnieDice
 -- Description: MoP Classic nameplate compatibility layer

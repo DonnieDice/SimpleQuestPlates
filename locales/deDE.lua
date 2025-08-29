@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - deDE.lua
+-- RGX | Simple Quest Plates! - deDE.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: German localization
@@ -27,4 +27,4 @@ L["CMD_DISABLED"] = "Simple Quest Plates ist jetzt |cffff0000DEAKTIVIERT|r"
 L["CMD_VERSION"] = "Simple Quest Plates Version: |cff58be81%s|r"
 L["CMD_HELP_HEADER"] = "|cff58be81Simple Quest Plates Befehle:|r"
 
-L["MSG_LOADED"] = "|cff58be81Simple Quest Plates!|r erfolgreich geladen. Gib |cfffff569/sqp help|r für Befehle ein."
+L["MSG_LOADED"] = "|cff58be81RGX | Simple Quest Plates!|r erfolgreich geladen. Gib |cfffff569/sqp help|r für Befehle ein."

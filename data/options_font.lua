@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - options_font.lua
+-- RGX | Simple Quest Plates! - options_font.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: Font options tab content

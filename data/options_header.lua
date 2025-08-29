@@ -1,5 +1,5 @@
 --=====================================================================================
--- SQP | Simple Quest Plates - options_header.lua
+-- RGX | Simple Quest Plates! - options_header.lua
 -- Version: 1.0.0
 -- Author: DonnieDice
 -- Description: Options panel header
