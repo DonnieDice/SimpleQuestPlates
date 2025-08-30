@@ -61,9 +61,9 @@ jobs:
           CHANGELOG=$(git log --pretty=format:"• %s (%h)" $PREVIOUS_TAG..HEAD)
           
           # Escape for JSON
-          CHANGELOG="${CHANGELOG//$'
-'/\n}"
-          CHANGELOG="${CHANGELOG//\"/\\"}"
+          CHANGELOG="${CHANGELOG//$''$
+''/\n}"
+          CHANGELOG="${CHANGELOG//"/\"}"
           
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
@@ -97,58 +97,19 @@ jobs:
         if: always()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
           # Get version
           VERSION="${{ steps.extract_version.outputs.version }}"
           
-          # Extract changelog content from docs/CHANGES.md
-          CHANGELOG_CONTENT=$(awk -v version="$VERSION" '
-            BEGIN { found = 0; content = ""; first = 1 }
-            /^## Version/ {
-              split($0, parts, " ")
-              if (parts[3] == version) {
-                found = 1
-                next
-              } else if (found) {
-                exit
-              }
-            }
-            found && /^---/ { exit }
-            found && /^<p align="center">/ { exit }
-            found {
-              # Skip empty lines at the beginning
-              if (NF == 0 && first) next
-              first = 0
-              
-              # Format for Discord
-              if ($0 ~ /^###/) {
-                gsub(/^### /, "**", $0)
-                content = content $0 "**\\n"
-              } else if ($0 ~ /^- /) {
-                gsub(/^- /, "• ", $0)
-                content = content $0 "\\n"
-              } else if (NF > 0) {
-                content = content $0 "\\n"
-              }
-            }
-            END {
-              # Remove trailing newlines
-              gsub(/\\n+$/, "", content)
-              print content 
-            }
-          ' docs/CHANGES.md)
-          
           # Limit changelog and add ellipsis if truncated
-          if [ ${#CHANGELOG_CONTENT} -gt 800 ]; then
-            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:800}..."
+          if [ ${#CHANGELOG_CONTENT} -gt 1500 ]; then
+            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:1500}...
           fi
-          
-          # Escape quotes for JSON
-          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//\"/\\"}"
           
           # If changelog is empty, provide default
           if [ -z "$CHANGELOG_CONTENT" ]; then
-            CHANGELOG_CONTENT="Check the release notes for details about this update!"
+            CHANGELOG_CONTENT="Check the release notes on GitHub for details about this update!"
           fi
           
           # Send Discord webhook
@@ -156,12 +117,12 @@ jobs:
                -X POST \
                -d "{
                  \"content\": \"\",
-                 \"username\": \"SQP Updates\",
+                 \"username\": \"RGX Updates\",
                  \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\",
                  \"embeds\": [{
-                   \"title\": \"🎯 Simple Quest Plates v${VERSION} Released!\",
-                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released!\\n\\n**📝 What's New:**\\n${CHANGELOG_CONTENT}\",
-                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${VERSION}\",
+                   \"title\": \"🎯 RGX | Simple Quest Plates! v${VERSION} Released!\",
+                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of RGX | Simple Quest Plates! has been released!\\n\\n**📝 What's New:**\\n${CHANGELOG_CONTENT}\",
+                   \"url\": \"https://github.com/DonnieDice/SimpleQuestPlates/releases/tag/v${VERSION}\",
                    \"color\": 5820057,
                    \"thumbnail\": {
                      \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
@@ -169,7 +130,7 @@ jobs:
                    \"fields\": [
                      {
                        \"name\": \"📥 Downloads\",
-                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
+                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/DonnieDice/SimpleQuestPlates)\",
                        \"inline\": true
                      },
                      {
@@ -179,7 +140,7 @@ jobs:
                      },
                      {
                        \"name\": \"💬 Support\",
-                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)\",
+                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)\",
                        \"inline\": true
                      }
                    ],
@@ -187,7 +148,7 @@ jobs:
                      \"text\": \"RGX Mods - RealmGX Community | Made with ❤️ by DonnieDice\",
                      \"icon_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif\"
                    },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\" 
+                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
                  }]
-               }" 
+               }" \
                "$DISCORD_WEBHOOK"
