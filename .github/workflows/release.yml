@@ -1,4 +1,5 @@
 name: Package and Release
+# This comment forces GitHub to re-evaluate the workflow file.
 
 on:
   push:
@@ -104,8 +105,7 @@ jobs:
           fi
 
           # Escape for JSON payload
-          JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/	/\t/g' -e 's/
-/\n/g' -e 's//\r/g')
+          JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/\t/\t/g' -e 's/\n/\n/g' -e 's/\r/\r/g')
 
           # Send Discord webhook
           curl -H "Content-Type: application/json" \
