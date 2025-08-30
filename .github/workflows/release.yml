@@ -68,8 +68,6 @@ jobs:
         with:
           name: RGX | Simple Quest Plates! v${{ steps.extract_version.outputs.version }}
           body: |
-            # RGX | Simple Quest Plates! v${{ steps.extract_version.outputs.version }}
-            
             ${{ steps.extract_changelog.outputs.changelog }}
             
             ---
@@ -91,25 +89,23 @@ jobs:
         if: always()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
           VERSION="${{ steps.extract_version.outputs.version }}"
-          CHANGELOG_CONTENT="${{ steps.extract_changelog.outputs.changelog }}"
 
-          # Limit changelog and add ellipsis if truncated
+          # Truncate changelog if too long
           if [ ${#CHANGELOG_CONTENT} -gt 1500 ]; then
             CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:1500}..."
           fi
           
-          # If changelog is empty, provide default
+          # Provide default if empty
           if [ -z "$CHANGELOG_CONTENT" ]; then
             CHANGELOG_CONTENT="Check the release notes on GitHub for details about this update!"
           fi
 
-          # Escape for JSON
-          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//'/"}"
-          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//"/\"}"
-          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//$'
-'/\n}"
+          # Escape for JSON payload
+          JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/	/\t/g' -e 's/
+/\n/g' -e 's//\r/g')
 
           # Send Discord webhook
           curl -H "Content-Type: application/json" \
@@ -120,7 +116,7 @@ jobs:
                  \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\",
                  \"embeds\": [{
                    \"title\": \"🎯 RGX | Simple Quest Plates! v${VERSION} Released!\",
-                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of RGX | Simple Quest Plates! has been released!\\n\\n**📝 What's New:**\\n${CHANGELOG_CONTENT}\",
+                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of RGX | Simple Quest Plates! has been released!\\n\\n**📝 What's New:**\\n${JSON_ESCAPED_CHANGELOG}\",
                    \"url\": \"https://github.com/DonnieDice/SimpleQuestPlates/releases/tag/v${VERSION}\",
                    \"color\": 5820057,
                    \"thumbnail\": {
@@ -147,7 +143,7 @@ jobs:
                      \"text\": \"RGX Mods - RealmGX Community | Made with ❤️ by DonnieDice\",
                      \"icon_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif\"
                    },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\" 
+                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" 
                  }]
                }" \
                "$DISCORD_WEBHOOK"
