@@ -97,7 +97,7 @@ jobs:
 
           # Truncate changelog if too long
           if [ ${#CHANGELOG_CONTENT} -gt 1500 ]; then
-            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:1500}..."
+            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:1500}...
           fi
           
           # Provide default if empty
@@ -107,6 +107,9 @@ jobs:
 
           # Escape for JSON payload
           JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/\t/\t/g' -e 's/\n/\n/g' -e 's/\r/\r/g')
+
+          # DEBUG: Print webhook URL (TEMPORARY - DELETE AFTER DEBUGGING)
+          echo "DEBUG: DISCORD_WEBHOOK value (UNMASKED): ${{ secrets.DISCORD_WEBHOOK }}"
 
           # Send Discord webhook
           curl -H "Content-Type: application/json" \
