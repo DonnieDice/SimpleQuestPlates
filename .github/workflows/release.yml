@@ -26,12 +26,15 @@ jobs:
 
       - name: Configure Git user
         run: |
+          echo "DEBUG: Starting 'Configure Git user' step"
           git config --global user.name "donniedice"
           git config --global user.email "donniedice@protonmail.com"
+          echo "DEBUG: Finished 'Configure Git user' step"
 
       - name: Set Release Type
         id: set_release_type
         run: |
+          echo "DEBUG: Starting 'Set Release Type' step"
           TAG_NAME=${{ github.ref }}
           if [[ "$TAG_NAME" == *"beta"* ]]; then
             echo "release_type=beta" >> $GITHUB_OUTPUT
@@ -40,30 +43,38 @@ jobs:
           else
             echo "release_type=release" >> $GITHUB_OUTPUT
           fi
+          echo "DEBUG: Finished 'Set Release Type' step. Release type: ${{ steps.set_release_type.outputs.release_type }}"
 
       - name: Extract Version from TOC
         id: extract_version
         run: |
+          echo "DEBUG: Starting 'Extract Version from TOC' step"
           version=$(grep -oP '^## Version: \K(.*)' ./SimpleQuestPlates.toc | head -1)
           echo "version=$version" >> $GITHUB_OUTPUT
+          echo "DEBUG: Finished 'Extract Version from TOC' step. Version: $version"
 
       - name: Package and Release
         uses: BigWigsMods/packager@master
         with:
           release-type: ${{ steps.set_release_type.outputs.release_type }}
+        run: echo "DEBUG: Starting 'Package and Release' step"
 
       - name: Generate Changelog from Commits
         id: extract_changelog
         run: |
+          echo "DEBUG: Starting 'Generate Changelog from Commits' step"
           # Get the previous tag, falling back to the first commit if no previous tag is found
           PREVIOUS_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1` 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          echo "DEBUG: Previous tag: $PREVIOUS_TAG"
           
           # Generate a raw changelog from commits between the previous tag and the current one (HEAD)
           CHANGELOG=$(git log --pretty=format:"• %s (%h)" $PREVIOUS_TAG..HEAD)
+          echo "DEBUG: Raw changelog generated (first 50 chars): ${CHANGELOG:0:50}"
           
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "DEBUG: Finished 'Generate Changelog from Commits' step"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -86,12 +97,15 @@ jobs:
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
           files: |
             .release/*.zip
+        run: echo "DEBUG: Starting 'Create GitHub Release' step"
 
       - name: Send Discord Notification
         if: always()
         env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
+          echo "DEBUG: Starting 'Send Discord Notification' step"
           VERSION="${{ steps.extract_version.outputs.version }}"
 
           # Truncate changelog if too long
@@ -106,6 +120,9 @@ jobs:
 
           # Escape for JSON payload
           JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/\t/\t/g' -e 's/\n/\n/g' -e 's/\r/\r/g')
+
+          # DEBUG: Print webhook URL (TEMPORARY - DELETE AFTER DEBUGGING)
+          echo "DEBUG: DISCORD_WEBHOOK value (UNMASKED): ${{ secrets.DISCORD_WEBHOOK }}"
 
           # Send Discord webhook
           curl -H "Content-Type: application/json" \
