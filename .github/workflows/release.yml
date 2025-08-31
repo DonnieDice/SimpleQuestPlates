@@ -1,11 +1,9 @@
 name: Package and Release
-# This comment forces GitHub to re-evaluate the workflow file. (v1.3.6)
 
 on:
   push:
     tags:
       - 'v*'  # Triggers only on version tags like v1.0.0, v1.0.0-alpha, etc.
-  workflow_dispatch: # Allows manual triggering from GitHub UI
 
 env:
   CF_API_KEY: ${{ secrets.CF_API_KEY }}
@@ -19,12 +17,12 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout Project
+      - name: Clone Project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Configure Git User
+      - name: Configure Git user
         run: |
           git config --global user.name "donniedice"
           git config --global user.email "donniedice@protonmail.com"
@@ -52,11 +50,53 @@ jobs:
         with:
           release-type: ${{ steps.set_release_type.outputs.release_type }}
 
-      - name: Generate Changelog from Commits
+      - name: Extract Changelog
         id: extract_changelog
         run: |
-          PREVIOUS_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1` 2>/dev/null || git rev-list --max-parents=0 HEAD)
-          CHANGELOG=$(git log --pretty=format:"• %s (%h)" $PREVIOUS_TAG..HEAD)
+          # Extract the current version's changelog from docs/CHANGES.md
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          
+          # Read the changelog and extract the current version's content
+          CHANGELOG=$(awk -v version="$VERSION" ' 
+            BEGIN { found = 0; content = ""; first = 1 }
+            /^## Version/ {
+              if ($3 == version) {
+                found = 1
+                next
+              } else if (found) {
+                exit
+              }
+            }
+            found && /^---/ { exit }
+            found && /^<p align="center">/ { exit }
+            found {
+              # Skip empty lines at the beginning
+              if (NF == 0 && first) next
+              first = 0
+              
+              # Format for Discord
+              if ($0 ~ /^###/) {
+                gsub(/^### /, "**", $0)
+                content = content $0 "**\n"
+              } else if ($0 ~ /^- /) {
+                gsub(/^- /, "• ", $0)
+                content = content $0 "\n"
+              } else if (NF > 0) {
+                content = content $0 "\n"
+              }
+            }
+            END { 
+              # Remove trailing newlines
+              gsub(/\n+$/, "", content)
+              print content 
+            }
+          ' docs/CHANGES.md | head -c 1500)
+          
+          # Escape for JSON
+          CHANGELOG="${CHANGELOG//$'
+'/\n}"
+          CHANGELOG="${CHANGELOG//"/\"}"
+          
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -64,8 +104,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          name: RGX | Simple Quest Plates! v${{ steps.extract_version.outputs.version }}
+          name: Simple Quest Plates v${{ steps.extract_version.outputs.version }}
           body: |
+            # Simple Quest Plates v${{ steps.extract_version.outputs.version }}
+            
             ${{ steps.extract_changelog.outputs.changelog }}
             
             ---
@@ -77,65 +119,81 @@ jobs:
             
             ## Support
             - [Discord](https://discord.gg/N7kdKAHVVF)
-            - [GitHub Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)
+            - [GitHub Issues](https://github.com/donniedice/SimpleQuestPlates/issues)
           draft: false
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
           files: |
             .release/*.zip
 
-      - name: Deploy to CurseForge
-        if: github.event_name == 'release'
-        env:
-          CURSEFORGE_API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
-        run: |
-          echo "CurseForge deployment would happen here"
-          echo "This step requires the CurseForge API token to be configured"
-          # Add actual CurseForge deployment logic here when API token is available
-
-      - name: Deploy to Wago
-        if: github.event_name == 'release'
-        env:
-          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-        run: |
-          echo "Wago deployment would happen here"
-          echo "This step requires the Wago API token to be configured"
-          # Add actual Wago deployment logic here when API token is available
-
       - name: Send Discord Notification
         if: always()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
+          # Get version
           VERSION="${{ steps.extract_version.outputs.version }}"
-
-          # Truncate changelog if too long
-          if [ ${#CHANGELOG_CONTENT} -gt 1500 ]; then
-            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:1500}..."
+          
+          # Extract changelog content from docs/CHANGES.md
+          CHANGELOG_CONTENT=$(awk -v version="$VERSION" ' 
+            BEGIN { found = 0; content = ""; first = 1 }
+            /^## Version/ {
+              split($0, parts, " ")
+              if (parts[3] == version) {
+                found = 1
+                next
+              } else if (found) {
+                exit
+              }
+            }
+            found && /^---/ { exit }
+            found && /^<p align="center">/ { exit }
+            found {
+              # Skip empty lines at the beginning
+              if (NF == 0 && first) next
+              first = 0
+              
+              # Format for Discord
+              if ($0 ~ /^###/) {
+                gsub(/^### /, "**", $0)
+                content = content $0 "**\n"
+              } else if ($0 ~ /^- /) {
+                gsub(/^- /, "• ", $0)
+                content = content $0 "\n"
+              } else if (NF > 0) {
+                content = content $0 "\n"
+              }
+            }
+            END { 
+              # Remove trailing newlines
+              gsub(/\n+$/, "", content)
+              print content 
+            }
+          ' docs/CHANGES.md)
+          
+          # Limit changelog and add ellipsis if truncated
+          if [ ${#CHANGELOG_CONTENT} -gt 800 ]; then
+            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:800}...
           fi
           
-          # Provide default if empty
+          # Escape quotes for JSON
+          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//"/\"}"
+          
+          # If changelog is empty, provide default
           if [ -z "$CHANGELOG_CONTENT" ]; then
-            CHANGELOG_CONTENT="Check the release notes on GitHub for details about this update!"
+            CHANGELOG_CONTENT="Check the release notes for details about this update!"
           fi
-
-          # Escape for JSON payload
-          JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/\t/\t/g' -e 's/\n/\n/g' -e 's/\r/\r/g')
-
-          # DEBUG: Print webhook URL (TEMPORARY - DELETE AFTER DEBUGGING)
-          echo "DEBUG: DISCORD_WEBHOOK value (UNMASKED): ${{ secrets.DISCORD_WEBHOOK }}"
-
+          
           # Send Discord webhook
           curl -H "Content-Type: application/json" \
                -X POST \
                -d "{
                  \"content\": \"\",
-                 \"username\": \"RGX Updates\",
+                 \"username\": \"SQP Updates\",
                  \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\",
                  \"embeds\": [{
-                   \"title\": \"🎯 RGX | Simple Quest Plates! v${VERSION} Released!\",
-                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of RGX | Simple Quest Plates! has been released!\\n\\n**📝 What's New:**\\n${JSON_ESCAPED_CHANGELOG}\",
-                   \"url\": \"https://github.com/DonnieDice/SimpleQuestPlates/releases/tag/v${VERSION}\",
+                   \"title\": \"🎯 Simple Quest Plates v${VERSION} Released!\",
+                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released!\\n\\n**📝 What's New:**\\n${CHANGELOG_CONTENT}\",
+                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${VERSION}\",
                    \"color\": 5820057,
                    \"thumbnail\": {
                      \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
@@ -143,7 +201,7 @@ jobs:
                    \"fields\": [
                      {
                        \"name\": \"📥 Downloads\",
-                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/DonnieDice/SimpleQuestPlates)\",
+                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
                        \"inline\": true
                      },
                      {
@@ -153,7 +211,7 @@ jobs:
                      },
                      {
                        \"name\": \"💬 Support\",
-                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)\",
+                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)\",
                        \"inline\": true
                      }
                    ],
@@ -161,7 +219,7 @@ jobs:
                      \"text\": \"RGX Mods - RealmGX Community | Made with ❤️ by DonnieDice\",
                      \"icon_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif\"
                    },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" 
+                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\" 
                  }]
-               }" 
-               "${{ secrets.DISCORD_WEBHOOK }}"
+               }" \
+               "$DISCORD_WEBHOOK"
