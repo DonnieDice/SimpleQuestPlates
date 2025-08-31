@@ -84,8 +84,26 @@ jobs:
             - [GitHub Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)
           draft: false
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
-          files: |
+                    files: |
             .release/*.zip
+
+      - name: Deploy to CurseForge
+        if: github.event_name == 'release'
+        env:
+          CURSEFORGE_API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
+        run: |
+          echo "CurseForge deployment would happen here"
+          echo "This step requires the CurseForge API token to be configured"
+          # Add actual CurseForge deployment logic here when API token is available
+
+      - name: Deploy to Wago
+        if: github.event_name == 'release'
+        env:
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+        run: |
+          echo "Wago deployment would happen here"
+          echo "This step requires the Wago API token to be configured"
+          # Add actual Wago deployment logic here when API token is available
 
       - name: Send Discord Notification
         if: always()
