@@ -93,6 +93,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
+          echo "DEBUG: DISCORD_WEBHOOK value: $DISCORD_WEBHOOK"
           VERSION="${{ steps.extract_version.outputs.version }}"
 
           # Truncate changelog if too long
