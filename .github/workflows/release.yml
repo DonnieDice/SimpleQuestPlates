@@ -5,6 +5,7 @@ on:
   push:
     tags:
       - 'v*'  # Triggers only on version tags like v1.0.0, v1.0.0-alpha, etc.
+  workflow_dispatch: # Allows manual triggering from GitHub UI
 
 env:
   CF_API_KEY: ${{ secrets.CF_API_KEY }}
