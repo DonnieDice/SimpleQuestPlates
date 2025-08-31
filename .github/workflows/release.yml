@@ -1,5 +1,5 @@
 name: Package and Release
-# This comment forces GitHub to re-evaluate the workflow file.
+# This comment forces GitHub to re-evaluate the workflow file. (v1.3.2)
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
           TAG_NAME=${{ github.ref }}
           if [[ "$TAG_NAME" == *"beta"* ]]; then
             echo "release_type=beta" >> $GITHUB_OUTPUT
-          elif [[ "$TAG_NAME" == *"alpha"* ]]; then
+          elif [[ "$TAG_NAME" == *"alpha" ]]; then
             echo "release_type=alpha" >> $GITHUB_OUTPUT
           else
             echo "release_type=release" >> $GITHUB_OUTPUT
@@ -84,38 +84,19 @@ jobs:
             - [GitHub Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)
           draft: false
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
-                    files: |
+          files: |
             .release/*.zip
-
-      - name: Deploy to CurseForge
-        if: github.event_name == 'release'
-        env:
-          CURSEFORGE_API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
-        run: |
-          echo "CurseForge deployment would happen here"
-          echo "This step requires the CurseForge API token to be configured"
-          # Add actual CurseForge deployment logic here when API token is available
-
-      - name: Deploy to Wago
-        if: github.event_name == 'release'
-        env:
-          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-        run: |
-          echo "Wago deployment would happen here"
-          echo "This step requires the Wago API token to be configured"
-          # Add actual Wago deployment logic here when API token is available
 
       - name: Send Discord Notification
         if: always()
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
           VERSION="${{ steps.extract_version.outputs.version }}"
 
           # Truncate changelog if too long
           if [ ${#CHANGELOG_CONTENT} -gt 1500 ]; then
-            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:1500}...
+            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:1500}..."
           fi
           
           # Provide default if empty
@@ -125,9 +106,6 @@ jobs:
 
           # Escape for JSON payload
           JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/\t/\t/g' -e 's/\n/\n/g' -e 's/\r/\r/g')
-
-          # DEBUG: Print webhook URL (TEMPORARY - DELETE AFTER DEBUGGING)
-          echo "DEBUG: DISCORD_WEBHOOK value (UNMASKED): ${{ secrets.DISCORD_WEBHOOK }}"
 
           # Send Discord webhook
           curl -H "Content-Type: application/json" \
