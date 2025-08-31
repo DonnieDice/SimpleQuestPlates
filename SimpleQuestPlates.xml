@@ -5,6 +5,7 @@
     <Script file="locales\deDE.lua"/>
     <Script file="locales\frFR.lua"/>
     <Script file="locales\esES.lua"/>
+    <Script file="locales\zhCN.lua"/>
     
     <!-- Core files -->
     <Script file="data\core.lua"/>

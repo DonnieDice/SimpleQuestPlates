@@ -9,7 +9,7 @@
 local addonName, SQP = ...
 _G.SQP = SQP
 SQP.L = SQP.L or {}
-SQP.VERSION = "1.2.7"
+SQP.VERSION = "1.2.8"
 
 -- Version detection
 local tocversion = select(4, GetBuildInfo())
