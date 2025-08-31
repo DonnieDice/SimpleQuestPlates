@@ -147,4 +147,4 @@ jobs:
                    \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" 
                  }]
                }" \
-               "$DISCORD_WEBHOOK"
+               "${{ secrets.DISCORD_WEBHOOK }}"
