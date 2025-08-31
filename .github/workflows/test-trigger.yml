@@ -10,4 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Echo Tag
-        run: echo "Workflow triggered by tag: ${{ github.ref }}"
+        run: |
+          echo "Workflow triggered by tag: ${{ github.ref }}"
