@@ -1,4 +1,5 @@
 name: Package and Release
+# This comment forces GitHub to re-evaluate the workflow file. (v1.3.6)
 
 on:
   push:
@@ -121,6 +122,9 @@ jobs:
           # Escape for JSON payload
           JSON_ESCAPED_CHANGELOG=$(echo "$CHANGELOG_CONTENT" | sed -e 's/"/\"/g' -e 's/\t/\t/g' -e 's/\n/\n/g' -e 's/\r/\r/g')
 
+          # DEBUG: Print webhook URL (TEMPORARY - DELETE AFTER DEBUGGING)
+          echo "DEBUG: DISCORD_WEBHOOK value (UNMASKED): ${{ secrets.DISCORD_WEBHOOK }}"
+
           # Send Discord webhook
           curl -H "Content-Type: application/json" \
                -X POST \
@@ -159,5 +163,5 @@ jobs:
                    },
                    \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" 
                  }]
-               }" \
+               }" 
                "${{ secrets.DISCORD_WEBHOOK }}"
