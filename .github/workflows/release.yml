@@ -57,7 +57,7 @@ jobs:
           VERSION="${{ steps.extract_version.outputs.version }}"
           
           # Read the changelog and extract the current version's content
-          CHANGELOG=$(awk -v version="$VERSION" ' 
+          CHANGELOG=$(awk -v version="$VERSION" '
             BEGIN { found = 0; content = "" }
             /^## Version/ {
               if ($3 == version) {
@@ -108,12 +108,13 @@ jobs:
         if: always()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
           # Get version
           VERSION="${{ steps.extract_version.outputs.version }}"
           
           # Extract changelog content from docs/CHANGES.md
-          CHANGELOG_CONTENT=$(awk -v version="$VERSION" ' 
+          CHANGELOG_CONTENT=$(awk -v version="$VERSION" '
             BEGIN { found = 0; content = ""; first = 1 }
             /^## Version/ {
               split($0, parts, " ")
