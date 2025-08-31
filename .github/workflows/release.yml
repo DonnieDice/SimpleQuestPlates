@@ -58,7 +58,7 @@ jobs:
           
           # Read the changelog and extract the current version's content
           CHANGELOG=$(awk -v version="$VERSION" ' 
-            BEGIN { found = 0; content = ""; first = 1 }
+            BEGIN { found = 0; content = "" }
             /^## Version/ {
               if ($3 == version) {
                 found = 1
@@ -68,33 +68,12 @@ jobs:
               }
             }
             found && /^---/ { exit }
-            found && /^<p align="center">/ { exit }
-            found {
-              # Skip empty lines at the beginning
-              if (NF == 0 && first) next
-              first = 0
-              
-              # Format for Discord
-              if ($0 ~ /^###/) {
-                gsub(/^### /, "**", $0)
-                content = content $0 "**\n"
-              } else if ($0 ~ /^- /) {
-                gsub(/^- /, "• ", $0)
-                content = content $0 "\n"
-              } else if (NF > 0) {
-                content = content $0 "\n"
-              }
-            }
-            END { 
-              # Remove trailing newlines
-              gsub(/\n+$/, "", content)
-              print content 
-            }
+            found { content = content $0 "\n" }
+            END { print content }
           ' docs/CHANGES.md | head -c 1500)
           
           # Escape for JSON
-          CHANGELOG="${CHANGELOG//$'
-'/\n}"
+          CHANGELOG="${CHANGELOG//$''\n''/\n}"
           CHANGELOG="${CHANGELOG//"/\"}"
           
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
@@ -119,7 +98,7 @@ jobs:
             
             ## Support
             - [Discord](https://discord.gg/N7kdKAHVVF)
-            - [GitHub Issues](https://github.com/donniedice/SimpleQuestPlates/issues)
+            - [GitHub Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)
           draft: false
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
           files: |
@@ -172,7 +151,7 @@ jobs:
           
           # Limit changelog and add ellipsis if truncated
           if [ ${#CHANGELOG_CONTENT} -gt 800 ]; then
-            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:800}...
+            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:800}..."
           fi
           
           # Escape quotes for JSON
@@ -193,7 +172,7 @@ jobs:
                  \"embeds\": [{
                    \"title\": \"🎯 Simple Quest Plates v${VERSION} Released!\",
                    \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released!\\n\\n**📝 What's New:**\\n${CHANGELOG_CONTENT}\",
-                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${VERSION}\",
+                   \"url\": \"https://github.com/DonnieDice/SimpleQuestPlates/releases/tag/v${VERSION}\",
                    \"color\": 5820057,
                    \"thumbnail\": {
                      \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
@@ -201,7 +180,7 @@ jobs:
                    \"fields\": [
                      {
                        \"name\": \"📥 Downloads\",
-                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
+                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/DonnieDice/SimpleQuestPlates)\",
                        \"inline\": true
                      },
                      {
@@ -211,7 +190,7 @@ jobs:
                      },
                      {
                        \"name\": \"💬 Support\",
-                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)\",
+                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)\",
                        \"inline\": true
                      }
                    ],
@@ -221,5 +200,5 @@ jobs:
                    },
                    \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\" 
                  }]
-               }" \
+               }" 
                "$DISCORD_WEBHOOK"
