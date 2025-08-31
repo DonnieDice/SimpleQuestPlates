@@ -57,7 +57,7 @@ jobs:
           VERSION="${{ steps.extract_version.outputs.version }}"
           
           # Read the changelog and extract the current version's content
-          CHANGELOG=$(awk -v version="$VERSION" ' 
+          CHANGELOG=$(awk -v version="$VERSION" '
             BEGIN { found = 0; content = "" }
             /^## Version/ {
               if ($3 == version) {
@@ -98,7 +98,7 @@ jobs:
             
             ## Support
             - [Discord](https://discord.gg/N7kdKAHVVF)
-            - [GitHub Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)
+            - [GitHub Issues](https://github.com/donniedice/SimpleQuestPlates/issues)
           draft: false
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
           files: |
@@ -113,7 +113,7 @@ jobs:
           VERSION="${{ steps.extract_version.outputs.version }}"
           
           # Extract changelog content from docs/CHANGES.md
-          CHANGELOG_CONTENT=$(awk -v version="$VERSION" ' 
+          CHANGELOG_CONTENT=$(awk -v version="$VERSION" '
             BEGIN { found = 0; content = ""; first = 1 }
             /^## Version/ {
               split($0, parts, " ")
@@ -172,7 +172,7 @@ jobs:
                  \"embeds\": [{
                    \"title\": \"🎯 Simple Quest Plates v${VERSION} Released!\",
                    \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released!\\n\\n**📝 What's New:**\\n${CHANGELOG_CONTENT}\",
-                   \"url\": \"https://github.com/DonnieDice/SimpleQuestPlates/releases/tag/v${VERSION}\",
+                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${VERSION}\",
                    \"color\": 5820057,
                    \"thumbnail\": {
                      \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
@@ -180,7 +180,7 @@ jobs:
                    \"fields\": [
                      {
                        \"name\": \"📥 Downloads\",
-                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/DonnieDice/SimpleQuestPlates)\",
+                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
                        \"inline\": true
                      },
                      {
@@ -198,7 +198,7 @@ jobs:
                      \"text\": \"RGX Mods - RealmGX Community | Made with ❤️ by DonnieDice\",
                      \"icon_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif\"
                    },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\" 
+                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" 
                  }]
                }" 
                "$DISCORD_WEBHOOK"
