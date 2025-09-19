@@ -1,6 +1,6 @@
 --=====================================================================================
 -- RGX | Simple Quest Plates! - core.lua
--- Version: 1.1.0
+-- Version: 1.4.3
 -- Author: DonnieDice
 -- Description: Main initialization and core functions
 --=====================================================================================
