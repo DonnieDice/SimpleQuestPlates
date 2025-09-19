@@ -1,6 +1,6 @@
 --=====================================================================================
 -- RGX | Simple Quest Plates! - enUS.lua
--- Version: 1.0.0
+-- Version: 1.4.3
 -- Author: DonnieDice
 -- Description: English localization
 --=====================================================================================
@@ -80,4 +80,4 @@ local L = {
 -- Set English as default
 for k, v in pairs(L) do
     SQP.L[k] = v
-endd
+end

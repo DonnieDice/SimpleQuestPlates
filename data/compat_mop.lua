@@ -8,7 +8,18 @@
 local addonName, SQP = ...
 
 -- Only load if modern nameplate API is not available
-if C_NamePlate and C_NamePlate.GetNamePlateForUnit then return end
+if C_NamePlate and C_NamePlate.GetNamePlateForUnit then 
+    -- Modern API is available, don't load this compatibility layer
+    return 
+end
+
+-- Additional check: Only load for actual MoP Classic
+local tocversion = select(4, GetBuildInfo())
+local isMoP = tocversion >= 50400 and tocversion < 60000
+if not isMoP then
+    -- Not MoP Classic, don't load this file
+    return
+end
 
 -- MoP nameplate tracking
 local nameplateUpdateTimer = 0

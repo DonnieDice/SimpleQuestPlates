@@ -75,19 +75,26 @@ function SQP:NAME_PLATE_UNIT_REMOVED(unitID)
     end
 end
 
--- Quest events
+-- Quest events with throttling
+local questUpdateThrottle = 0
+local QUEST_UPDATE_THROTTLE = 0.3  -- 300ms throttle
+
 function SQP:UNIT_QUEST_LOG_CHANGED(unitID)
+    -- Only process player quest changes, ignore group members
     if unitID == "player" then
         self:CacheQuestIndexes()
-    else
-        -- Update all plates since we don't know which unit changed
-        for plate in pairs(self.ActiveNameplates) do
-            self:UpdateQuestIcon(plate)
-        end
     end
+    -- Removed unnecessary full refresh for non-player units
 end
 
 function SQP:QUEST_LOG_UPDATE()
+    -- Throttle this spammy event
+    local currentTime = GetTime()
+    if currentTime - questUpdateThrottle < QUEST_UPDATE_THROTTLE then
+        return
+    end
+    questUpdateThrottle = currentTime
+    
     self:CacheQuestIndexes()
 end
 

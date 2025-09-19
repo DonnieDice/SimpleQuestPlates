@@ -1,6 +1,6 @@
 --=====================================================================================
 -- RGX | Simple Quest Plates! - ruRU.lua
--- Version: 1.0.0
+-- Version: 1.4.3
 -- Author: DonnieDice
 -- Description: Russian localization
 --=====================================================================================
@@ -68,4 +68,4 @@ L["QUEST_TEST_NONE"] = "Активные цели заданий не найде
 
 -- Messages
 L["MSG_LOADED"] = "|cff58be81RGX | Simple Quest Plates!|r успешно загружен. Введите |cfffff569/sqp help|r для команд."
-L["MSG_DISCORD"] = "Присоединяйтесь к нашему Discord: |cff58be81discord.gg/N7kdKAHVVF|r""
+L["MSG_DISCORD"] = "Присоединяйтесь к нашему Discord: |cff58be81discord.gg/N7kdKAHVVF|r"

@@ -15,6 +15,11 @@ SQP.QuestPlates = {} -- [plate] = questFrame
 
 -- Create quest plate frame for new nameplates
 function SQP:CreateQuestPlate(nameplate)
+    -- Check if nameplate already has quest frame to prevent duplicates
+    if self.QuestPlates[nameplate] then
+        return
+    end
+    
     -- Store reference to nameplate frame
     self.Nameplates[nameplate] = nameplate
     
