@@ -39,8 +39,8 @@ L["OPTIONS_SIZE"] = "大小"
 L["OPTIONS_POSITION"] = "位置"
 
 -- Commands
-L["CMD_ENABLED"] = "Simple Quest Plates |cff00ff00已启用|r"
-L["CMD_DISABLED"] = "Simple Quest Plates |cffff0000已禁用|r"
+L["CMD_ENABLED"] = "|cff00ff00已启用|r"
+L["CMD_DISABLED"] = "|cffff0000已禁用|r"
 L["CMD_VERSION"] = "Simple Quest Plates 版本: |cff58be81%s|r"
 L["CMD_SCALE_SET"] = "图标缩放设置为: |cff58be81%.1f|r"
 L["CMD_SCALE_INVALID"] = "|cffff0000无效的缩放值。请使用介于0.5到2.0之间的数字。|r"
@@ -75,5 +75,5 @@ L["TEST_FOUND_QUESTS"] = "发现 %d 个带有任务目标的单位"
 L["TEST_NO_QUESTS"] = "可见姓名板上未找到任务目标"
 
 -- Messages
-L["MSG_LOADED"] = "|cff58be81RGX | Simple Quest Plates!|r 读取成功. 输入 |cfffff569/sqp help|r 获取命令帮助."
+L["MSG_LOADED"] = "v%s 读取成功. 输入 |cfffff569/sqp help|r 获取命令帮助."
 L["MSG_DISCORD"] = "加入我们的Discord: |cff58be81discord.gg/N7kdKAHVVF|r"

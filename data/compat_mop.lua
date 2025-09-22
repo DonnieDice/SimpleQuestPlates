@@ -13,13 +13,7 @@ if C_NamePlate and C_NamePlate.GetNamePlateForUnit then
     return 
 end
 
--- Additional check: Only load for actual MoP Classic
-local tocversion = select(4, GetBuildInfo())
-local isMoP = tocversion >= 50400 and tocversion < 60000
-if not isMoP then
-    -- Not MoP Classic, don't load this file
-    return
-end
+
 
 -- MoP nameplate tracking
 local nameplateUpdateTimer = 0
@@ -31,51 +25,17 @@ local nameplateCache = {}  -- Cache nameplate lookups
 -- Store old nameplates
 local oldNameplates = {}
 
--- Helper function to get nameplate children with caching
+-- Helper function to get nameplate children
+-- This is the optimized version for MoP, iterating through the known nameplate frames
+-- rather than scanning all of WorldFrame's children.
 local function GetNameplateChildren()
     local frames = {}
-    local worldFrame = WorldFrame
-    
-    for i = 1, worldFrame:GetNumChildren() do
-        local frame = select(i, worldFrame:GetChildren())
-        
-        -- Use cache if we've seen this frame before
-        if nameplateCache[frame] ~= nil then
-            if nameplateCache[frame] then
-                tinsert(frames, frame)
-            end
-        elseif frame and frame:GetObjectType() == "Frame" then
-            -- Check if this is a nameplate (has specific regions)
-            local regions = frame:GetNumRegions()
-            if regions > 2 and regions < 10 then
-                -- Additional checks to verify it's a nameplate
-                local name = frame:GetName()
-                if not name or not string.find(name, "NamePlate") then
-                    -- Check for nameplate-like properties
-                    local hasHealthBar = false
-                    for j = 1, frame:GetNumChildren() do
-                        local child = select(j, frame:GetChildren())
-                        if child and child:GetObjectType() == "StatusBar" then
-                            hasHealthBar = true
-                            break
-                        end
-                    end
-                    
-                    if hasHealthBar then
-                        nameplateCache[frame] = true
-                        tinsert(frames, frame)
-                    else
-                        nameplateCache[frame] = false
-                    end
-                else
-                    nameplateCache[frame] = false
-                end
-            else
-                nameplateCache[frame] = false
-            end
+    for i = 1, 40 do
+        local frame = _G["NamePlate" .. i]
+        if frame and frame:IsVisible() then
+            tinsert(frames, frame)
         end
     end
-    
     return frames
 end
 
@@ -219,15 +179,8 @@ updateFrame:SetScript("OnUpdate", OnUpdate)
 
 -- Function to refresh all nameplates
 function SQP:RefreshAllNameplates()
-    if not SQP.isMoP then
-        -- Use the regular version for non-MoP
-        for plate in pairs(self.ActiveNameplates) do
-            self:UpdateQuestIcon(plate)
-        end
-    else
-        -- Force a rescan for MoP
-        ScanNameplates()
-    end
+    -- Force a rescan for classic clients
+    ScanNameplates()
 end
 
 -- Hook into PLAYER_TARGET_CHANGED for better unit matching

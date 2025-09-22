@@ -42,6 +42,9 @@ if isRetail then
     end
 else
     -- Classic versions use older APIs
+    local scanTooltip = CreateFrame("GameTooltip", "SQPScanTooltip", nil, "GameTooltipTemplate")
+    scanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+
     SQP.Compat.GetNumQuestLogEntries = function()
         return GetNumQuestLogEntries()
     end
@@ -101,12 +104,10 @@ else
     -- Classic tooltip scanning (fallback method)
     SQP.Compat.GetTooltipData = function(unitID)
         -- Classic doesn't have C_TooltipInfo, we'll need to scan GameTooltip
-        local tooltip = CreateFrame("GameTooltip", "SQPScanTooltip", nil, "GameTooltipTemplate")
-        tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        tooltip:SetUnit(unitID)
+        scanTooltip:SetUnit(unitID)
         
         local lines = {}
-        for i = 1, tooltip:NumLines() do
+        for i = 1, scanTooltip:NumLines() do
             local textLeft = _G["SQPScanTooltipTextLeft"..i]
             if textLeft and textLeft:GetText() then
                 -- In MoP/Classic, quest objectives are usually in gray text
@@ -124,7 +125,7 @@ else
             end
         end
         
-        tooltip:Hide()
+        scanTooltip:Hide()
         return { lines = lines }
     end
     
@@ -144,13 +145,11 @@ else
                 end
             end
             -- Fallback to tooltip scanning
-            local tooltip = CreateFrame("GameTooltip", "SQPQuestTooltip", nil, "GameTooltipTemplate")
-            tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-            tooltip:SetUnit(unitID)
+            scanTooltip:SetUnit(unitID)
             
             local isQuestUnit = false
-            for i = 3, tooltip:NumLines() do
-                local text = _G["SQPQuestTooltipTextLeft"..i]
+            for i = 3, scanTooltip:NumLines() do
+                local text = _G["SQPScanTooltipTextLeft"..i]
                 if text and text:GetText() then
                     local line = text:GetText()
                     -- Check for quest objective patterns
@@ -161,19 +160,17 @@ else
                 end
             end
             
-            tooltip:Hide()
+            scanTooltip:Hide()
             return isQuestUnit
         end
     else
         SQP.Compat.UnitIsRelatedToActiveQuest = function(unitID)
             -- In Classic, we need to scan the tooltip
-            local tooltip = CreateFrame("GameTooltip", "SQPQuestTooltip", nil, "GameTooltipTemplate")
-            tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-            tooltip:SetUnit(unitID)
+            scanTooltip:SetUnit(unitID)
             
             local isQuestUnit = false
-            for i = 3, tooltip:NumLines() do
-                local text = _G["SQPQuestTooltipTextLeft"..i]
+            for i = 3, scanTooltip:NumLines() do
+                local text = _G["SQPScanTooltipTextLeft"..i]
                 if text and text:GetText() then
                     local line = text:GetText()
                     -- Check for quest objective patterns
@@ -184,7 +181,7 @@ else
                 end
             end
             
-            tooltip:Hide()
+            scanTooltip:Hide()
             return isQuestUnit
         end
     end

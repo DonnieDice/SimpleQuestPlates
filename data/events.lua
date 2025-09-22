@@ -44,7 +44,7 @@ end
 -- PLAYER_LOGIN: Initialize addon systems
 function SQP:PLAYER_LOGIN()
     -- Welcome message
-    self:PrintMessage(self.L["MSG_LOADED"])
+    self:PrintMessage(string.format(self.L["MSG_LOADED"], self.VERSION))
     
     -- Create options panel
     self:CreateOptionsPanel()
@@ -96,6 +96,7 @@ function SQP:QUEST_LOG_UPDATE()
     questUpdateThrottle = currentTime
     
     self:CacheQuestIndexes()
+    self:RefreshAllNameplates()
 end
 
 function SQP:QUEST_ACCEPTED(questLogIndex, questID)

@@ -50,30 +50,19 @@ jobs:
         with:
           release-type: ${{ steps.set_release_type.outputs.release_type }}
 
-      - name: Extract Changelog
+      - name: Generate Changelog from Commits
         id: extract_changelog
         run: |
-          # Extract the current version's changelog from docs/CHANGES.md
-          VERSION="${{ steps.extract_version.outputs.version }}"
+          # Get the previous tag, falling back to the first commit if no previous tag is found
+          PREVIOUS_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1` 2>/dev/null || git rev-list --max-parents=0 HEAD)
           
-          # Read the changelog and extract the current version's content
-          CHANGELOG=$(awk -v version="$VERSION" '
-            BEGIN { found = 0; content = "" }
-            /^## Version/ {
-              if ($3 == version) {
-                found = 1
-                next
-              } else if (found) {
-                exit
-              }
-            }
-            found && /^---/ { exit }
-            found { content = content $0 "\n" }
-            END { print content }
-          ' docs/CHANGES.md | head -c 1500)
+          # Generate a changelog from commits between the previous tag and the current one (HEAD)
+          # Format: • Commit message (short hash)
+          CHANGELOG=$(git log --pretty=format:"• %s (%h)" $PREVIOUS_TAG..HEAD)
           
           # Escape for JSON
-          CHANGELOG="${CHANGELOG//$''\n''/\n}"
+          CHANGELOG="${CHANGELOG//$'
+'/'\n'}"
           CHANGELOG="${CHANGELOG//"/\"}"
           
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
@@ -98,7 +87,7 @@ jobs:
             
             ## Support
             - [Discord](https://discord.gg/N7kdKAHVVF)
-            - [GitHub Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)
+            - [GitHub Issues](https://github.com/donniedice/SimpleQuestPlates/issues)
           draft: false
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
           files: |
@@ -108,7 +97,6 @@ jobs:
         if: always()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          CHANGELOG_CONTENT: ${{ steps.extract_changelog.outputs.changelog }}
         run: |
           # Get version
           VERSION="${{ steps.extract_version.outputs.version }}"
@@ -143,7 +131,7 @@ jobs:
                 content = content $0 "\n"
               }
             }
-            END { 
+            END {
               # Remove trailing newlines
               gsub(/\n+$/, "", content)
               print content 
@@ -181,7 +169,7 @@ jobs:
                    \"fields\": [
                      {
                        \"name\": \"📥 Downloads\",
-                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/DonnieDice/SimpleQuestPlates)\",
+                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
                        \"inline\": true
                      },
                      {
@@ -191,7 +179,7 @@ jobs:
                      },
                      {
                        \"name\": \"💬 Support\",
-                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/DonnieDice/SimpleQuestPlates/issues)\",
+                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)\",
                        \"inline\": true
                      }
                    ],

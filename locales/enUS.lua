@@ -37,8 +37,8 @@ local L = {
     ["OPTIONS_POSITION"] = "Position",
     
     -- Commands
-    ["CMD_ENABLED"] = "Simple Quest Plates is now |cff00ff00ENABLED|r",
-    ["CMD_DISABLED"] = "Simple Quest Plates is now |cffff0000DISABLED|r",
+    ["CMD_ENABLED"] = "is now |cff00ff00ENABLED|r",
+    ["CMD_DISABLED"] = "is now |cffff0000DISABLED|r",
     ["CMD_VERSION"] = "Simple Quest Plates version: |cff58be81%s|r",
     ["CMD_SCALE_SET"] = "Icon scale set to: |cff58be81%.1f|r",
     ["CMD_SCALE_INVALID"] = "|cffff0000Invalid scale value. Use a number between 0.5 and 2.0|r",
@@ -73,7 +73,7 @@ local L = {
     ["TEST_NO_QUESTS"] = "No quest objectives found on visible nameplates",
     
     -- Messages
-    ["MSG_LOADED"] = "|cff58be81RGX | Simple Quest Plates!|r loaded successfully. Type |cfffff569/sqp help|r for commands.",
+    ["MSG_LOADED"] = "v%s loaded successfully. Type |cfffff569/sqp help|r for commands.",
     ["MSG_DISCORD"] = "Join our Discord: |cff58be81discord.gg/N7kdKAHVVF|r",
 }
 

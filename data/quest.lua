@@ -53,7 +53,8 @@ function SQP:GetQuestProgress(unitID)
     local objectiveCount = 0
     local questLogIndex = nil
     local questID = nil
-    
+    local itemsNeeded = 0
+
     -- For Classic/MoP, use simpler parsing
     if SQP.isClassic then
         -- Scan tooltip lines for quest text
@@ -71,7 +72,9 @@ function SQP:GetQuestProgress(unitID)
                         questType = 1  -- Kill quest
                         objectiveCount = numLeft
                         progressGlob = text
-                        break
+                        -- In classic, we can't easily distinguish item from kill, but we can assume if it's not a kill, it's an item.
+                        -- This part is tricky without more info. We'll stick to the original logic for now.
+                        -- A simple heuristic could be to check for item-related keywords if needed in the future.
                     end
                 else
                     -- Check for percentage
@@ -86,54 +89,65 @@ function SQP:GetQuestProgress(unitID)
             end
         end
         
-        return progressGlob, questType, objectiveCount, questID
+        -- In Classic, we can't reliably get questID from tooltip, so we pass nil.
+        -- The item check logic is primarily for retail where we have better APIs.
+        return progressGlob, questType, objectiveCount, 0, nil
     end
     
-    -- Original retail code
+    -- New, more accurate retail code
+    local objectives_found = {}
+    local questIdForItems = nil
+
     for i = 3, #tooltipData.lines do
         local line = tooltipData.lines[i]
-        
-        -- Surface args if available
-        if TooltipUtil and TooltipUtil.SurfaceArgs then
-            TooltipUtil.SurfaceArgs(line)
+        if TooltipUtil and TooltipUtil.SurfaceArgs then TooltipUtil.SurfaceArgs(line) end
+        if line.type == 17 and line.id and line.leftText then
+            table.insert(objectives_found, { text = line.leftText, questID = line.id })
         end
-        
-        if line.type == 17 and line.id then
-            local text, objectiveType, finished = GetQuestObjectiveInfo(line.id, 1, false)
-            questID = questID or line.id or (text and self.ActiveWorldQuests[text])
-            local progressText = text
-            
-            if progressText then
-                local x, y = strmatch(progressText, '(%d+)/(%d+)')
-                if x and y then
-                    local numLeft = y - x
-                    if numLeft > objectiveCount then
-                        objectiveCount = numLeft
+    end
+
+    if #objectives_found == 0 then return end
+
+    for _, data in ipairs(objectives_found) do
+        local progressText = data.text
+        local currentQuestID = data.questID
+
+        local x, y = strmatch(progressText, '(%d+)/(%d+)')
+        if x and y then
+            local numLeft = tonumber(y) - tonumber(x)
+            if numLeft > 0 then -- THE FIX IS HERE
+                local isItem = false
+                local objectives_from_api = SQP.Compat.GetQuestObjectives(currentQuestID)
+                for _, api_obj in ipairs(objectives_from_api) do
+                    local objectiveName = api_obj.text:match("([^:]+)")
+                    if objectiveName and progressText:find(objectiveName, 1, true) then
+                        if api_obj.type == 'item' or api_obj.type == 'object' then
+                            isItem = true
+                        end
+                        break
                     end
+                end
+
+                if isItem then
+                    if numLeft > itemsNeeded then itemsNeeded = numLeft end
                 else
-                    local progress = tonumber(strmatch(progressText, '([%d%.]+)%%'))
-                    if progress and progress <= 100 then
-                        questType = 3
-                        return text, questType, ceil(100 - progress), questID
-                    end
+                    if numLeft > objectiveCount then objectiveCount = numLeft end
                 end
-                
-                if not x or (x and y and x ~= y) then
-                    progressGlob = progressGlob and progressGlob .. '\n' .. progressText or progressText
-                end
-            elseif self.ActiveWorldQuests[text] then
-                local progress = C_TaskQuest and C_TaskQuest.GetQuestProgressBarInfo and C_TaskQuest.GetQuestProgressBarInfo(questID)
-                if progress then
-                    questType = 3
-                    return text, questType, ceil(100 - progress), questID
-                end
-            elseif self.QuestLogIndex[text] then
-                questLogIndex = self.QuestLogIndex[text]
+                progressGlob = (progressGlob or "") .. progressText .. "\n"
+                questIdForItems = currentQuestID
+            end
+        else
+            local progress = tonumber(strmatch(progressText, '([%d%.]+)%%'))
+            if progress and progress < 100 then
+                questType = 3
+                objectiveCount = ceil(100 - progress)
+                progressGlob = progressText
+                questIdForItems = currentQuestID
             end
         end
     end
-    
-    return progressGlob, progressGlob and 1 or questType, objectiveCount, questLogIndex, questID
+
+    return progressGlob, progressGlob and (questType or 1) or nil, objectiveCount, itemsNeeded, questIdForItems
 end
 
 -- Update quest icon on nameplate
@@ -170,7 +184,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
         end
     end
     
-    local progressGlob, questType, objectiveCount, questLogIndex, questID = self:GetQuestProgress(unitID)
+    local progressGlob, questType, objectiveCount, itemsNeeded, questID = self:GetQuestProgress(unitID)
 
     -- Decide if there is a relevant objective for this unit
     local showIcon = false
@@ -178,41 +192,8 @@ function SQP:UpdateQuestIcon(plate, unitID)
     local displayColor = {1, 1, 1} -- Default white
 
     if progressGlob and questType ~= 2 then
-        local hasItemObjective = false
-        local itemsNeeded = 0
-
-        -- Check for item objectives that drop from this unit
-        local tooltipData = SQP.Compat.GetTooltipData(unitID)
-        if (questLogIndex or questID) and tooltipData then
-            local questIdForItems = questID or (C_QuestLog.GetInfo and C_QuestLog.GetInfo(questLogIndex) and C_QuestLog.GetInfo(questLogIndex).questID)
-            if questIdForItems then
-                for i = 1, 10 do
-                    local text, objectiveType, finished = GetQuestObjectiveInfo(questIdForItems, i, false)
-                    if not text then break end
-                    if not finished and (objectiveType == 'item' or objectiveType == 'object') then
-                        local itemName = text:match("([^:]+):") or text:match("(.+)/(.+)") or text
-                        local unitDropsItem = false
-                        for _, line in ipairs(tooltipData.lines) do
-                            if line.leftText and line.leftText:find(itemName, 1, true) then
-                                unitDropsItem = true
-                                break
-                            end
-                        end
-                        if unitDropsItem then
-                            hasItemObjective = true
-                            local x, y = text:match('(%d+)/(%d+)')
-                            if x and y then
-                                local numLeft = tonumber(y) - tonumber(x)
-                                if numLeft > itemsNeeded then itemsNeeded = numLeft end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-
         -- Priority: Item > Kill > Percent
-        if hasItemObjective and itemsNeeded > 0 then
+        if itemsNeeded > 0 then
             showIcon = true
             displayText = itemsNeeded
             displayColor = SQPSettings.itemColor or {0.2, 1, 0.2}
@@ -275,11 +256,6 @@ function SQP:CacheQuestIndexes()
                 self.QuestLogIndex[info.title] = i
             end
         end
-    end
-    
-    -- Update all visible nameplates
-    for plate, frame in pairs(self.ActiveNameplates) do
-        self:UpdateQuestIcon(plate, frame._unitID)
     end
 end
 

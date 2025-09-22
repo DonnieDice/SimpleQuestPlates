@@ -2,6 +2,17 @@
 
 All notable changes to RGX | Simple Quest Plates! will be documented in this file.
 
+## [1.5.0] - 2025-09-19
+
+### Fixed
+- Fixed a major compatibility issue where nameplate quest icons would not appear in Classic, Wrath, and Cataclysm versions of the game.
+- Generalized the nameplate scanning mechanism to work across all classic clients.
+- Corrected a bug in the chat message formatting that prevented the version number from appearing.
+
+### Changed
+- The addon loading message is now more concise and consistent across all supported languages.
+- Internal compatibility file `compat_mop.lua` has been updated to handle all classic versions, improving code clarity.
+
 ## [1.1.0] - 2025-08-15 - Production Release
 
 ### Added

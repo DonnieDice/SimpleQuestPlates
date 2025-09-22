@@ -1,30 +1,21 @@
-## Version 1.1.0
+## Version 1.5.0
 
-### 🎮 Full Release - MoP Classic Support
+### 🚀 Compatibility & Fixes
 
-This release adds full support for Mists of Pandaria Classic with performance optimizations.
+This release focuses on major compatibility fixes for all classic versions of World of Warcraft and corrects issues with chat messages.
 
-### ✨ New Features
-- **MoP Classic Compatibility**: Full nameplate quest tracking support for MoP Classic
-- **Performance Optimizations**: Reduced lag from icon position updates
-- **Smart Update System**: Adaptive update intervals (faster out of combat, slower in combat)
-- **Nameplate Caching**: Improved performance through intelligent caching
+### ✨ New Features & Fixes
+- **Classic Compatibility**: Nameplate icons now work correctly in Classic, Wrath, and Cataclysm.
+- **Chat Message Formatting**: The addon loading message now correctly displays the version number and is more concise.
 
 ### 🔧 Technical Improvements
-- Created `compat_mop.lua` for MoP-specific nameplate handling
-- Implemented OnUpdate polling system for older nameplate API
-- Added UnitIsQuestBoss support for MoP quest detection
-- Fixed C_TaskQuest API compatibility issues
-
-### ⚡ Performance Enhancements
-- Update interval: 0.2s (normal) / 0.5s (combat)
-- Nameplate lookup caching reduces CPU usage
-- Skip redundant scans when nameplate count unchanged
+- The nameplate scanning system is now generalized to support all classic clients.
+- Corrected a bug in the core `PrintMessage` function.
 
 ### 📦 Installation
 Copy the SimpleQuestPlates folder to your Interface/AddOns directory for:
 - Retail (The War Within)
 - Classic Cataclysm
 - Classic Era
-- **MoP Classic** (NEW!)
-
+- MoP Classic
+- Wrath of the Lich King Classic

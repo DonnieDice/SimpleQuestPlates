@@ -22,9 +22,9 @@ L["OPTIONS_ANCHOR"] = "Posición del icono"
 L["OPTIONS_TEST"] = "Probar detección"
 L["OPTIONS_RESET"] = "Restablecer toda la configuración"
 
-L["CMD_ENABLED"] = "Simple Quest Plates ahora está |cff00ff00ACTIVADO|r"
-L["CMD_DISABLED"] = "Simple Quest Plates ahora está |cffff0000DESACTIVADO|r"
+L["CMD_ENABLED"] = "ahora está |cff00ff00ACTIVADO|r"
+L["CMD_DISABLED"] = "ahora está |cffff0000DESACTIVADO|r"
 L["CMD_VERSION"] = "Versión de Simple Quest Plates: |cff58be81%s|r"
 L["CMD_HELP_HEADER"] = "|cff58be81Comandos de RGX | Simple Quest Plates!:|r"
 
-L["MSG_LOADED"] = "|cff58be81Simple Quest Plates!|r cargado correctamente. Escribe |cfffff569/sqp help|r para ver los comandos."
+L["MSG_LOADED"] = "v%s cargado correctamente. Escribe |cfffff569/sqp help|r para ver los comandos."

@@ -22,9 +22,9 @@ L["OPTIONS_ANCHOR"] = "Symbolposition"
 L["OPTIONS_TEST"] = "Erkennung testen"
 L["OPTIONS_RESET"] = "Alle Einstellungen zurücksetzen"
 
-L["CMD_ENABLED"] = "Simple Quest Plates ist jetzt |cff00ff00AKTIVIERT|r"
-L["CMD_DISABLED"] = "Simple Quest Plates ist jetzt |cffff0000DEAKTIVIERT|r"
+L["CMD_ENABLED"] = "ist jetzt |cff00ff00AKTIVIERT|r"
+L["CMD_DISABLED"] = "ist jetzt |cffff0000DEAKTIVIERT|r"
 L["CMD_VERSION"] = "Simple Quest Plates Version: |cff58be81%s|r"
 L["CMD_HELP_HEADER"] = "|cff58be81Simple Quest Plates Befehle:|r"
 
-L["MSG_LOADED"] = "|cff58be81RGX | Simple Quest Plates!|r erfolgreich geladen. Gib |cfffff569/sqp help|r für Befehle ein."
+L["MSG_LOADED"] = "v%s erfolgreich geladen. Gib |cfffff569/sqp help|r für Befehle ein."

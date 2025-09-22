@@ -1,6 +1,6 @@
 --=====================================================================================
 -- RGX | Simple Quest Plates! - core.lua
--- Version: 1.4.3
+-- Version: 1.5.0
 -- Author: DonnieDice
 -- Description: Main initialization and core functions
 --=====================================================================================
@@ -9,7 +9,7 @@
 local addonName, SQP = ...
 _G.SQP = SQP
 SQP.L = SQP.L or {}
-SQP.VERSION = "1.4.3"
+SQP.VERSION = "1.5.0"
 
 -- Version detection
 local tocversion = select(4, GetBuildInfo())
@@ -187,7 +187,7 @@ end
 -- Print formatted message to chat
 function SQP:PrintMessage(message)
     if message then
-        print(format("%s %s %s", ADDON_ICON, ADDON_PREFIX, message))
+        print(string.format("%s - [%s] %s", ADDON_ICON, ADDON_PREFIX, message))
     end
 end
 

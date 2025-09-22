@@ -33,8 +33,8 @@ L["OPTIONS_ICON_TINT"] = "Включить окраску иконки"
 L["OPTIONS_ICON_COLOR"] = "Цвет окраски иконки"
 
 -- Commands
-L["CMD_ENABLED"] = "Simple Quest Plates теперь |cff00ff00ВКЛЮЧЕН|r"
-L["CMD_DISABLED"] = "Simple Quest Plates теперь |cffff0000ВЫКЛЮЧЕН|r"
+L["CMD_ENABLED"] = "теперь |cff00ff00ВКЛЮЧЕН|r"
+L["CMD_DISABLED"] = "теперь |cffff0000ВЫКЛЮЧЕН|r"
 L["CMD_VERSION"] = "Версия Simple Quest Plates: |cff58be81%s|r"
 L["CMD_SCALE_SET"] = "Размер иконки установлен: |cff58be81%.1f|r"
 L["CMD_SCALE_INVALID"] = "|cffff0000Неверное значение размера. Используйте число от 0.5 до 2.0|r"
@@ -67,5 +67,5 @@ L["QUEST_TEST_ACTIVE"] = "Найдено активных целей задан�
 L["QUEST_TEST_NONE"] = "Активные цели заданий не найдены"
 
 -- Messages
-L["MSG_LOADED"] = "|cff58be81RGX | Simple Quest Plates!|r успешно загружен. Введите |cfffff569/sqp help|r для команд."
+L["MSG_LOADED"] = "v%s успешно загружен. Введите |cfffff569/sqp help|r для команд."
 L["MSG_DISCORD"] = "Присоединяйтесь к нашему Discord: |cff58be81discord.gg/N7kdKAHVVF|r"
