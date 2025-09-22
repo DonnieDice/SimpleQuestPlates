@@ -50,44 +50,22 @@ jobs:
         with:
           release-type: ${{ steps.set_release_type.outputs.release_type }}
 
-      - name: Generate Changelog from Commits
-        id: extract_changelog
+      - name: Read Changelog
+        id: read_changelog
         run: |
-          # Get the previous tag, falling back to the first commit if no previous tag is found
-          PREVIOUS_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1` 2>/dev/null || git rev-list --max-parents=0 HEAD)
-          
-          # Generate a changelog from commits between the previous tag and the current one (HEAD)
-          # Format: • Commit message (short hash)
-          CHANGELOG=$(git log --pretty=format:"• %s (%h)" $PREVIOUS_TAG..HEAD)
-          
-          # Escape for JSON
-          CHANGELOG="${CHANGELOG//$'
-'/'\n'}"
-          CHANGELOG="${CHANGELOG//"/\"}"
-          
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Read the content of CHANGES.md and prepare it for the release body
+          CHANGELOG_BODY=$(cat docs/CHANGES.md)
+          CHANGELOG_BODY="${CHANGELOG_BODY//'%'/'%25'}"
+          CHANGELOG_BODY="${CHANGELOG_BODY//$'
+'/'%0A'}"
+          CHANGELOG_BODY="${CHANGELOG_BODY//$''/'%0D'}"
+          echo "body=$CHANGELOG_BODY" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           name: Simple Quest Plates v${{ steps.extract_version.outputs.version }}
-          body: |
-            # Simple Quest Plates v${{ steps.extract_version.outputs.version }}
-            
-            ${{ steps.extract_changelog.outputs.changelog }}
-            
-            ---
-            
-            ## Download Links
-            - [CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)
-            - [Wago.io](https://addons.wago.io/addons/simple-quest-plates)
-            - [WoWInterface](https://www.wowinterface.com/downloads/info26957)
-            
-            ## Support
-            - [Discord](https://discord.gg/N7kdKAHVVF)
-            - [GitHub Issues](https://github.com/donniedice/SimpleQuestPlates/issues)
+          body: ${{ steps.read_changelog.outputs.body }}
           draft: false
           prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
           files: |
@@ -102,7 +80,7 @@ jobs:
           VERSION="${{ steps.extract_version.outputs.version }}"
           
           # Extract changelog content from docs/CHANGES.md
-          CHANGELOG_CONTENT=$(awk -v version="$VERSION" '
+          CHANGELOG_CONTENT=$(awk -v version="$VERSION" ' 
             BEGIN { found = 0; content = ""; first = 1 }
             /^## Version/ {
               split($0, parts, " ")
@@ -144,7 +122,7 @@ jobs:
           fi
           
           # Escape quotes for JSON
-          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//"/\"}"
+          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//\"/'''}"
           
           # If changelog is empty, provide default
           if [ -z "$CHANGELOG_CONTENT" ]; then
