@@ -41,108 +41,59 @@ end
 
 -- Get quest progress from unit tooltip
 function SQP:GetQuestProgress(unitID)
-    if not unitID or not SQP.Compat.UnitIsRelatedToActiveQuest(unitID) then 
-        return 
-    end
-    
-    local tooltipData = SQP.Compat.GetTooltipData(unitID)
-    if not tooltipData then return end
-    
-    local progressGlob = nil
-    local questType = nil
-    local objectiveCount = 0
-    local questLogIndex = nil
-    local questID = nil
-    local itemsNeeded = 0
+    if not unitID or not UnitExists(unitID) then return end
 
-    -- For Classic/MoP, use simpler parsing
-    if SQP.isClassic then
-        -- Scan tooltip lines for quest text
-        for i = 1, #tooltipData.lines do
-            local line = tooltipData.lines[i]
-            local text = line.leftText or (line.type == 17 and line.leftText)
-            
-            if text then
-                -- Look for quest progress patterns
-                local x, y = strmatch(text, '(%d+)/(%d+)')
+    local unitName = UnitName(unitID)
+    if not unitName or unitName == "" then return end
+
+    local itemsNeeded, objectiveCount, progressGlob, questType, questIdForItems = 0, 0, nil, nil, nil
+
+    local function processObjectives(questID)
+        if not questID then return end
+        local objectives = SQP.Compat.GetQuestObjectives(questID)
+        for _, obj in ipairs(objectives) do
+            if obj.text and obj.text:find(unitName, 1, true) then
+                local x, y = strmatch(obj.text, '(%d+)/(%d+)')
                 if x and y then
-                    -- Found kill/collect quest
                     local numLeft = tonumber(y) - tonumber(x)
                     if numLeft > 0 then
-                        questType = 1  -- Kill quest
-                        objectiveCount = numLeft
-                        progressGlob = text
-                        -- In classic, we can't easily distinguish item from kill, but we can assume if it's not a kill, it's an item.
-                        -- This part is tricky without more info. We'll stick to the original logic for now.
-                        -- A simple heuristic could be to check for item-related keywords if needed in the future.
-                    end
-                else
-                    -- Check for percentage
-                    local progress = tonumber(strmatch(text, '([%d%.]+)%%'))
-                    if progress and progress < 100 then
-                        questType = 3  -- Percent quest
-                        objectiveCount = ceil(100 - progress)
-                        progressGlob = text
-                        break
-                    end
-                end
-            end
-        end
-        
-        -- In Classic, we can't reliably get questID from tooltip, so we pass nil.
-        -- The item check logic is primarily for retail where we have better APIs.
-        return progressGlob, questType, objectiveCount, 0, nil
-    end
-    
-    -- New, more accurate retail code
-    local objectives_found = {}
-    local questIdForItems = nil
-
-    for i = 3, #tooltipData.lines do
-        local line = tooltipData.lines[i]
-        if TooltipUtil and TooltipUtil.SurfaceArgs then TooltipUtil.SurfaceArgs(line) end
-        if line.type == 17 and line.id and line.leftText then
-            table.insert(objectives_found, { text = line.leftText, questID = line.id })
-        end
-    end
-
-    if #objectives_found == 0 then return end
-
-    for _, data in ipairs(objectives_found) do
-        local progressText = data.text
-        local currentQuestID = data.questID
-
-        local x, y = strmatch(progressText, '(%d+)/(%d+)')
-        if x and y then
-            local numLeft = tonumber(y) - tonumber(x)
-            if numLeft > 0 then -- THE FIX IS HERE
-                local isItem = false
-                local objectives_from_api = SQP.Compat.GetQuestObjectives(currentQuestID)
-                for _, api_obj in ipairs(objectives_from_api) do
-                    local objectiveName = api_obj.text:match("([^:]+)")
-                    if objectiveName and progressText:find(objectiveName, 1, true) then
-                        if api_obj.type == 'item' or api_obj.type == 'object' then
-                            isItem = true
+                        if obj.type == 'item' or obj.type == 'object' then
+                            if numLeft > itemsNeeded then itemsNeeded = numLeft end
+                        else -- kill or other
+                            if numLeft > objectiveCount then objectiveCount = numLeft end
                         end
-                        break
+                        progressGlob = obj.text
+                        questIdForItems = questID
+                    end
+                else
+                    -- Handle percentage-based objectives
+                    local progress = tonumber(strmatch(obj.text, '([%d%.]+)%%'))
+                    if progress and progress < 100 then
+                        objectiveCount = ceil(100 - progress)
+                        questType = 3
+                        progressGlob = obj.text
+                        questIdForItems = questID
                     end
                 end
-
-                if isItem then
-                    if numLeft > itemsNeeded then itemsNeeded = numLeft end
-                else
-                    if numLeft > objectiveCount then objectiveCount = numLeft end
-                end
-                progressGlob = (progressGlob or "") .. progressText .. "\n"
-                questIdForItems = currentQuestID
             end
-        else
-            local progress = tonumber(strmatch(progressText, '([%d%.]+)%%'))
-            if progress and progress < 100 then
-                questType = 3
-                objectiveCount = ceil(100 - progress)
-                progressGlob = progressText
-                questIdForItems = currentQuestID
+        end
+    end
+
+    -- Process regular quests
+    if SQP.Compat.GetNumQuestLogEntries then
+        for i = 1, SQP.Compat.GetNumQuestLogEntries() do
+            local info = SQP.Compat.GetInfo(i)
+            if info and info.questID and not info.isHeader and (not info.isComplete or info.isComplete == 0) then
+                processObjectives(info.questID)
+            end
+        end
+    end
+
+    -- Process world quests (retail only)
+    if C_TaskQuest then
+        for questName, questID in pairs(self.ActiveWorldQuests) do
+            if questID then
+                processObjectives(questID)
             end
         end
     end

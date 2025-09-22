@@ -2,6 +2,19 @@
 
 All notable changes to RGX | Simple Quest Plates! will be documented in this file.
 
+## [1.5.2] - 2025-09-21
+
+### Fixed
+- Overhauled the quest detection logic to be more accurate and reliable.
+- Implemented support for World Quests by directly matching unit names against all active quest objectives.
+- The addon no longer relies on potentially inaccurate tooltip data for quest detection in retail versions of the game.
+
+## [1.5.1] - 2025-09-21
+
+### Fixed
+- Corrected the release workflow to use `docs/CHANGES.md` as the single source of truth for release notes, ensuring consistency across GitHub, CurseForge, and Discord announcements.
+- Restored the workflow file from a corrupted state caused by previous tool errors.
+
 ## [1.5.0] - 2025-09-19
 
 ### Fixed

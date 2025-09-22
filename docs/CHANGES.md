@@ -1,16 +1,12 @@
-## Version 1.5.0
+## Version 1.5.2
 
-### 🚀 Compatibility & Fixes
+### 🚀 Quest Detection Overhaul
 
-This release focuses on major compatibility fixes for all classic versions of World of Warcraft and corrects issues with chat messages.
+This release introduces a completely new, more reliable quest detection system that properly handles World Quests and improves overall accuracy.
 
-### ✨ New Features & Fixes
-- **Classic Compatibility**: Nameplate icons now work correctly in Classic, Wrath, and Cataclysm.
-- **Chat Message Formatting**: The addon loading message now correctly displays the version number and is more concise.
-
-### 🔧 Technical Improvements
-- The nameplate scanning system is now generalized to support all classic clients.
-- Corrected a bug in the core `PrintMessage` function.
+### ✨ Fixes & Improvements
+- **World Quest Support**: The addon now correctly identifies and displays progress for World Quests.
+- **Detection Accuracy**: The quest detection logic was overhauled to directly match monster names against your quest log, rather than relying on less reliable tooltip data. This ensures all quest types are handled correctly and consistently.
 
 ### 📦 Installation
 Copy the SimpleQuestPlates folder to your Interface/AddOns directory for:

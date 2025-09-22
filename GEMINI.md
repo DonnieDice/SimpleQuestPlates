@@ -6,6 +6,28 @@ This file provides guidance to Gemini when working with code in this repository.
 
 SQP (Simple Quest Plates) is a professional World of Warcraft addon that displays quest progress icons on enemy nameplates. It supports multiple WoW versions, from Retail to Classic, and features a streamlined architecture, persistent settings, multi-language support, extensive error handling, and a comprehensive options panel with live preview functionality as part of the RGX Mods collection.
 
+## Gemini Workflow
+
+This section outlines the development and release process to be followed by the Gemini assistant.
+
+### Development Cycle
+
+1.  **Implement Fixes:** Address bugs or implement features as requested by the user.
+2.  **Update Cumulative Changelog:** After each significant change, add a summary to the `docs/CHANGES.md` file. This file will serve as a running list of changes for the upcoming release.
+3.  **No Version Bumping:** Do not increment the addon version number during the development cycle. The version will only be updated when preparing for a final release.
+4.  **Testing:** The user is responsible for testing changes by copying the project directory to their World of Warcraft `AddOns` folder.
+
+### Release Cycle
+
+When the user confirms they are ready to create a new release:
+
+1.  **Finalize Version:** Ask the user for the new version number (e.g., 1.5.2 -> 1.6.0).
+2.  **Update Version Files:** Update the version number in all `.toc` files and in `data/core.lua`.
+3.  **Update Changelogs:**
+    *   Create a new version entry in `docs/CHANGELOG.md` using the accumulated notes from `docs/CHANGES.md`.
+    *   Ensure `docs/CHANGES.md` contains the final, polished release notes for the new version.
+4.  **Provide Git Commands:** Supply the final, one-liner command to stage all changes, create a detailed commit message, push to the main branch, and create and push the new version tag (e.g., `v1.6.0`).
+
 ## Project Structure
 
 ### Core Files
