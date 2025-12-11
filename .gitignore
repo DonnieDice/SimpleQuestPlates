@@ -1,23 +1,20 @@
-# IDE and Editor files
+# IDE files
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
 
-# OS files
+# OS-generated files
 .DS_Store
 Thumbs.db
 
-# Claude configuration
-.claude/
+# WoW-specific backup files
+*.lua.bak
+*.toc.bak
 
-# Build and release files
+# Release packaging
 .release/
+packages/
 *.zip
-release.sh
 
-# Temporary files
-*.tmp
-*.bak
-*.cache
+# User-specific files
+.env
+.claude/

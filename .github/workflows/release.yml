@@ -42,130 +42,171 @@ jobs:
       - name: Extract Version from TOC
         id: extract_version
         run: |
-          version=$(grep -oP '^## Version: \K(.*)' ./SimpleQuestPlates.toc | head -1)
+          # Try to get version from TOC file, fallback to tag name
+          if [ -f "SimpleQuestPlates.toc" ]; then
+            version=$(grep -E "^## Version:" SimpleQuestPlates.toc | awk '{print $3}')
+            if [ -z "$version" ]; then
+              version="${{ github.ref_name }}"
+            fi
+          else
+            version="${{ github.ref_name }}"
+          fi
+          echo "Extracted version: $version"
           echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Extract Changelog
+        id: extract_changelog
+        run: |
+          if [ -f "docs/CHANGES.md" ]; then
+            # Read the changelog and properly escape it for JSON
+            CHANGELOG=$(cat docs/CHANGES.md | head -20 | jq -Rs .)
+            echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
+          else
+            echo "changelog=\"No changelog available\"" >> $GITHUB_OUTPUT
+          fi
 
       - name: Package and Release
         uses: BigWigsMods/packager@master
         with:
           release-type: ${{ steps.set_release_type.outputs.release_type }}
 
-      - name: Read Changelog
-        id: read_changelog
-        run: |
-          # Read the content of CHANGES.md and prepare it for the release body
-          CHANGELOG_BODY=$(cat docs/CHANGES.md)
-          CHANGELOG_BODY="${CHANGELOG_BODY//'%'/'%25'}"
-          CHANGELOG_BODY="${CHANGELOG_BODY//$'
-'/'%0A'}"
-          CHANGELOG_BODY="${CHANGELOG_BODY//$''/'%0D'}"
-          echo "body=$CHANGELOG_BODY" >> $GITHUB_OUTPUT
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: Simple Quest Plates v${{ steps.extract_version.outputs.version }}
-          body: ${{ steps.read_changelog.outputs.body }}
-          draft: false
-          prerelease: ${{ steps.set_release_type.outputs.release_type != 'release' }}
-          files: |
-            .release/*.zip
-
       - name: Send Discord Notification
-        if: always()
+        if: success()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          # Get version
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+          
+          # Determine release type emoji and color
+          RELEASE_TYPE="${{ steps.set_release_type.outputs.release_type }}"
+          if [ "$RELEASE_TYPE" = "alpha" ]; then
+            EMOJI="🔬"
+            TYPE_TEXT=" Alpha"
+            COLOR=16711680
+          elif [ "$RELEASE_TYPE" = "beta" ]; then
+            EMOJI="🧪"
+            TYPE_TEXT=" Beta"
+            COLOR=16744448
+          else
+            EMOJI="🎯"
+            TYPE_TEXT=""
+            COLOR=5820057
+          fi
+          
+          # Get version - use tag name as fallback
           VERSION="${{ steps.extract_version.outputs.version }}"
-          
-          # Extract changelog content from docs/CHANGES.md
-          CHANGELOG_CONTENT=$(awk -v version="$VERSION" ' 
-            BEGIN { found = 0; content = ""; first = 1 }
-            /^## Version/ {
-              split($0, parts, " ")
-              if (parts[3] == version) {
-                found = 1
-                next
-              } else if (found) {
-                exit
-              }
-            }
-            found && /^---/ { exit }
-            found && /^<p align="center">/ { exit }
-            found {
-              # Skip empty lines at the beginning
-              if (NF == 0 && first) next
-              first = 0
-              
-              # Format for Discord
-              if ($0 ~ /^###/) {
-                gsub(/^### /, "**", $0)
-                content = content $0 "**\n"
-              } else if ($0 ~ /^- /) {
-                gsub(/^- /, "• ", $0)
-                content = content $0 "\n"
-              } else if (NF > 0) {
-                content = content $0 "\n"
-              }
-            }
-            END {
-              # Remove trailing newlines
-              gsub(/\n+$/, "", content)
-              print content 
-            }
-          ' docs/CHANGES.md)
-          
-          # Limit changelog and add ellipsis if truncated
-          if [ ${#CHANGELOG_CONTENT} -gt 800 ]; then
-            CHANGELOG_CONTENT="${CHANGELOG_CONTENT:0:800}..."
+          if [ -z "$VERSION" ]; then
+            VERSION="${{ github.ref_name }}"
           fi
           
-          # Escape quotes for JSON
-          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//"/\"}"
+          # Get the changelog (already JSON-escaped from previous step)
+          CHANGELOG='${{ steps.extract_changelog.outputs.changelog }}'
           
-          # If changelog is empty, provide default
-          if [ -z "$CHANGELOG_CONTENT" ]; then
-            CHANGELOG_CONTENT="Check the release notes for details about this update!"
-          fi
+          # Build the JSON payload using jq for proper escaping
+          JSON_PAYLOAD=$(jq -n \
+            --arg emoji "$EMOJI" \
+            --arg type_text "$TYPE_TEXT" \
+            --arg version "$VERSION" \
+            --arg tag "${{ github.ref_name }}" \
+            --argjson changelog "$CHANGELOG" \
+            --argjson color "$COLOR" \
+            '{
+              "content": "",
+              "username": "SQP Release",
+              "avatar_url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png",
+              "embeds": [{
+                "title": "\($emoji) SQP | Simple Quest Plates - \($version)\($type_text)",
+                "description": "**See quest progress at a glance!** A new version of SQP has been released!\n\n📝 **What'\''s New:**\n\($changelog)\n\n**Display quest objective progress directly on enemy nameplates!**",
+                "url": "https://github.com/donniedice/SimpleQuestPlates/releases/tag/\($tag)",
+                "color": $color,
+                "thumbnail": {
+                  "url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png"
+                },
+                "fields": [
+                  {
+                    "name": "📥 Downloads",
+                    "value": "[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)",
+                    "inline": true
+                  },
+                  {
+                    "name": "🎮 Compatibility",
+                    "value": "✅ The War Within\n✅ Classic Era\n✅ Cataclysm\n✅ MoP Classic",
+                    "inline": true
+                  },
+                  {
+                    "name": "💬 Support",
+                    "value": "[Join Discord](https://discord.gg/N7kdKAHVVF)\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)",
+                    "inline": true
+                  }
+                ],
+                "footer": {
+                  "text": "RGX Mods - RealmGX Community",
+                  "icon_url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif"
+                },
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+              }]
+            }')
           
-          # Send Discord webhook
+          echo "Sending Discord notification..."
+          echo "Version: $VERSION"
+          
+          # Send to Discord
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d "{
-                 \"content\": \"\",
-                 \"username\": \"SQP Updates\",
-                 \"avatar_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\",
-                 \"embeds\": [{
-                   \"title\": \"🎯 Simple Quest Plates v${VERSION} Released!\",
-                   \"description\": \"**See quest progress at a glance on enemy nameplates!**\\n\\nA new version of Simple Quest Plates has been released!\\n\\n**📝 What's New:**\\n${CHANGELOG_CONTENT}\",
-                   \"url\": \"https://github.com/donniedice/SimpleQuestPlates/releases/tag/v${VERSION}\",
-                   \"color\": 5820057,
-                   \"thumbnail\": {
-                     \"url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png\"
-                   },
-                   \"fields\": [
-                     {
-                       \"name\": \"📥 Downloads\",
-                       \"value\": \"[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\\n[Wago.io](https://addons.wago.io/addons/simple-quest-plates)\\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)\",
-                       \"inline\": true
-                     },
-                     {
-                       \"name\": \"🎮 Compatibility\",
-                       \"value\": \"✅ The War Within\\n✅ Classic Era\\n✅ Cataclysm\\n✅ MoP Classic\",
-                       \"inline\": true
-                     },
-                     {
-                       \"name\": \"💬 Support\",
-                       \"value\": \"[Join Discord](https://discord.gg/N7kdKAHVVF)\\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)\",
-                       \"inline\": true
-                     }
-                   ],
-                   \"footer\": {
-                     \"text\": \"RGX Mods - RealmGX Community | Made with ❤️ by DonnieDice\",
-                     \"icon_url\": \"https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif\"
-                   },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\" 
-                 }]
-               }" 
-               "${{ secrets.DISCORD_WEBHOOK }}"
+               -d "$JSON_PAYLOAD" \
+               "$DISCORD_WEBHOOK"
+
+      - name: Send Discord Failure Notification
+        if: failure()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+          
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION="Unknown"
+          fi
+          
+          JSON_PAYLOAD=$(jq -n \
+            --arg version "$VERSION" \
+            --arg run_id "${{ github.run_id }}" \
+            '{
+              "content": "",
+              "username": "SQP Build Failed",
+              "avatar_url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png",
+              "embeds": [{
+                "title": "❌ SQP Build Failed",
+                "description": "The release workflow encountered an error",
+                "url": "https://github.com/donniedice/SimpleQuestPlates/actions/runs/\($run_id)",
+                "color": 15158332,
+                "fields": [
+                  {
+                    "name": "Version",
+                    "value": $version,
+                    "inline": true
+                  },
+                  {
+                    "name": "Workflow",
+                    "value": "[View Logs](https://github.com/donniedice/SimpleQuestPlates/actions/runs/\($run_id))",
+                    "inline": true
+                  }
+                ],
+                "footer": {
+                  "text": "RGX Mods - Build System",
+                  "icon_url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif"
+                },
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+              }]
+            }')
+          
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "$JSON_PAYLOAD" \
+               "$DISCORD_WEBHOOK"
