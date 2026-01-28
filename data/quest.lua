@@ -43,8 +43,12 @@ end
 function SQP:GetQuestProgress(unitID)
     if not unitID or not UnitExists(unitID) then return end
 
-    local unitName = UnitName(unitID)
-    if not unitName or unitName == "" then return end
+    local nameOk, unitName = pcall(UnitName, unitID)
+    if not nameOk or not unitName then return end
+    -- Verify the name is usable (not a "secret" restricted value)
+    local testOk, testResult = pcall(function() return unitName == "" end)
+    if not testOk then return end
+    if testResult then return end
 
     local itemsNeeded, objectiveCount, progressGlob, questType, questIdForItems = 0, 0, nil, nil, nil
 

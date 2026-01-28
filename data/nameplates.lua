@@ -115,11 +115,11 @@ function SQP:OnPlateShow(nameplate, unitID)
     nameplate._unitID = unitID
     self.ActiveNameplates[nameplate] = nameplate
     
-    local guid = UnitGUID(unitID)
-    if guid then
-        self.PlateGUIDs[guid] = nameplate
+    local ok, guid = pcall(UnitGUID, unitID)
+    if ok and guid then
+        local setOk = pcall(function() self.PlateGUIDs[guid] = nameplate end)
     end
-    
+
     self:UpdateQuestIcon(nameplate, unitID)
 end
 
@@ -129,9 +129,9 @@ function SQP:OnPlateHide(nameplate, unitID)
     
     -- Only try to get GUID if we have a valid unitID
     if unitID then
-        local guid = UnitGUID(unitID)
-        if guid then
-            self.PlateGUIDs[guid] = nil
+        local ok, guid = pcall(UnitGUID, unitID)
+        if ok and guid then
+            pcall(function() self.PlateGUIDs[guid] = nil end)
         end
     end
     
