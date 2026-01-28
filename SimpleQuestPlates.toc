@@ -11,7 +11,7 @@
 ## X-Category: UI Media, Questing & Leveling, Miscellaneous
 ## X-Website: https://github.com/donniedice/SimpleQuestPlates
 ## X-Curse-Project-ID: 1319776
-## X-Wago-ID: ANz0AwK4
+
 ## X-WoWI-ID: 26957 
 
 ## Main loader
