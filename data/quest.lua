@@ -1,6 +1,6 @@
 --=====================================================================================
 -- RGX | Simple Quest Plates! - quest.lua
--- Version: 1.0.0
+
 -- Author: DonnieDice
 -- Description: Quest detection and progress tracking
 --=====================================================================================

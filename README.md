@@ -41,7 +41,7 @@
 
 <!-- Platform Badges -->
 [![CurseForge Downloads](https://img.shields.io/badge/CurseForge-Downloads-orange?style=flat-square&logo=curseforge)](https://www.curseforge.com/wow/addons/simple-quest-plates)
-[![Wago Downloads](https://img.shields.io/badge/Wago.io-Downloads-purple?style=flat-square&logo=wago)](https://addons.wago.io/addons/simple-quest-plates)
+[![Wago Downloads](https://img.shields.io/badge/Wago.io-Downloads-brown?style=flat-square&logo=wago)](https://addons.wago.io/addons/simple-quest-plates)
 [![WoWInterface Downloads](https://img.shields.io/badge/WoWInterface-Downloads-blue?style=flat-square&logo=worldofwarcraft)](https://www.wowinterface.com/downloads/info26795-SimpleQuestPlates.html)
 
 <!-- Additional Stats -->
@@ -50,7 +50,7 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square)](https://github.com/donniedice/SimpleQuestPlates/graphs/commit-activity)
 
 <!-- WoW Compatibility -->
-[![WoW Retail](https://img.shields.io/badge/WoW-The%20War%20Within-green?style=flat-square&logo=worldofwarcraft)](https://worldofwarcraft.com)
+[![WoW Retail](https://img.shields.io/badge/WoW-Midnight-purple?style=flat-square&logo=worldofwarcraft)](https://worldofwarcraft.com)
 
 </div>
 
@@ -232,7 +232,8 @@ _<span style="color:#e67e23">Every donation helps fund new features and improvem
    - [<span style="color:#24292e">GitHub</span>](https://github.com/donniedice/SimpleQuestPlates)
 
 2. **<span style="color:#4ecdc4">Extract</span>** <span style="color:#e67e23">to your</span> <span style="color:#06c">WoW</span> <span style="color:#e67e23">AddOns directory</span><span style="color:#3598db">:</span>
-   - <span style="color:#e67e23">World of Warcraft/_retail_/Interface/AddOns</span>
+   - <span style="color:#e67e23">World of Warcraft/\_retail\_/Interface/AddOns
+</span>
 
 3. **<span style="color:#b96ad9">Restart</span>** <span style="color:#06c">WoW</span> <span style="color:#e67e23">and configure with</span> `/sqp`
 
