@@ -207,7 +207,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
     if not unitID then return end
     
     -- Check if should hide in combat
-    if SQPSettings.hideInCombat and InCombatLockdown() then
+    if SQPSettings.hideInCombat and UnitAffectingCombat("player") then
         Q:Hide()
         return
     end

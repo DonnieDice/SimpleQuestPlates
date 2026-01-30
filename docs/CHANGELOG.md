@@ -1,6 +1,7 @@
 # Changelog
 
 ## v1.6.5
+- Fixed an issue where the "Hide in Combat" option was not working correctly by using a more reliable combat detection API.
 - Refactored quest detection logic to use tooltip scanning, significantly improving accuracy for item-based quests and objectives with multiple mob types.
 - Centralized version number handling to rely on `core.lua` as the single source of truth.
 - Removed redundant version comments from all `.lua` files.
