@@ -57,9 +57,9 @@ jobs:
       - name: Extract Changelog
         id: extract_changelog
         run: |
-          if [ -f "docs/CHANGES.md" ]; then
+          if [ -f "docs/CHANGELOG.md" ]; then
             # Read the changelog and properly escape it for JSON
-            CHANGELOG=$(cat docs/CHANGES.md | head -20 | jq -Rs .)
+            CHANGELOG=$(cat docs/CHANGELOG.md | head -20 | jq -Rs .)
             echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
           else
             echo "changelog=\"No changelog available\"" >> $GITHUB_OUTPUT
@@ -133,7 +133,7 @@ jobs:
                   },
                   {
                     "name": "🎮 Compatibility",
-                    "value": "✅ The War Within\n✅ Classic Era\n✅ Cataclysm\n✅ MoP Classic",
+                    "value": "✅ Midnight\n✅ Classic Era\n✅ Cataclysm\n✅ MoP Classic",
                     "inline": true
                   },
                   {

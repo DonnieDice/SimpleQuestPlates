@@ -42,7 +42,7 @@ local IsInInstance = IsInInstance
 if not SQP then SQP = {} end
 
 -- Addon metadata
-SQP.VERSION = "1.6.5" -- Addon version (also in TOC file)
+SQP.VERSION = "1.6.6" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadata(addonName, "Title")
 SQP.AUTHOR = GetAddOnMetadata(addonName, "Author")
 SQP.LOCALE = GetLocale()
