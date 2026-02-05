@@ -60,15 +60,19 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.6.8" -- Addon version (also in TOC file)
+SQP.VERSION = "1.6.9" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
 
 do
     local _, _, _, tocversion = GetBuildInfo and GetBuildInfo() or nil
-    if type(tocversion) ~= "number" then
-        tocversion = tonumber(GetAddOnMetadataCompat(addonName, "Interface"))
+    tocversion = tonumber(tocversion)
+    if not tocversion then
+        local interfaceString = GetAddOnMetadataCompat(addonName, "Interface")
+        if type(interfaceString) == "string" then
+            tocversion = tonumber(interfaceString:match("%d+"))
+        end
     end
     SQP.tocversion = tocversion or 0
 end
@@ -95,7 +99,7 @@ SQP.DEFAULTS = {
 }
 
 -- Current settings (initialized later)
-SQPSettings = {}
+SQPSettings = SQPSettings or {}
 
 -- Store frames for quest plates
 SQP.QuestPlates = {}
@@ -154,30 +158,39 @@ end
 
 -- Get saved settings or defaults
 function SQP:GetSavedSettings()
-    if SQPSavedSettings == nil then
-        SQPSavedSettings = {}
+    if SQPSettings == nil then
+        SQPSettings = {}
     end
     
     -- Copy defaults if new or missing
     for k, v in pairs(self.DEFAULTS) do
-        if SQPSavedSettings[k] == nil then
-            SQPSavedSettings[k] = v
+        if SQPSettings[k] == nil then
+            SQPSettings[k] = v
         end
     end
     
-    return SQPSavedSettings
+    -- Legacy alias for older code paths
+    SQPSavedSettings = SQPSettings
+    
+    return SQPSettings
 end
 
 -- Save settings
 function SQP:SaveSettings()
-    if SQPSavedSettings then
-        -- Update the global SQPSettings table with current values before saving
-        for k, v in pairs(self.DEFAULTS) do
-            if SQPSettings[k] ~= nil then
-                SQPSavedSettings[k] = SQPSettings[k]
-            end
-        end
+    if SQPSettings == nil then
+        SQPSettings = {}
     end
+    SQPSavedSettings = SQPSettings
+end
+
+-- Set a single setting and persist it
+function SQP:SetSetting(key, value)
+    if not key then return end
+    if SQPSettings == nil then
+        self:InitializeSettings()
+    end
+    SQPSettings[key] = value
+    self:SaveSettings()
 end
 
 -- Reset settings to default
