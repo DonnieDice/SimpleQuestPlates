@@ -280,7 +280,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
                 Q.icon:SetVertexColor(1, 1, 1, 1)
             end
             if SQPSettings.debug then
-                self:PrintMessage(format("Showing quest plate for %s", UnitName(unitID) or "Unknown"))
+                self:PrintMessage(format("Showing quest plate for %s", UnitName(unitID) or "Unknown"), "DEBUG")
             end
         end
     else

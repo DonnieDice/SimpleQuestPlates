@@ -60,10 +60,12 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.6.10" -- Addon version (also in TOC file)
+SQP.VERSION = "1.6.11" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
+SQP.ICON_TEXTURE = GetAddOnMetadataCompat(addonName, "IconTexture")
+    or ("Interface\\AddOns\\" .. (addonName or "SimpleQuestPlates") .. "\\images\\icon")
 
 do
     local _, _, _, tocversion = GetBuildInfo and GetBuildInfo() or nil
@@ -140,9 +142,18 @@ function SQP:ErrorHandler(msg)
 end
 
 -- Print message to chat frame
-function SQP:PrintMessage(msg)
+function SQP:PrintMessage(msg, level)
     if DEFAULT_CHAT_FRAME then
-        DEFAULT_CHAT_FRAME:AddMessage(format("|cff58be81[SQP]|r %s", msg))
+        local icon = format("|T%s:0|t", self.ICON_TEXTURE or "")
+        local prefix = format("%s - |cff58be81[SQP]|r", icon)
+        if level and level ~= "" then
+            local levelColor = "fffff569"
+            if tostring(level) == "DEBUG" then
+                levelColor = "ff9d9d9d"
+            end
+            prefix = prefix .. " |c" .. levelColor .. "[" .. tostring(level) .. "]|r"
+        end
+        DEFAULT_CHAT_FRAME:AddMessage(format("%s %s", prefix, msg))
     end
 end
 
