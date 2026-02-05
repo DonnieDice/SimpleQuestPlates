@@ -1,9 +1,6 @@
 # Changelog
 
-## v1.6.5
-- Fixed an issue where the "Hide in Combat" option was not working correctly by using a more reliable combat detection API.
-- Refactored quest detection logic to use tooltip scanning, significantly improving accuracy for item-based quests and objectives with multiple mob types.
-- Centralized version number handling to rely on `core.lua` as the single source of truth.
-- Removed redundant version comments from all `.lua` files.
-- Streamlined changelog process by consolidating into `CHANGELOG.md` and removing the redundant `CHANGES.md` file.
-- Updated `.pkgmeta` to point to the correct changelog file.
+## v1.6.8
+- Add TBC Anniversary (20505) interface support.
+- Fix addon metadata loading and toc version detection for Classic-era clients.
+- Restore settings initialization alias used by event bootstrap.

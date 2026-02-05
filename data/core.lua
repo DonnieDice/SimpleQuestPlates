@@ -42,10 +42,36 @@ local IsInInstance = IsInInstance
 if not SQP then SQP = {} end
 
 -- Addon metadata
-SQP.VERSION = "1.6.6" -- Addon version (also in TOC file)
-SQP.NAME = GetAddOnMetadata(addonName, "Title")
-SQP.AUTHOR = GetAddOnMetadata(addonName, "Author")
+local function GetAddOnMetadataCompat(name, field)
+    if C_AddOns and C_AddOns.GetAddOnMetadata then
+        return C_AddOns.GetAddOnMetadata(name, field)
+    end
+    if GetAddOnMetadata then
+        return GetAddOnMetadata(name, field)
+    end
+    if GetAddOnInfo then
+        local _, title, notes = GetAddOnInfo(name)
+        if field == "Title" then
+            return title
+        elseif field == "Notes" then
+            return notes
+        end
+    end
+    return nil
+end
+
+SQP.VERSION = "1.6.8" -- Addon version (also in TOC file)
+SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
+SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
+
+do
+    local _, _, _, tocversion = GetBuildInfo and GetBuildInfo() or nil
+    if type(tocversion) ~= "number" then
+        tocversion = tonumber(GetAddOnMetadataCompat(addonName, "Interface"))
+    end
+    SQP.tocversion = tocversion or 0
+end
 
 -- Default settings
 SQP.DEFAULTS = {
@@ -119,6 +145,11 @@ end
 -- Initialize default settings
 function SQP:InitializeSettings()
     SQPSettings = self:GetSavedSettings()
+end
+
+-- Backwards-compatible alias used by events.lua
+function SQP:LoadSettings()
+    self:InitializeSettings()
 end
 
 -- Get saved settings or defaults
