@@ -60,7 +60,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.6.9" -- Addon version (also in TOC file)
+SQP.VERSION = "1.6.10" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -142,7 +142,7 @@ end
 -- Print message to chat frame
 function SQP:PrintMessage(msg)
     if DEFAULT_CHAT_FRAME then
-        DEFAULT_CHAT_FRAME:AddMessage(format("|cff33ff99%s|r: %s", self.NAME, msg))
+        DEFAULT_CHAT_FRAME:AddMessage(format("|cff58be81[SQP]|r %s", msg))
     end
 end
 
