@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.7.2
+- Fix percent icon X/Y offset sliders not moving the "%" text in the live preview.
+
 ## v1.7.1
 - Fix `/sqp` slash command causing an error when typed during combat (combat lockdown).
 - Fix percentage quest display showing "%" stacked on top of the number — now shows combined (e.g. "37%").
