@@ -57,12 +57,13 @@ jobs:
       - name: Extract Changelog
         id: extract_changelog
         run: |
-          if [ -f "docs/CHANGELOG.md" ]; then
-            # Read the changelog and properly escape it for JSON
-            CHANGELOG=$(cat docs/CHANGELOG.md | head -20 | jq -Rs .)
-            echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
+          if [ -f "docs/CHANGES.md" ]; then
+            echo "changelog_file=docs/CHANGES.md" >> $GITHUB_OUTPUT
+          elif [ -f "docs/CHANGELOG.md" ]; then
+            echo "changelog_file=docs/CHANGELOG.md" >> $GITHUB_OUTPUT
           else
-            echo "changelog=\"No changelog available\"" >> $GITHUB_OUTPUT
+            echo "No changelog available" > /tmp/sqp_changes.md
+            echo "changelog_file=/tmp/sqp_changes.md" >> $GITHUB_OUTPUT
           fi
 
       - name: Package and Release
@@ -102,16 +103,13 @@ jobs:
             VERSION="${{ github.ref_name }}"
           fi
           
-          # Get the changelog (already JSON-escaped from previous step)
-          CHANGELOG='${{ steps.extract_changelog.outputs.changelog }}'
-          
           # Build the JSON payload using jq for proper escaping
           JSON_PAYLOAD=$(jq -n \
             --arg emoji "$EMOJI" \
             --arg type_text "$TYPE_TEXT" \
             --arg version "$VERSION" \
             --arg tag "${{ github.ref_name }}" \
-            --argjson changelog "$CHANGELOG" \
+            --rawfile changelog "${{ steps.extract_changelog.outputs.changelog_file }}" \
             --argjson color "$COLOR" \
             '{
               "content": "",
