@@ -130,8 +130,8 @@ function SQP:CreateFontOptions(content)
     
     -- Create button state update function
     local function UpdateOutlineButtons()
-        local width = SQPSettings.outlineWidth or 1
-        thinButton:SetAlpha(width == 1 and 1 or 0.6)
+        local width = SQP:GetOutlineInfo()
+        thinButton:SetAlpha(width == 0 and 1 or 0.6)
         normalButton:SetAlpha(width == 2 and 1 or 0.6)
         thickButton:SetAlpha(width == 3 and 1 or 0.6)
     end
@@ -139,7 +139,7 @@ function SQP:CreateFontOptions(content)
     -- Set button scripts
     
     thinButton:SetScript("OnClick", function()
-        SQP:SetSetting('outlineWidth', 1)
+        SQP:SetSetting('outlineWidth', 0)
         SQP:SetSetting('fontOutline', "")
         UpdateOutlineButtons()
         SQP:RefreshAllNameplates()
@@ -191,6 +191,7 @@ function SQP:CreateFontOptions(content)
         swatch:SetSize(16, 16)
         swatch:SetPoint("CENTER")
         local defaultColors = {
+            outlineColor = {0, 0, 0},
             killColor = {1, 0.82, 0},
             itemColor = {0.2, 1, 0.2},
             percentColor = {0.2, 1, 1}
@@ -242,11 +243,12 @@ function SQP:CreateFontOptions(content)
         return container
     end
     
-    -- Quest type colors (condensed spacing)
-    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_KILL"] or "Kill Quests", "killColor", 20, rightYOffset)
-    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_ITEM"] or "Item Quests", "itemColor", 20, rightYOffset - 25)
-    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_PERCENT"] or "Progress Quests", "percentColor", 20, rightYOffset - 50)
-    rightYOffset = rightYOffset - 85  -- Space for reset button
+    -- Outline + quest type colors (condensed spacing)
+    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_OUTLINE"] or "Outline Color", "outlineColor", 20, rightYOffset)
+    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_KILL"] or "Kill Quests", "killColor", 20, rightYOffset - 25)
+    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_ITEM"] or "Item Quests", "itemColor", 20, rightYOffset - 50)
+    CreateColorPicker(rightColumn, self.L["OPTIONS_COLOR_PERCENT"] or "Progress Quests", "percentColor", 20, rightYOffset - 75)
+    rightYOffset = rightYOffset - 110  -- Space for reset button
     
     -- Reset Font Settings button (in right column)
     local resetFontBtn = self:CreateStyledButton(rightColumn, self.L["OPTIONS_RESET_FONT"] or "Reset Font Settings", 160, 30)
@@ -257,7 +259,8 @@ function SQP:CreateFontOptions(content)
         SQP:SetSetting('fontSize', 12)
         SQP:SetSetting('fontFamily', "Fonts\\FRIZQT__.TTF")
         SQP:SetSetting('fontOutline', "")
-        SQP:SetSetting('outlineWidth', 1)
+        SQP:SetSetting('outlineWidth', 0)
+        SQP:SetSetting('outlineColor', {0, 0, 0})
         SQP:SetSetting('killColor', {1, 0.82, 0})
         SQP:SetSetting('itemColor', {0.2, 1, 0.2})
         SQP:SetSetting('percentColor', {0.2, 1, 1})

@@ -60,6 +60,7 @@ function SQP:CreateOptionsPanel()
     self:CreateGeneralOptions(tabPanels.general.content)
     self:CreateFontOptions(tabPanels.font.content)
     self:CreateIconOptions(tabPanels.icon.content)
+    self:CreateQuestIconOptions(tabPanels.quest_icons.content)
     self:CreateAboutSection(tabPanels.about.content)
     self:CreateRGXSection(tabPanels.rgx.content)
     
@@ -79,6 +80,10 @@ end
 
 -- Open options panel
 function SQP:OpenOptions()
+    if InCombatLockdown() then
+        self:PrintMessage(self.L["ERROR_COMBAT_LOCKDOWN"] or "Cannot open options during combat.")
+        return
+    end
     if Settings and Settings.OpenToCategory and self.settingsCategory then
         Settings.OpenToCategory(self.settingsCategory:GetID())
     elseif InterfaceOptionsFrame_OpenToCategory then

@@ -10,7 +10,7 @@ local addonName, SQP = ...
 -- Create tab button
 function SQP:CreateTabButton(parent, id, text)
     local tab = CreateFrame("Button", nil, parent)
-    tab:SetSize(120, 32)
+    tab:SetSize(100, 32)
     tab.id = id
     
     -- Background
@@ -112,7 +112,8 @@ function SQP:InitializeTabs(container, previewContainer)
     local tabInfo = {
         {id = "general", text = "General"},
         {id = "font", text = "Font"},
-        {id = "icon", text = "Icon"},
+        {id = "icon", text = "Main Icon"},
+        {id = "quest_icons", text = "Quest Icons"},
         {id = "about", text = "About"},
         {id = "rgx", text = "RGX Mods"}
     }
@@ -120,7 +121,7 @@ function SQP:InitializeTabs(container, previewContainer)
     -- Create tabs
     for i, info in ipairs(tabInfo) do
         local tab = self:CreateTabButton(tabContainer, info.id, info.text)
-        tab:SetPoint("LEFT", tabContainer, "LEFT", (i-1) * 125, 0)
+        tab:SetPoint("LEFT", tabContainer, "LEFT", (i-1) * 105, 0)
         
         -- Create panel without scrolling (all tabs fit now)
         local needsScroll = false

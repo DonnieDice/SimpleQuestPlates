@@ -27,6 +27,7 @@
     <Script file="data\options_general.lua"/>
     <Script file="data\options_font.lua"/>
     <Script file="data\options_icon.lua"/>
+    <Script file="data\options_quest_icons.lua"/>
     <Script file="data\options_about.lua"/>
     <Script file="data\options_rgx.lua"/>
 </Ui>
