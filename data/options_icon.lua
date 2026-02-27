@@ -188,7 +188,19 @@ function SQP:CreateIconOptions(content)
         SQP:RefreshAllNameplates()
     end)
     rightYOffset = rightYOffset - 30
- 
+
+    -- Show Icon Background toggle
+    local bgFrame = self:CreateStyledCheckbox(rightColumn,
+        self.L["OPTIONS_SHOW_ICON_BG"] or "Show Icon Background")
+    bgFrame:SetPoint("TOPLEFT", 20, rightYOffset)
+    bgFrame.checkbox:SetChecked(SQPSettings.showIconBackground ~= false)
+    self.optionControls.showIconBackground = bgFrame.checkbox
+    bgFrame.checkbox:SetScript("OnClick", function(self)
+        SQP:SetSetting('showIconBackground', self:GetChecked())
+        SQP:RefreshAllNameplates()
+    end)
+    rightYOffset = rightYOffset - 30
+
     -- Icon tint toggle
     local tintFrame = self:CreateStyledCheckbox(rightColumn, self.L["OPTIONS_ICON_TINT_MAIN"] or "Enable Main Icon Tinting")
     tintFrame:SetPoint("TOPLEFT", 20, rightYOffset)
@@ -279,9 +291,10 @@ function SQP:CreateIconOptions(content)
         SQP:SetSetting('relativeTo', "LEFT")
         SQP:SetSetting('scale', 1.0)
         SQP:SetSetting('animateQuestIcon', false)
+        SQP:SetSetting('showIconBackground', true)
         SQP:SetSetting('iconTintMain', false)
         SQP:SetSetting('iconTintMainColor', {1, 1, 1})
-        
+
         xSlider:SetValue(0)
         xValue:SetText("0")
         ySlider:SetValue(0)
@@ -290,6 +303,9 @@ function SQP:CreateIconOptions(content)
         scaleValue:SetText("1.0")
         if self.optionControls.animateQuestIcon then
             self.optionControls.animateQuestIcon:SetChecked(false)
+        end
+        if self.optionControls.showIconBackground then
+            self.optionControls.showIconBackground:SetChecked(true)
         end
         if self.optionControls.iconTintMain then
             self.optionControls.iconTintMain:SetChecked(false)

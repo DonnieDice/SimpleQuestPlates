@@ -241,11 +241,13 @@ function SQP:CreatePreviewSection(parent)
 
         -- Update quest type icons
         if self.questType == "loot" then
-            icon:Show()
+            if SQPSettings.showIconBackground ~= false then icon:Show() else icon:Hide() end
             if self.percentIcon then self.percentIcon:Hide() end
             if self.percentIconOutline then self.percentIconOutline:Hide() end
             if self.lootIcon then
-                if SQPSettings.showLootIcon ~= false then
+                if SQPSettings.showIconBackground == false then
+                    self.lootIcon:Hide()
+                elseif SQPSettings.showLootIcon ~= false then
                     self.lootIcon:Show()
                 else
                     self.lootIcon:Hide()
@@ -254,19 +256,31 @@ function SQP:CreatePreviewSection(parent)
             if self.killIcon then
                 self.killIcon:Hide()
             end
+            if SQPSettings.showIconBackground == false then
+                local sampleText = "2/5"
+                self.iconText:SetText(sampleText)
+                if self.iconTextOutline then self.iconTextOutline:SetText(sampleText) end
+            end
         elseif self.questType == "kill" then
-            icon:Show()
+            if SQPSettings.showIconBackground ~= false then icon:Show() else icon:Hide() end
             if self.percentIcon then self.percentIcon:Hide() end
             if self.percentIconOutline then self.percentIconOutline:Hide() end
             if self.lootIcon then
                 self.lootIcon:Hide()
             end
             if self.killIcon then
-                if SQPSettings.showKillIcon ~= false then
+                if SQPSettings.showIconBackground == false then
+                    self.killIcon:Hide()
+                elseif SQPSettings.showKillIcon ~= false then
                     self.killIcon:Show()
                 else
                     self.killIcon:Hide()
                 end
+            end
+            if SQPSettings.showIconBackground == false then
+                local sampleText = "5/8"
+                self.iconText:SetText(sampleText)
+                if self.iconTextOutline then self.iconTextOutline:SetText(sampleText) end
             end
         else
             icon:Hide()

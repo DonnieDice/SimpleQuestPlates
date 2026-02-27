@@ -373,12 +373,20 @@ function SQP:UpdateQuestIcon(plate, unitID)
         if itemsNeeded > 0 then
             showIcon = true
             displayText = itemsNeeded
+            if SQPSettings.showIconBackground == false then
+                local px, py = strmatch(progressGlob or "", '(%d+)%s*/%s*(%d+)')
+                if px and py then displayText = px .. "/" .. py end
+            end
             displayColor = SQPSettings.itemColor or {0.2, 1, 0.2}
             Q.hasItem = true
             Q.questType = questType
         elseif objectiveCount > 0 then
             showIcon = true
             displayText = objectiveCount
+            if SQPSettings.showIconBackground == false then
+                local px, py = strmatch(progressGlob or "", '(%d+)%s*/%s*(%d+)')
+                if px and py then displayText = px .. "/" .. py end
+            end
             if questType == 1 then
                 displayColor = SQPSettings.killColor or {1, 0.82, 0}
             elseif questType == 3 then
@@ -448,7 +456,11 @@ function SQP:UpdateQuestIcon(plate, unitID)
             Q.percentIconOutline:Hide()
         end
         if Q.icon then
-            Q.icon:Show()
+            if SQPSettings.showIconBackground ~= false then
+                Q.icon:Show()
+            else
+                Q.icon:Hide()
+            end
         end
     end
 
@@ -523,41 +535,46 @@ function SQP:UpdateQuestIcon(plate, unitID)
 
     -- Update quest type icons based on settings
     if Q then
-        if Q.questRelatedOnly then
-            if Q.lootIcon then
-                Q.lootIcon:Hide()
-            end
-            if Q.killIcon then
-                Q.killIcon:Hide()
-            end
-        elseif Q.hasItem then
-            if Q.lootIcon then
-                if SQPSettings.showLootIcon ~= false then
-                    Q.lootIcon:Show()
-                else
+        if SQPSettings.showIconBackground == false then
+            if Q.lootIcon then Q.lootIcon:Hide() end
+            if Q.killIcon then Q.killIcon:Hide() end
+        else
+            if Q.questRelatedOnly then
+                if Q.lootIcon then
                     Q.lootIcon:Hide()
                 end
-            end
-            if Q.killIcon then
-                Q.killIcon:Hide()
-            end
-        elseif questType == 1 then
-            if Q.lootIcon then
-                Q.lootIcon:Hide()
-            end
-            if Q.killIcon then
-                if SQPSettings.showKillIcon ~= false then
-                    Q.killIcon:Show()
-                else
+                if Q.killIcon then
                     Q.killIcon:Hide()
                 end
-            end
-        else
-            if Q.lootIcon then
-                Q.lootIcon:Hide()
-            end
-            if Q.killIcon then
-                Q.killIcon:Hide()
+            elseif Q.hasItem then
+                if Q.lootIcon then
+                    if SQPSettings.showLootIcon ~= false then
+                        Q.lootIcon:Show()
+                    else
+                        Q.lootIcon:Hide()
+                    end
+                end
+                if Q.killIcon then
+                    Q.killIcon:Hide()
+                end
+            elseif questType == 1 then
+                if Q.lootIcon then
+                    Q.lootIcon:Hide()
+                end
+                if Q.killIcon then
+                    if SQPSettings.showKillIcon ~= false then
+                        Q.killIcon:Show()
+                    else
+                        Q.killIcon:Hide()
+                    end
+                end
+            else
+                if Q.lootIcon then
+                    Q.lootIcon:Hide()
+                end
+                if Q.killIcon then
+                    Q.killIcon:Hide()
+                end
             end
         end
     end
