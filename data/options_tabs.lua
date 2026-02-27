@@ -114,7 +114,7 @@ function SQP:InitializeTabs(container, previewContainer)
         {id = "font",        text = "Font"},
         {id = "colors",      text = "Colors"},
         {id = "icon",        text = "Main Icon"},
-        {id = "quest_icons", text = "Quest Icons"},
+        {id = "quest_icons", text = "Task Icons"},
         {id = "about",       text = "About"},
     }
     

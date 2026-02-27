@@ -36,7 +36,7 @@ function SQP:CreateColorsOptions(content)
     }
     local swatches = {}
 
-    local function MakeColorRow(parent, label, key, yOff)
+    local function MakeColorRow(parent, label, key, yOff, previewMode)
         local btn = CreateFrame("Button", nil, parent)
         btn:SetSize(20, 20)
         btn:SetPoint("TOPLEFT", 20, yOff)
@@ -55,7 +55,30 @@ function SQP:CreateColorsOptions(content)
         lbl:SetPoint("LEFT", btn, "RIGHT", 6, 0)
         lbl:SetText(label)
 
+        local resetBtn = SQP:CreateInlineResetButton(parent, function()
+            local defVal = defaults[key]
+            if defVal then
+                SQP:SetSetting(key, {unpack(defVal)})
+                sw:SetColorTexture(unpack(defVal))
+                SQP:RefreshAllNameplates()
+            end
+        end)
+        resetBtn:SetPoint("LEFT", lbl, "RIGHT", 5, 0)
+
+        local function SwitchPreview()
+            if previewMode and SQP.previewFrame then
+                if previewMode == "kill" and SQP.previewFrame.activateKillMode then
+                    SQP.previewFrame.activateKillMode()
+                elseif previewMode == "loot" and SQP.previewFrame.activateLootMode then
+                    SQP.previewFrame.activateLootMode()
+                elseif previewMode == "percent" and SQP.previewFrame.activatePercentMode then
+                    SQP.previewFrame.activatePercentMode()
+                end
+            end
+        end
+
         btn:SetScript("OnClick", function()
+            SwitchPreview()
             local r, g, b = unpack(SQPSettings[key] or defaults[key])
             local info = { r = r, g = g, b = b, hasOpacity = false }
             info.swatchFunc = function()
@@ -73,21 +96,10 @@ function SQP:CreateColorsOptions(content)
         end)
     end
 
-    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_KILL"]    or "Kill Quests",      "killColor",    yOffset) yOffset = yOffset - 26
-    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_ITEM"]    or "Item Quests",      "itemColor",    yOffset) yOffset = yOffset - 26
-    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_PERCENT"] or "Progress Quests",  "percentColor", yOffset) yOffset = yOffset - 26
-    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_OUTLINE"] or "Text Outline",     "outlineColor", yOffset) yOffset = yOffset - 36
-
-    local resetColorsBtn = self:CreateStyledButton(leftColumn, "Reset Text Colors", 160, 26)
-    resetColorsBtn:SetPoint("TOPLEFT", 20, yOffset)
-    resetColorsBtn:SetAlpha(0.8)
-    resetColorsBtn:SetScript("OnClick", function()
-        for key, val in pairs(defaults) do
-            SQP:SetSetting(key, val)
-            if swatches[key] then swatches[key]:SetColorTexture(unpack(val)) end
-        end
-        SQP:RefreshAllNameplates()
-    end)
+    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_KILL"]    or "Kill Quests",      "killColor",    yOffset, "kill")    yOffset = yOffset - 26
+    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_ITEM"]    or "Item Quests",      "itemColor",    yOffset, "loot")    yOffset = yOffset - 26
+    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_PERCENT"] or "Progress Quests",  "percentColor", yOffset, "percent") yOffset = yOffset - 26
+    MakeColorRow(leftColumn, self.L["OPTIONS_COLOR_OUTLINE"] or "Text Outline",     "outlineColor", yOffset, nil)       yOffset = yOffset - 26
 
     -- ── RIGHT COLUMN: Icon tinting ───────────────────────────────────────────
     local rightYOffset = -15
@@ -97,7 +109,7 @@ function SQP:CreateColorsOptions(content)
     tintTitle:SetText("|cff58be81Icon Tinting|r")
     rightYOffset = rightYOffset - 22
 
-    -- Helper: tint row (checkbox + color picker)
+    -- Helper: tint section (checkbox + color picker)
     local function MakeTintSection(parent, header, tintKey, colorKey, yOff)
         local hdr = parent:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
         hdr:SetPoint("TOPLEFT", 20, yOff)
@@ -125,15 +137,19 @@ function SQP:CreateColorsOptions(content)
         colorLbl:SetPoint("LEFT", colorBtn, "RIGHT", 6, 0)
         colorLbl:SetText("Tint Color")
 
-        local resetBtn = SQP:CreateStyledButton(parent, "Reset", 50, 20)
-        resetBtn:SetPoint("LEFT", colorLbl, "RIGHT", 8, 0)
-        resetBtn:SetAlpha(0.8)
+        local resetBtn = SQP:CreateInlineResetButton(parent, function()
+            if not SQPSettings[tintKey] then return end
+            SQP:SetSetting(colorKey, {1,1,1})
+            sw:SetColorTexture(1,1,1)
+            SQP:RefreshAllNameplates()
+        end)
+        resetBtn:SetPoint("LEFT", colorLbl, "RIGHT", 6, 0)
 
         local function UpdateAlpha()
             local a = SQPSettings[tintKey] == true and 1 or 0.4
             colorBtn:SetAlpha(a)
             colorLbl:SetAlpha(a)
-            resetBtn:SetAlpha(a * 0.8)
+            resetBtn:SetAlpha(a * 0.7)
         end
 
         cbFrame.checkbox:SetScript("OnClick", function(self)
@@ -160,17 +176,10 @@ function SQP:CreateColorsOptions(content)
             ColorPickerFrame:SetupColorPickerAndShow(info)
         end)
 
-        resetBtn:SetScript("OnClick", function()
-            if not SQPSettings[tintKey] then return end
-            SQP:SetSetting(colorKey, {1,1,1})
-            sw:SetColorTexture(1,1,1)
-            SQP:RefreshAllNameplates()
-        end)
-
         UpdateAlpha()
-        return yOff - 36  -- return new Y after the color row
+        return yOff - 36
     end
 
     rightYOffset = MakeTintSection(rightColumn, "Main Icon", "iconTintMain", "iconTintMainColor", rightYOffset)
-    rightYOffset = MakeTintSection(rightColumn, "Quest Icons (Kill/Loot)", "iconTintQuest", "iconTintQuestColor", rightYOffset)
+    rightYOffset = MakeTintSection(rightColumn, "Task Icons (Kill/Loot)", "iconTintQuest", "iconTintQuestColor", rightYOffset)
 end

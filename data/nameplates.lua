@@ -43,6 +43,26 @@ function SQP:CreateQuestPlate(nameplate)
     )
     questFrame.icon = icon
 
+    -- Dramatic pulse for main quest icon (more noticeable)
+    local function CreateMainPulse(region)
+        local pulse = region:CreateAnimationGroup()
+        pulse:SetLooping("REPEAT")
+        local fadeOut = pulse:CreateAnimation("Alpha")
+        fadeOut:SetOrder(1)
+        fadeOut:SetFromAlpha(1)
+        fadeOut:SetToAlpha(0.15)
+        fadeOut:SetDuration(0.5)
+        fadeOut:SetSmoothing("IN_OUT")
+        local fadeIn = pulse:CreateAnimation("Alpha")
+        fadeIn:SetOrder(2)
+        fadeIn:SetFromAlpha(0.15)
+        fadeIn:SetToAlpha(1)
+        fadeIn:SetDuration(0.5)
+        fadeIn:SetSmoothing("IN_OUT")
+        return pulse
+    end
+
+    -- Subtle pulse for task type icons (kill/loot)
     local function CreatePulse(region)
         local pulse = region:CreateAnimationGroup()
         pulse:SetLooping("REPEAT")
@@ -153,7 +173,7 @@ function SQP:CreateQuestPlate(nameplate)
     questFrame.iconTextOutline = iconTextOutline
     questFrame.percentIcon = percentIcon
     questFrame.percentIconOutline = percentIconOutline
-    questFrame.iconPulse = CreatePulse(icon)
+    questFrame.iconPulse = CreateMainPulse(icon)
     questFrame.percentPulse = CreatePulse(percentIcon)
     questFrame.percentOutlinePulse = CreatePulse(percentIconOutline)
     
@@ -244,7 +264,8 @@ function SQP:UpdateQuestFont(fontString, outlineFontString, percentFontString, p
     local fontSize = SQPSettings.fontSize or 12
     local outlineWidth, fontOutline, noOutline = self:GetOutlineInfo()
     local outlineColor = SQPSettings.outlineColor or {0, 0, 0}
-    local r, g, b, a = unpack(outlineColor)
+    local r, g, b = unpack(outlineColor)
+    local a = SQPSettings.outlineAlpha ~= nil and SQPSettings.outlineAlpha or 1.0
     
     -- Set font (outline drawn by separate layer when available)
     local mainOutline = outlineFontString and "" or (noOutline and "" or fontOutline)

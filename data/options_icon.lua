@@ -34,14 +34,22 @@ function SQP:CreateIconOptions(content)
     xLabel:SetPoint("TOPLEFT", 20, yOffset)
     xLabel:SetText(self.L["OPTIONS_OFFSET_X"] or "Horizontal Offset")
 
-    local xSlider = self:CreateStyledSlider(leftColumn, -50, 50, 1, 190)
+    local xSlider = self:CreateStyledSlider(leftColumn, -50, 50, 1, 160)
     xSlider:SetPoint("TOPLEFT", xLabel, "BOTTOMLEFT", 0, -5)
     xSlider:SetValue(SQPSettings.offsetX)
     self.optionControls.offsetX = xSlider
 
     local xValue = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    xValue:SetPoint("LEFT", xSlider, "RIGHT", 8, 0)
+    xValue:SetPoint("LEFT", xSlider, "RIGHT", 6, 0)
     xValue:SetText(tostring(SQPSettings.offsetX))
+
+    local xReset = self:CreateInlineResetButton(leftColumn, function()
+        SQP:SetSetting('offsetX', 0)
+        xSlider:SetValue(0)
+        xValue:SetText("0")
+        SQP:RefreshAllNameplates()
+    end)
+    xReset:SetPoint("LEFT", xValue, "RIGHT", 4, 0)
 
     xSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
@@ -56,14 +64,22 @@ function SQP:CreateIconOptions(content)
     yLabel:SetPoint("TOPLEFT", 20, yOffset)
     yLabel:SetText(self.L["OPTIONS_OFFSET_Y"] or "Vertical Offset")
 
-    local ySlider = self:CreateStyledSlider(leftColumn, -50, 50, 1, 190)
+    local ySlider = self:CreateStyledSlider(leftColumn, -50, 50, 1, 160)
     ySlider:SetPoint("TOPLEFT", yLabel, "BOTTOMLEFT", 0, -5)
     ySlider:SetValue(SQPSettings.offsetY)
     self.optionControls.offsetY = ySlider
 
     local yValue = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    yValue:SetPoint("LEFT", ySlider, "RIGHT", 8, 0)
+    yValue:SetPoint("LEFT", ySlider, "RIGHT", 6, 0)
     yValue:SetText(tostring(SQPSettings.offsetY))
+
+    local yReset = self:CreateInlineResetButton(leftColumn, function()
+        SQP:SetSetting('offsetY', 0)
+        ySlider:SetValue(0)
+        yValue:SetText("0")
+        SQP:RefreshAllNameplates()
+    end)
+    yReset:SetPoint("LEFT", yValue, "RIGHT", 4, 0)
 
     ySlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
@@ -105,6 +121,15 @@ function SQP:CreateIconOptions(content)
         SQP:RefreshAllNameplates()
     end)
 
+    -- Nameplate side reset (small button to the right of both side buttons)
+    local anchorReset = self:CreateInlineResetButton(leftColumn, function()
+        SQP:SetSetting('anchor', "RIGHT")
+        SQP:SetSetting('relativeTo', "LEFT")
+        UpdateAnchorButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    anchorReset:SetPoint("LEFT", rightBtn, "RIGHT", 6, 0)
+
     -- ── RIGHT COLUMN: Style ──────────────────────────────────────────────────
     local rightYOffset = -15
 
@@ -118,14 +143,22 @@ function SQP:CreateIconOptions(content)
     scaleLabel:SetPoint("TOPLEFT", 20, rightYOffset)
     scaleLabel:SetText(self.L["OPTIONS_GLOBAL_SCALE"] or "Global Scale")
 
-    local scaleSlider = self:CreateStyledSlider(rightColumn, 0.5, 3.0, 0.1, 190)
+    local scaleSlider = self:CreateStyledSlider(rightColumn, 0.5, 3.0, 0.1, 160)
     scaleSlider:SetPoint("TOPLEFT", scaleLabel, "BOTTOMLEFT", 0, -5)
     scaleSlider:SetValue(SQPSettings.scale)
     self.optionControls.scale = scaleSlider
 
     local scaleValue = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    scaleValue:SetPoint("LEFT", scaleSlider, "RIGHT", 8, 0)
+    scaleValue:SetPoint("LEFT", scaleSlider, "RIGHT", 6, 0)
     scaleValue:SetText(format("%.1f", SQPSettings.scale))
+
+    local scaleReset = self:CreateInlineResetButton(rightColumn, function()
+        SQP:SetSetting('scale', 1.0)
+        scaleSlider:SetValue(1.0)
+        scaleValue:SetText("1.0")
+        SQP:RefreshAllNameplates()
+    end)
+    scaleReset:SetPoint("LEFT", scaleValue, "RIGHT", 4, 0)
 
     scaleSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value * 10 + 0.5) / 10
@@ -155,34 +188,6 @@ function SQP:CreateIconOptions(content)
     self.optionControls.animateQuestIcon = animateFrame.checkbox
     animateFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting('animateQuestIcon', self:GetChecked())
-        SQP:RefreshAllNameplates()
-    end)
-    rightYOffset = rightYOffset - 36
-
-    -- Reset Main Icon Settings
-    local resetBtn = self:CreateStyledButton(rightColumn,
-        self.L["OPTIONS_RESET_MAIN_ICON"] or "Reset Main Icon", 150, 26)
-    resetBtn:SetPoint("TOPLEFT", 20, rightYOffset)
-    resetBtn:SetAlpha(0.8)
-    resetBtn:SetScript("OnClick", function()
-        SQP:SetSetting('offsetX', 0)
-        SQP:SetSetting('offsetY', 0)
-        SQP:SetSetting('anchor', "RIGHT")
-        SQP:SetSetting('relativeTo', "LEFT")
-        SQP:SetSetting('scale', 1.0)
-        SQP:SetSetting('showIconBackground', true)
-        SQP:SetSetting('animateQuestIcon', false)
-
-        xSlider:SetValue(0) ; xValue:SetText("0")
-        ySlider:SetValue(0) ; yValue:SetText("0")
-        scaleSlider:SetValue(1.0) ; scaleValue:SetText("1.0")
-        if self.optionControls.showIconBackground then
-            self.optionControls.showIconBackground:SetChecked(true)
-        end
-        if self.optionControls.animateQuestIcon then
-            self.optionControls.animateQuestIcon:SetChecked(false)
-        end
-        UpdateAnchorButtons()
         SQP:RefreshAllNameplates()
     end)
 end

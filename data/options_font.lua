@@ -27,18 +27,26 @@ function SQP:CreateFontOptions(content)
     fontTitle:SetText("|cff58be81" .. (self.L["OPTIONS_FONT_SETTINGS"] or "Font Settings") .. "|r")
     yOffset = yOffset - 22
 
-    -- Font Size
+    -- ── Font Size ────────────────────────────────────────────────────────────
     local fontSizeLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     fontSizeLabel:SetPoint("TOPLEFT", 20, yOffset)
     fontSizeLabel:SetText(self.L["OPTIONS_FONT_SIZE"] or "Font Size")
 
-    local fontSlider = self:CreateStyledSlider(leftColumn, 8, 20, 1, 190)
+    local fontSlider = self:CreateStyledSlider(leftColumn, 8, 20, 1, 160)
     fontSlider:SetPoint("TOPLEFT", fontSizeLabel, "BOTTOMLEFT", 0, -5)
     fontSlider:SetValue(SQPSettings.fontSize or 12)
 
     local fontValue = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    fontValue:SetPoint("LEFT", fontSlider, "RIGHT", 8, 0)
+    fontValue:SetPoint("LEFT", fontSlider, "RIGHT", 6, 0)
     fontValue:SetText(tostring(SQPSettings.fontSize or 12))
+
+    local fontSizeReset = self:CreateInlineResetButton(leftColumn, function()
+        SQP:SetSetting('fontSize', 12)
+        fontSlider:SetValue(12)
+        fontValue:SetText("12")
+        SQP:RefreshAllNameplates()
+    end)
+    fontSizeReset:SetPoint("LEFT", fontValue, "RIGHT", 4, 0)
 
     fontSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
@@ -48,10 +56,17 @@ function SQP:CreateFontOptions(content)
     end)
     yOffset = yOffset - 48
 
-    -- Font Family
+    -- ── Font Family ──────────────────────────────────────────────────────────
     local fontFamilyLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     fontFamilyLabel:SetPoint("TOPLEFT", 20, yOffset)
     fontFamilyLabel:SetText(self.L["OPTIONS_FONT_FAMILY"] or "Font Family")
+
+    local fontFamilyReset = self:CreateInlineResetButton(leftColumn, function()
+        SQP:SetSetting('fontFamily', "Fonts\\FRIZQT__.TTF")
+        UIDropDownMenu_SetText(fontDropdown, "Default (Friz Quadrata)")
+        SQP:RefreshAllNameplates()
+    end)
+    fontFamilyReset:SetPoint("LEFT", fontFamilyLabel, "RIGHT", 5, 0)
     yOffset = yOffset - 22
 
     local fontDropdown = CreateFrame("Frame", "SQPFontDropdown", leftColumn, "UIDropDownMenuTemplate")
@@ -92,7 +107,7 @@ function SQP:CreateFontOptions(content)
     end
     yOffset = yOffset - 38
 
-    -- Outline Width slider (0=None, 1=Normal, 2=Thick)
+    -- ── Outline Width ────────────────────────────────────────────────────────
     local outlineLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     outlineLabel:SetPoint("TOPLEFT", 20, yOffset)
     outlineLabel:SetText(self.L["OPTIONS_OUTLINE_WIDTH"] or "Outline Width")
@@ -104,16 +119,25 @@ function SQP:CreateFontOptions(content)
         if w >= 3 then return 2 elseif w >= 2 then return 1 else return 0 end
     end
 
-    local outlineSlider = self:CreateStyledSlider(leftColumn, 0, 2, 1, 190)
+    local outlineSlider = self:CreateStyledSlider(leftColumn, 0, 2, 1, 160)
     outlineSlider:SetPoint("TOPLEFT", outlineLabel, "BOTTOMLEFT", 0, -5)
     local initVal = GetSliderVal()
     outlineSlider:SetValue(initVal)
     self.optionControls.outlineSlider = outlineSlider
 
     local outlineValueText = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    outlineValueText:SetPoint("LEFT", outlineSlider, "RIGHT", 8, 0)
+    outlineValueText:SetPoint("LEFT", outlineSlider, "RIGHT", 6, 0)
     outlineValueText:SetText(outlineNames[initVal + 1])
     self.optionControls.outlineValueText = outlineValueText
+
+    local outlineReset = self:CreateInlineResetButton(leftColumn, function()
+        SQP:SetSetting('outlineWidth', 2)
+        SQP:SetSetting('fontOutline', "OUTLINE")
+        outlineSlider:SetValue(1)
+        outlineValueText:SetText("Normal")
+        SQP:RefreshAllNameplates()
+    end)
+    outlineReset:SetPoint("LEFT", outlineValueText, "RIGHT", 4, 0)
 
     outlineSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5)
@@ -132,20 +156,34 @@ function SQP:CreateFontOptions(content)
     end)
     yOffset = yOffset - 48
 
-    -- Reset Font button
-    local resetFontBtn = self:CreateStyledButton(leftColumn, "Reset Font Settings", 160, 26)
-    resetFontBtn:SetPoint("TOPLEFT", 20, yOffset)
-    resetFontBtn:SetAlpha(0.8)
-    resetFontBtn:SetScript("OnClick", function()
-        SQP:SetSetting('fontSize', 12)
-        SQP:SetSetting('fontFamily', "Fonts\\FRIZQT__.TTF")
-        SQP:SetSetting('fontOutline', "OUTLINE")
-        SQP:SetSetting('outlineWidth', 2)
-        fontSlider:SetValue(12)
-        fontValue:SetText("12")
-        UIDropDownMenu_SetText(fontDropdown, "Default (Friz Quadrata)")
-        outlineSlider:SetValue(1)
-        outlineValueText:SetText("Normal")
+    -- ── Outline Opacity ──────────────────────────────────────────────────────
+    local alphaLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    alphaLabel:SetPoint("TOPLEFT", 20, yOffset)
+    alphaLabel:SetText("Outline Opacity")
+
+    local initAlpha = math.floor((SQPSettings.outlineAlpha or 1.0) * 100 + 0.5)
+
+    local alphaSlider = self:CreateStyledSlider(leftColumn, 0, 100, 5, 160)
+    alphaSlider:SetPoint("TOPLEFT", alphaLabel, "BOTTOMLEFT", 0, -5)
+    alphaSlider:SetValue(initAlpha)
+    self.optionControls.outlineAlphaSlider = alphaSlider
+
+    local alphaValue = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    alphaValue:SetPoint("LEFT", alphaSlider, "RIGHT", 6, 0)
+    alphaValue:SetText(initAlpha .. "%")
+
+    local alphaReset = self:CreateInlineResetButton(leftColumn, function()
+        SQP:SetSetting('outlineAlpha', 1.0)
+        alphaSlider:SetValue(100)
+        alphaValue:SetText("100%")
+        SQP:RefreshAllNameplates()
+    end)
+    alphaReset:SetPoint("LEFT", alphaValue, "RIGHT", 4, 0)
+
+    alphaSlider:SetScript("OnValueChanged", function(self, value)
+        value = math.floor(value / 5 + 0.5) * 5
+        SQP:SetSetting('outlineAlpha', value / 100)
+        alphaValue:SetText(value .. "%")
         SQP:RefreshAllNameplates()
     end)
 
@@ -159,7 +197,7 @@ function SQP:CreateFontOptions(content)
 
     local colorNote = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
     colorNote:SetPoint("TOPLEFT", 20, rightYOffset)
-    colorNote:SetText("|cffaaaaaaApplied when outline width > None|r")
+    colorNote:SetText("|cffaaaaaaApplied when Outline Width > None|r")
     rightYOffset = rightYOffset - 22
 
     local colorBtn = CreateFrame("Button", nil, rightColumn)
@@ -177,14 +215,12 @@ function SQP:CreateFontOptions(content)
     colorLbl:SetPoint("LEFT", colorBtn, "RIGHT", 6, 0)
     colorLbl:SetText("Outline Color")
 
-    local colorResetBtn = self:CreateStyledButton(rightColumn, "Reset", 50, 20)
-    colorResetBtn:SetPoint("LEFT", colorLbl, "RIGHT", 8, 0)
-    colorResetBtn:SetAlpha(0.8)
-    colorResetBtn:SetScript("OnClick", function()
+    local colorResetBtn = self:CreateInlineResetButton(rightColumn, function()
         SQP:SetSetting('outlineColor', {0,0,0})
         sw:SetColorTexture(0,0,0)
         SQP:RefreshAllNameplates()
     end)
+    colorResetBtn:SetPoint("LEFT", colorLbl, "RIGHT", 6, 0)
 
     colorBtn:SetScript("OnClick", function()
         local r, g, b = unpack(SQPSettings.outlineColor or {0,0,0})

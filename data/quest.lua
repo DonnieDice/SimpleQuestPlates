@@ -535,11 +535,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
 
     -- Update quest type icons based on settings
     if Q then
-        if SQPSettings.showIconBackground == false then
-            if Q.lootIcon then Q.lootIcon:Hide() end
-            if Q.killIcon then Q.killIcon:Hide() end
-        else
-            if Q.questRelatedOnly then
+        if Q.questRelatedOnly then
                 if Q.lootIcon then
                     Q.lootIcon:Hide()
                 end
@@ -576,7 +572,6 @@ function SQP:UpdateQuestIcon(plate, unitID)
                     Q.killIcon:Hide()
                 end
             end
-        end
     end
 
     if Q then
