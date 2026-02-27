@@ -71,6 +71,9 @@ function SQP:CreateQuestIconOptions(content)
         newValue = math.floor(newValue + 0.5)
         SQP:SetSetting('percentIconOffsetX', newValue)
         pxLabel:SetText(string.format("%s: %d", SQP.L["OPTIONS_PERCENT_OFFSET_X"] or "Offset X", newValue))
+        if SQP.previewFrame and SQP.previewFrame.questType ~= "percent" and SQP.previewFrame.activatePercentMode then
+            SQP.previewFrame.activatePercentMode()
+        end
         SQP:RefreshAllNameplates()
     end)
     yOffset = yOffset - 36
@@ -89,6 +92,9 @@ function SQP:CreateQuestIconOptions(content)
         newValue = math.floor(newValue + 0.5)
         SQP:SetSetting('percentIconOffsetY', newValue)
         pyLabel:SetText(string.format("%s: %d", SQP.L["OPTIONS_PERCENT_OFFSET_Y"] or "Offset Y", newValue))
+        if SQP.previewFrame and SQP.previewFrame.questType ~= "percent" and SQP.previewFrame.activatePercentMode then
+            SQP.previewFrame.activatePercentMode()
+        end
         SQP:RefreshAllNameplates()
     end)
 

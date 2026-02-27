@@ -389,10 +389,21 @@ function SQP:CreatePreviewSection(parent)
     -- Set initial active button and trigger its click
     SetActiveButton(killButton)
     killButton:GetScript("OnClick")(killButton)
-    
+
     -- Store additional references for color updates
     previewFrame.buttons = {killButton, lootButton, percentButton}
-    
+
+    -- External helper: switch preview to percent mode (used by percent offset sliders)
+    previewFrame.activatePercentMode = function()
+        iconText:SetText("75")
+        iconTextOutline:SetText("75")
+        iconText:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
+        lootIcon:Hide()
+        killIcon:Hide()
+        previewFrame.questType = "percent"
+        SetActiveButton(percentButton)
+    end
+
     return previewFrame
 end
 
