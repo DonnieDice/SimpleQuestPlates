@@ -260,6 +260,9 @@ function SQP:CreatePreviewSection(parent)
                 local sampleText = "2/5"
                 self.iconText:SetText(sampleText)
                 if self.iconTextOutline then self.iconTextOutline:SetText(sampleText) end
+            else
+                self.iconText:SetText("2")
+                if self.iconTextOutline then self.iconTextOutline:SetText("2") end
             end
         elseif self.questType == "kill" then
             if SQPSettings.showIconBackground ~= false then icon:Show() else icon:Hide() end
@@ -281,6 +284,9 @@ function SQP:CreatePreviewSection(parent)
                 local sampleText = "5/8"
                 self.iconText:SetText(sampleText)
                 if self.iconTextOutline then self.iconTextOutline:SetText(sampleText) end
+            else
+                self.iconText:SetText("5")
+                if self.iconTextOutline then self.iconTextOutline:SetText("5") end
             end
         else
             icon:Hide()

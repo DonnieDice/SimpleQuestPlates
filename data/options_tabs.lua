@@ -115,7 +115,6 @@ function SQP:InitializeTabs(container, previewContainer)
         {id = "icon", text = "Main Icon"},
         {id = "quest_icons", text = "Quest Icons"},
         {id = "about", text = "About"},
-        {id = "rgx", text = "RGX Mods"}
     }
     
     -- Create tabs

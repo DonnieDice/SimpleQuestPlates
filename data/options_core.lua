@@ -62,7 +62,6 @@ function SQP:CreateOptionsPanel()
     self:CreateIconOptions(tabPanels.icon.content)
     self:CreateQuestIconOptions(tabPanels.quest_icons.content)
     self:CreateAboutSection(tabPanels.about.content)
-    self:CreateRGXSection(tabPanels.rgx.content)
     
     -- Register the panel
     if Settings and Settings.RegisterCanvasLayoutCategory then
