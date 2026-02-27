@@ -103,7 +103,7 @@ local function FindObjectiveTypeForText(text)
     if not textNorm or textNorm == "" then return nil end
     for i = 1, SQP.Compat.GetNumQuestLogEntries() do
         local info = SQP.Compat.GetInfo(i)
-        if info and not info.isHeader and (not info.isComplete or info.isComplete == 0) then
+        if info and not info.isHeader and not info.isHidden and (not info.isComplete or info.isComplete == 0) then
             local objectives = SQP.Compat.GetQuestObjectives(info.questID, i)
             if objectives then
                 for _, obj in ipairs(objectives) do
@@ -292,7 +292,7 @@ function SQP:GetQuestProgress(unitID)
         if SQP.Compat.GetNumQuestLogEntries then
             for i = 1, SQP.Compat.GetNumQuestLogEntries() do
                 local info = SQP.Compat.GetInfo(i)
-                if info and not info.isHeader and (not info.isComplete or info.isComplete == 0) then
+                if info and not info.isHeader and not info.isHidden and (not info.isComplete or info.isComplete == 0) then
                     processObjectivesFallback(info.questID, i)
                 end
             end
@@ -620,7 +620,7 @@ function SQP:CacheQuestIndexes()
         local numQuests = SQP.Compat.GetNumQuestLogEntries()
         for i = 1, numQuests do
             local info = SQP.Compat.GetInfo(i)
-            if info and not info.isHeader then
+            if info and not info.isHeader and not info.isHidden then
                 self.QuestLogIndex[info.title] = i
             end
         end

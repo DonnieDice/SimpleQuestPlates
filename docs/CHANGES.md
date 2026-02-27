@@ -1,3 +1,6 @@
+## v1.8.1
+- Fix ghost quests on old characters causing fake nameplate objectives: skip hidden quest log entries (isHidden) in all quest scanning loops.
+
 ## v1.8.0
 - Add inline ↺ reset buttons next to every slider and color control; remove large section-level reset buttons.
 - Decouple "Show Icon Background" from task icons — kill/loot mini icons now show/hide independently via their own toggles.
