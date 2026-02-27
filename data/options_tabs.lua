@@ -10,7 +10,7 @@ local addonName, SQP = ...
 -- Create tab button
 function SQP:CreateTabButton(parent, id, text)
     local tab = CreateFrame("Button", nil, parent)
-    tab:SetSize(100, 32)
+    tab:SetSize(100, 26)
     tab.id = id
     
     -- Background
@@ -101,9 +101,9 @@ end
 function SQP:InitializeTabs(container, previewContainer)
     -- Tab container
     local tabContainer = CreateFrame("Frame", nil, container)
-    tabContainer:SetHeight(40)
-    tabContainer:SetPoint("TOPLEFT", previewContainer, "BOTTOMLEFT", 0, -10)
-    tabContainer:SetPoint("TOPRIGHT", previewContainer, "BOTTOMRIGHT", 0, -10)
+    tabContainer:SetHeight(32)
+    tabContainer:SetPoint("TOPLEFT", previewContainer, "BOTTOMLEFT", 0, -6)
+    tabContainer:SetPoint("TOPRIGHT", previewContainer, "BOTTOMRIGHT", 0, -6)
     
     -- Tab buttons
     local tabs = {}
@@ -126,7 +126,7 @@ function SQP:InitializeTabs(container, previewContainer)
         -- Create panel without scrolling (all tabs fit now)
         local needsScroll = false
         local panel = self:CreateTabPanel(container, needsScroll)
-        panel:SetPoint("TOPLEFT", tabContainer, "BOTTOMLEFT", 0, -5)
+        panel:SetPoint("TOPLEFT", tabContainer, "BOTTOMLEFT", 0, -3)
         panel:SetPoint("BOTTOMRIGHT", container, "BOTTOMRIGHT", -10, 10)
         
         tab:SetScript("OnClick", function()

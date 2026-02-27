@@ -134,6 +134,6 @@ function SQP:CreateQuestIconOptions(content)
     rightYOffset = rightYOffset - 18
 
     rightYOffset = MakeSlider(rightColumn, "Size",   "percentIconSize",    14, 8, 40, rightYOffset, "percent")
-    rightYOffset = MakeSlider(rightColumn, "Offset X", "percentIconOffsetX", 10, -80, 80, rightYOffset, "percent")
-    rightYOffset = MakeSlider(rightColumn, "Offset Y", "percentIconOffsetY",  0, -80, 80, rightYOffset, "percent")
+    rightYOffset = MakeSlider(rightColumn, "Offset X", "percentIconOffsetX",  8, -80, 80, rightYOffset, "percent")
+    rightYOffset = MakeSlider(rightColumn, "Offset Y", "percentIconOffsetY",  3, -80, 80, rightYOffset, "percent")
 end

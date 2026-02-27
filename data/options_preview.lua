@@ -284,8 +284,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIcon then
                     self.percentIcon:ClearAllPoints()
                     self.percentIcon:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 10,
-                        SQPSettings.percentIconOffsetY or 0)
+                        SQPSettings.percentIconOffsetX or 8,
+                        SQPSettings.percentIconOffsetY or 3)
                     self.percentIcon:SetText("%")
                     if mainTintEnabled then
                         self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
@@ -297,8 +297,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIconOutline then
                     self.percentIconOutline:ClearAllPoints()
                     self.percentIconOutline:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 10,
-                        SQPSettings.percentIconOffsetY or 0)
+                        SQPSettings.percentIconOffsetX or 8,
+                        SQPSettings.percentIconOffsetY or 3)
                     self.percentIconOutline:SetText("%")
                     local outlineWidth = SQP:GetOutlineInfo()
                     if outlineWidth and outlineWidth > 0 then
@@ -315,8 +315,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIcon then
                     self.percentIcon:ClearAllPoints()
                     self.percentIcon:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 10,
-                        SQPSettings.percentIconOffsetY or 0)
+                        SQPSettings.percentIconOffsetX or 8,
+                        SQPSettings.percentIconOffsetY or 3)
                     self.percentIcon:SetText("75%")
                     if mainTintEnabled then
                         self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
@@ -328,8 +328,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIconOutline then
                     self.percentIconOutline:ClearAllPoints()
                     self.percentIconOutline:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 10,
-                        SQPSettings.percentIconOffsetY or 0)
+                        SQPSettings.percentIconOffsetX or 8,
+                        SQPSettings.percentIconOffsetY or 3)
                     self.percentIconOutline:SetText("75%")
                     local outlineWidth = SQP:GetOutlineInfo()
                     if outlineWidth and outlineWidth > 0 then
