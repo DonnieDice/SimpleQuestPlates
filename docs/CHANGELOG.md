@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.7.9
+- Fix "Enable" button label in General tab was showing full addon name instead of just "Enable".
+
 ## v1.7.8
 - Redesign options panel into 6 tabs: General, Font, Colors (new), Main Icon, Quest Icons, About.
 - Move all color/tinting settings into dedicated Colors tab — clears overflow from Main Icon and Quest Icons tabs.
