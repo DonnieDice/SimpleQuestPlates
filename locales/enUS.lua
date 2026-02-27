@@ -11,7 +11,7 @@ SQP.L = SQP.L or {}
 -- Default English strings
 local L = {
     -- Options Panel
-    ["OPTIONS_ENABLE"] = "Enable Simple Quest Plates",
+    ["OPTIONS_ENABLE"] = "Enable",
     ["OPTIONS_DISPLAY"] = "Display Settings",
     ["OPTIONS_SCALE"] = "Icon Scale",
     ["OPTIONS_OFFSET_X"] = "Horizontal Offset",
