@@ -103,44 +103,6 @@ function SQP:CreatePreviewSection(parent)
     percentIconOutline:SetTextColor(0, 0, 0, 1)
     percentIconOutline:Hide()
 
-    -- Dramatic pulse for main icon
-    local function CreateMainPulse(region)
-        local pulse = region:CreateAnimationGroup()
-        pulse:SetLooping("REPEAT")
-        local fadeOut = pulse:CreateAnimation("Alpha")
-        fadeOut:SetOrder(1)
-        fadeOut:SetFromAlpha(1)
-        fadeOut:SetToAlpha(0.15)
-        fadeOut:SetDuration(0.5)
-        fadeOut:SetSmoothing("IN_OUT")
-        local fadeIn = pulse:CreateAnimation("Alpha")
-        fadeIn:SetOrder(2)
-        fadeIn:SetFromAlpha(0.15)
-        fadeIn:SetToAlpha(1)
-        fadeIn:SetDuration(0.5)
-        fadeIn:SetSmoothing("IN_OUT")
-        return pulse
-    end
-
-    -- Subtle pulse for task icons
-    local function CreatePulse(region)
-        local pulse = region:CreateAnimationGroup()
-        pulse:SetLooping("REPEAT")
-        local fadeOut = pulse:CreateAnimation("Alpha")
-        fadeOut:SetOrder(1)
-        fadeOut:SetFromAlpha(1)
-        fadeOut:SetToAlpha(0.6)
-        fadeOut:SetDuration(0.6)
-        fadeOut:SetSmoothing("IN_OUT")
-        local fadeIn = pulse:CreateAnimation("Alpha")
-        fadeIn:SetOrder(2)
-        fadeIn:SetFromAlpha(0.6)
-        fadeIn:SetToAlpha(1)
-        fadeIn:SetDuration(0.6)
-        fadeIn:SetSmoothing("IN_OUT")
-        return pulse
-    end
-
     -- Apply font settings first, then set text
     SQP:UpdateQuestFont(iconText, iconTextOutline, percentIcon, percentIconOutline)
     iconText:SetText("3")
@@ -180,12 +142,26 @@ function SQP:CreatePreviewSection(parent)
     previewFrame.iconTextOutline = iconTextOutline
     previewFrame.percentIcon = percentIcon
     previewFrame.percentIconOutline = percentIconOutline
-    previewFrame.iconPulse = CreateMainPulse(icon)
-    previewFrame.percentPulse = CreatePulse(percentIcon)
-    previewFrame.percentOutlinePulse = CreatePulse(percentIconOutline)
     previewFrame.lootIcon = lootIcon
     previewFrame.killIcon = killIcon
     previewFrame.questType = "kill"
+    previewFrame.iconTicker = nil
+    previewFrame.percentTicker = nil
+
+    -- Cancel animation tickers when preview panel hides
+    previewFrame:SetScript("OnHide", function(self)
+        if self.iconTicker then
+            self.iconTicker:Cancel()
+            self.iconTicker = nil
+            icon:SetAlpha(1)
+        end
+        if self.percentTicker then
+            self.percentTicker:Cancel()
+            self.percentTicker = nil
+            percentIcon:SetAlpha(1)
+            percentIconOutline:SetAlpha(1)
+        end
+    end)
 
     -- Update function
     function previewFrame:UpdatePreview()
@@ -208,6 +184,7 @@ function SQP:CreatePreviewSection(parent)
                 SQPSettings.killIconOffsetX or 12,
                 SQPSettings.killIconOffsetY or 12
             )
+            self.killIcon:SetSize(SQPSettings.killIconSize or 16, SQPSettings.killIconSize or 16)
         end
         if self.lootIcon then
             self.lootIcon:ClearAllPoints()
@@ -218,6 +195,7 @@ function SQP:CreatePreviewSection(parent)
                 SQPSettings.lootIconOffsetX or -12,
                 SQPSettings.lootIconOffsetY or 12
             )
+            self.lootIcon:SetSize(SQPSettings.lootIconSize or 16, SQPSettings.lootIconSize or 16)
         end
 
         -- Update scale
@@ -260,7 +238,6 @@ function SQP:CreatePreviewSection(parent)
             if SQPSettings.showIconBackground ~= false then icon:Show() else icon:Hide() end
             if self.percentIcon then self.percentIcon:Hide() end
             if self.percentIconOutline then self.percentIconOutline:Hide() end
-            -- Loot icon visibility: controlled only by showLootIcon
             if self.lootIcon then
                 if SQPSettings.showLootIcon ~= false then
                     self.lootIcon:Show()
@@ -281,7 +258,6 @@ function SQP:CreatePreviewSection(parent)
             if self.percentIcon then self.percentIcon:Hide() end
             if self.percentIconOutline then self.percentIconOutline:Hide() end
             if self.lootIcon then self.lootIcon:Hide() end
-            -- Kill icon visibility: controlled only by showKillIcon
             if self.killIcon then
                 if SQPSettings.showKillIcon ~= false then
                     self.killIcon:Show()
@@ -298,54 +274,113 @@ function SQP:CreatePreviewSection(parent)
             end
         else
             -- Percent quest
-            icon:Hide()
-            if self.percentIcon then
-                self.percentIcon:ClearAllPoints()
-                self.percentIcon:SetPoint('CENTER', icon, SQPSettings.percentIconOffsetX or 0, SQPSettings.percentIconOffsetY or 0)
-                self.percentIcon:SetText("%")
-                if mainTintEnabled then
-                    self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
-                else
-                    self.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
-                end
-                self.percentIcon:Show()
-            end
-            if self.percentIconOutline then
-                self.percentIconOutline:ClearAllPoints()
-                self.percentIconOutline:SetPoint('CENTER', icon, SQPSettings.percentIconOffsetX or 0, SQPSettings.percentIconOffsetY or 0)
-                self.percentIconOutline:SetText("%")
-                local outlineWidth = SQP:GetOutlineInfo()
-                if outlineWidth and outlineWidth > 0 then
-                    self.percentIconOutline:Show()
-                else
-                    self.percentIconOutline:Hide()
-                end
-            end
             if self.lootIcon then self.lootIcon:Hide() end
             if self.killIcon then self.killIcon:Hide() end
-        end
-
-        -- Animate main icon
-        if SQPSettings.animateQuestIcon then
-            if self.questType == "percent" then
-                if self.iconPulse and self.iconPulse:IsPlaying() then self.iconPulse:Stop() end
-                if self.percentPulse and not self.percentPulse:IsPlaying() then self.percentPulse:Play() end
-                if self.percentOutlinePulse then
-                    if self.percentIconOutline and self.percentIconOutline:IsShown() then
-                        if not self.percentOutlinePulse:IsPlaying() then self.percentOutlinePulse:Play() end
-                    elseif self.percentOutlinePulse:IsPlaying() then
-                        self.percentOutlinePulse:Stop()
+            if SQPSettings.showIconBackground ~= false then
+                -- Icon mode: jellybean + number in iconText + "%" at offset
+                icon:Show()
+                self.iconText:SetText("75")
+                if self.iconTextOutline then self.iconTextOutline:SetText("75") end
+                if self.percentIcon then
+                    self.percentIcon:ClearAllPoints()
+                    self.percentIcon:SetPoint('CENTER', icon,
+                        SQPSettings.percentIconOffsetX or 10,
+                        SQPSettings.percentIconOffsetY or 0)
+                    self.percentIcon:SetText("%")
+                    if mainTintEnabled then
+                        self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
+                    else
+                        self.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
+                    end
+                    self.percentIcon:Show()
+                end
+                if self.percentIconOutline then
+                    self.percentIconOutline:ClearAllPoints()
+                    self.percentIconOutline:SetPoint('CENTER', icon,
+                        SQPSettings.percentIconOffsetX or 10,
+                        SQPSettings.percentIconOffsetY or 0)
+                    self.percentIconOutline:SetText("%")
+                    local outlineWidth = SQP:GetOutlineInfo()
+                    if outlineWidth and outlineWidth > 0 then
+                        self.percentIconOutline:Show()
+                    else
+                        self.percentIconOutline:Hide()
                     end
                 end
             else
-                if self.percentPulse and self.percentPulse:IsPlaying() then self.percentPulse:Stop() end
-                if self.percentOutlinePulse and self.percentOutlinePulse:IsPlaying() then self.percentOutlinePulse:Stop() end
-                if self.iconPulse and not self.iconPulse:IsPlaying() then self.iconPulse:Play() end
+                -- Text mode: floating "75%"
+                icon:Hide()
+                self.iconText:SetText("")
+                if self.iconTextOutline then self.iconTextOutline:SetText("") end
+                if self.percentIcon then
+                    self.percentIcon:ClearAllPoints()
+                    self.percentIcon:SetPoint('CENTER', icon,
+                        SQPSettings.percentIconOffsetX or 10,
+                        SQPSettings.percentIconOffsetY or 0)
+                    self.percentIcon:SetText("75%")
+                    if mainTintEnabled then
+                        self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
+                    else
+                        self.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
+                    end
+                    self.percentIcon:Show()
+                end
+                if self.percentIconOutline then
+                    self.percentIconOutline:ClearAllPoints()
+                    self.percentIconOutline:SetPoint('CENTER', icon,
+                        SQPSettings.percentIconOffsetX or 10,
+                        SQPSettings.percentIconOffsetY or 0)
+                    self.percentIconOutline:SetText("75%")
+                    local outlineWidth = SQP:GetOutlineInfo()
+                    if outlineWidth and outlineWidth > 0 then
+                        self.percentIconOutline:Show()
+                    else
+                        self.percentIconOutline:Hide()
+                    end
+                end
             end
-        else
-            if self.iconPulse and self.iconPulse:IsPlaying() then self.iconPulse:Stop() end
-            if self.percentPulse and self.percentPulse:IsPlaying() then self.percentPulse:Stop() end
-            if self.percentOutlinePulse and self.percentOutlinePulse:IsPlaying() then self.percentOutlinePulse:Stop() end
+        end
+
+        -- Manage animation via C_Timer (cancel first, then restart if enabled)
+        if self.iconTicker then
+            self.iconTicker:Cancel()
+            self.iconTicker = nil
+            icon:SetAlpha(1)
+        end
+        if self.percentTicker then
+            self.percentTicker:Cancel()
+            self.percentTicker = nil
+            percentIcon:SetAlpha(1)
+            percentIconOutline:SetAlpha(1)
+        end
+
+        if SQPSettings.animateQuestIcon then
+            if self.questType == "percent" then
+                -- Animate percent icon (or "75%" floating text)
+                if self.percentIcon and self.percentIcon:IsShown() then
+                    local startTime = GetTime()
+                    local pf = self
+                    self.percentTicker = C_Timer.NewTicker(0.033, function()
+                        if not previewFrame:IsShown() then return end
+                        local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.2) + 1) / 2
+                        local a = 0.6 + t * 0.4
+                        if pf.percentIcon then pf.percentIcon:SetAlpha(a) end
+                        if pf.percentIconOutline and pf.percentIconOutline:IsShown() then
+                            pf.percentIconOutline:SetAlpha(a)
+                        end
+                    end)
+                end
+            else
+                -- Animate main jellybean icon
+                if icon:IsShown() then
+                    local startTime = GetTime()
+                    self.iconTicker = C_Timer.NewTicker(0.033, function()
+                        if not previewFrame:IsShown() then return end
+                        local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.0) + 1) / 2
+                        icon:SetAlpha(0.15 + t * 0.85)
+                    end)
+                end
+            end
         end
     end
 
@@ -369,12 +404,10 @@ function SQP:CreatePreviewSection(parent)
         end
     end
 
-    -- Example toggle buttons
+    -- Quest type toggle buttons
     killButton = self:CreateStyledButton(previewFrame, "Kill Quest", 80, 25)
     killButton:SetPoint("BOTTOM", previewFrame, "BOTTOM", -90, 5)
     killButton:SetScript("OnClick", function(self)
-        iconText:SetText("5")
-        iconTextOutline:SetText("5")
         iconText:SetTextColor(unpack(SQPSettings.killColor or {1, 0.82, 0}))
         lootIcon:Hide()
         killIcon:Hide()
@@ -386,8 +419,6 @@ function SQP:CreatePreviewSection(parent)
     lootButton = self:CreateStyledButton(previewFrame, "Loot Quest", 80, 25)
     lootButton:SetPoint("BOTTOM", previewFrame, "BOTTOM", 0, 5)
     lootButton:SetScript("OnClick", function(self)
-        iconText:SetText("2")
-        iconTextOutline:SetText("2")
         iconText:SetTextColor(unpack(SQPSettings.itemColor or {0.2, 1, 0.2}))
         lootIcon:Show()
         killIcon:Hide()
@@ -399,8 +430,6 @@ function SQP:CreatePreviewSection(parent)
     percentButton = self:CreateStyledButton(previewFrame, "% Quest", 80, 25)
     percentButton:SetPoint("BOTTOM", previewFrame, "BOTTOM", 90, 5)
     percentButton:SetScript("OnClick", function(self)
-        iconText:SetText("75")
-        iconTextOutline:SetText("75")
         iconText:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
         lootIcon:Hide()
         killIcon:Hide()
@@ -409,7 +438,7 @@ function SQP:CreatePreviewSection(parent)
         SetActiveButton(self)
     end)
 
-    -- Set initial active button and trigger its click
+    -- Set initial active button
     SetActiveButton(killButton)
     killButton:GetScript("OnClick")(killButton)
 
@@ -418,8 +447,6 @@ function SQP:CreatePreviewSection(parent)
 
     -- External helpers to switch preview mode from other option controls
     previewFrame.activateKillMode = function()
-        iconText:SetText("5")
-        iconTextOutline:SetText("5")
         iconText:SetTextColor(unpack(SQPSettings.killColor or {1, 0.82, 0}))
         lootIcon:Hide()
         killIcon:Hide()
@@ -429,8 +456,6 @@ function SQP:CreatePreviewSection(parent)
     end
 
     previewFrame.activateLootMode = function()
-        iconText:SetText("2")
-        iconTextOutline:SetText("2")
         iconText:SetTextColor(unpack(SQPSettings.itemColor or {0.2, 1, 0.2}))
         lootIcon:Show()
         killIcon:Hide()
@@ -440,8 +465,6 @@ function SQP:CreatePreviewSection(parent)
     end
 
     previewFrame.activatePercentMode = function()
-        iconText:SetText("75")
-        iconTextOutline:SetText("75")
         iconText:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
         lootIcon:Hide()
         killIcon:Hide()

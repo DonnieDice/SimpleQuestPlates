@@ -428,10 +428,19 @@ function SQP:UpdateQuestIcon(plate, unitID)
     local percentText = tostring(displayText) .. "%"
     if showPercentIcon then
         if Q.icon then
-            Q.icon:Hide()
+            if SQPSettings.showIconBackground ~= false then
+                Q.icon:Show()
+            else
+                Q.icon:Hide()
+            end
         end
         if Q.percentIcon then
-            Q.percentIcon:SetText(percentText)
+            -- Icon mode: show "%" as separate indicator; Text mode: show combined "75%"
+            if SQPSettings.showIconBackground ~= false then
+                Q.percentIcon:SetText("%")
+            else
+                Q.percentIcon:SetText(percentText)
+            end
             if mainTintEnabled then
                 Q.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
             else
@@ -502,9 +511,13 @@ function SQP:UpdateQuestIcon(plate, unitID)
     if showIcon then
         -- Update and show the icon; percent quests show number+% in percentIcon, not iconText
         if showPercentIcon then
-            Q.iconText:SetText("")
-            if Q.iconTextOutline then
-                Q.iconTextOutline:SetText("")
+            -- Icon mode: show the number on the jellybean; text mode: number is inside percentIcon
+            if SQPSettings.showIconBackground ~= false then
+                Q.iconText:SetText(tostring(displayText))
+                if Q.iconTextOutline then Q.iconTextOutline:SetText(tostring(displayText)) end
+            else
+                Q.iconText:SetText("")
+                if Q.iconTextOutline then Q.iconTextOutline:SetText("") end
             end
         else
             Q.iconText:SetText(displayText)

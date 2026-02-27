@@ -2,7 +2,7 @@
 -- RGX | Simple Quest Plates! - options_quest_icons.lua
 
 -- Author: DonnieDice
--- Description: Task icon options tab (visibility, animation, offsets)
+-- Description: Task icon options tab (visibility, animation, offsets, sizes)
 --=====================================================================================
 
 local addonName, SQP = ...
@@ -20,15 +20,15 @@ function SQP:CreateQuestIconOptions(content)
     rightColumn:SetPoint("BOTTOMRIGHT")
     rightColumn:SetPoint("LEFT", leftColumn, "RIGHT", 20, 0)
 
-    -- ── Helper: offset slider with inline reset ───────────────────────────────
-    local function MakeOffsetSlider(parent, labelText, key, defaultVal, yOff, previewMode)
+    -- ── Helper: offset/size slider with inline reset ──────────────────────────
+    local function MakeSlider(parent, labelText, key, defaultVal, minVal, maxVal, yOff, previewMode)
         local val = SQPSettings[key] ~= nil and SQPSettings[key] or defaultVal
         local lbl = parent:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
         lbl:SetPoint("TOPLEFT", 20, yOff)
         lbl:SetText(string.format("%s: %d", labelText, val))
         SQP.optionControls[key .. "Label"] = lbl
 
-        local sl = SQP:CreateStyledSlider(parent, -30, 30, 1, 160)
+        local sl = SQP:CreateStyledSlider(parent, minVal, maxVal, 1, 160)
         sl:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", 0, -4)
         sl:SetValue(val)
         SQP.optionControls[key] = sl
@@ -45,7 +45,6 @@ function SQP:CreateQuestIconOptions(content)
             newVal = math.floor(newVal + 0.5)
             SQP:SetSetting(key, newVal)
             lbl:SetText(string.format("%s: %d", labelText, newVal))
-            -- Auto-switch preview to relevant quest type
             if previewMode and SQP.previewFrame then
                 if previewMode == "kill" and SQP.previewFrame.activateKillMode then
                     SQP.previewFrame.activateKillMode()
@@ -62,7 +61,7 @@ function SQP:CreateQuestIconOptions(content)
         return yOff - 36
     end
 
-    -- ── LEFT COLUMN: Toggles + Kill offsets ──────────────────────────────────
+    -- ── LEFT COLUMN: Toggles + Kill icon settings ─────────────────────────────
     local yOffset = -15
 
     local toggleHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -106,32 +105,35 @@ function SQP:CreateQuestIconOptions(content)
     end)
     yOffset = yOffset - 34
 
-    -- Kill Icon offsets
+    -- Kill icon settings
     local killHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     killHeader:SetPoint("TOPLEFT", 20, yOffset)
-    killHeader:SetText("|cff58be81Kill Icon Position|r")
+    killHeader:SetText("|cff58be81Kill Icon|r")
     yOffset = yOffset - 18
 
-    yOffset = MakeOffsetSlider(leftColumn, "Kill X", "killIconOffsetX", 12,  yOffset, "kill")
-    yOffset = MakeOffsetSlider(leftColumn, "Kill Y", "killIconOffsetY", 12,  yOffset, "kill")
+    yOffset = MakeSlider(leftColumn, "Size",   "killIconSize",    16, 8, 40, yOffset, "kill")
+    yOffset = MakeSlider(leftColumn, "Offset X", "killIconOffsetX", 12, -80, 80, yOffset, "kill")
+    yOffset = MakeSlider(leftColumn, "Offset Y", "killIconOffsetY", 12, -80, 80, yOffset, "kill")
 
-    -- ── RIGHT COLUMN: Loot + Percent offsets ─────────────────────────────────
+    -- ── RIGHT COLUMN: Loot + Percent settings ─────────────────────────────────
     local rightYOffset = -15
 
     local lootHeader = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     lootHeader:SetPoint("TOPLEFT", 20, rightYOffset)
-    lootHeader:SetText("|cff58be81Loot Icon Position|r")
+    lootHeader:SetText("|cff58be81Loot Icon|r")
     rightYOffset = rightYOffset - 18
 
-    rightYOffset = MakeOffsetSlider(rightColumn, "Loot X", "lootIconOffsetX", -12, rightYOffset, "loot")
-    rightYOffset = MakeOffsetSlider(rightColumn, "Loot Y", "lootIconOffsetY",  12, rightYOffset, "loot")
+    rightYOffset = MakeSlider(rightColumn, "Size",   "lootIconSize",    16, 8, 40, rightYOffset, "loot")
+    rightYOffset = MakeSlider(rightColumn, "Offset X", "lootIconOffsetX", -12, -80, 80, rightYOffset, "loot")
+    rightYOffset = MakeSlider(rightColumn, "Offset Y", "lootIconOffsetY",  12, -80, 80, rightYOffset, "loot")
     rightYOffset = rightYOffset - 6
 
     local percentHeader = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     percentHeader:SetPoint("TOPLEFT", 20, rightYOffset)
-    percentHeader:SetText("|cff58be81Percent Icon Position|r")
+    percentHeader:SetText("|cff58be81Percent Icon|r")
     rightYOffset = rightYOffset - 18
 
-    rightYOffset = MakeOffsetSlider(rightColumn, "Offset X", "percentIconOffsetX", 0, rightYOffset, "percent")
-    rightYOffset = MakeOffsetSlider(rightColumn, "Offset Y", "percentIconOffsetY", 0, rightYOffset, "percent")
+    rightYOffset = MakeSlider(rightColumn, "Size",   "percentIconSize",    14, 8, 40, rightYOffset, "percent")
+    rightYOffset = MakeSlider(rightColumn, "Offset X", "percentIconOffsetX", 10, -80, 80, rightYOffset, "percent")
+    rightYOffset = MakeSlider(rightColumn, "Offset Y", "percentIconOffsetY",  0, -80, 80, rightYOffset, "percent")
 end

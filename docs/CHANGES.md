@@ -1,12 +1,10 @@
-## v1.8.1
-- Fix ghost quests on old characters causing fake nameplate objectives: skip hidden quest log entries (isHidden) in all quest scanning loops.
-
-## v1.8.0
-- Add inline ↺ reset buttons next to every slider and color control; remove large section-level reset buttons.
-- Decouple "Show Icon Background" from task icons — kill/loot mini icons now show/hide independently via their own toggles.
-- Add "Outline Opacity" slider (0–100%) for granular outline intensity control without changing the outline mode.
-- Rename "Quest Icons" tab to "Task Icons" throughout the options panel.
-- Preview auto-switches to the relevant quest type when adjusting kill/loot/percent color or offset settings.
-- Fix animate main icon in preview — now uses a more dramatic fade (1.0→0.15) so it's clearly visible.
-- Add activateKillMode / activateLootMode helpers on preview frame for consistent mode switching.
-- Compact About tab — removed verbose description box and standalone community section.
+## v1.8.2
+- Fix percent quest preview: now correctly shows jellybean + number + "%" in icon mode, and floating "75%" in text mode.
+- Fix preview animation: replace unreliable AnimationGroup with C_Timer ticker so "Animate Main Icon" visibly pulses in the options panel preview.
+- Add individual size sliders for Kill, Loot, and Percent task icons (8–40px each) in the Task Icons tab — no longer tied to global scale.
+- Extend task icon offset range from ±30 to ±80 to allow positioning further from the nameplate.
+- Restyle icon display mode toggle: replace "Show Icon Background" checkbox with explicit "Icon" / "Text" style buttons.
+- Fix percent quest not respecting icon/text style toggle — jellybean now shows/hides correctly for percent quests.
+- Fix default percent icon X offset overlapping the progress value — default shifted to +10.
+- Reduce outline layer opacity default to 70% and use a narrower font size (fontSize−2) to prevent thick black bleed obscuring text.
+- Preview reflects individual task icon sizes and updated offsets in real time.

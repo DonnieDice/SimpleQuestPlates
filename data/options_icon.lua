@@ -168,17 +168,35 @@ function SQP:CreateIconOptions(content)
     end)
     rightYOffset = rightYOffset - 48
 
-    -- Show Icon Background
-    local bgFrame = self:CreateStyledCheckbox(rightColumn,
-        self.L["OPTIONS_SHOW_ICON_BG"] or "Show Icon Background")
-    bgFrame:SetPoint("TOPLEFT", 20, rightYOffset)
-    bgFrame.checkbox:SetChecked(SQPSettings.showIconBackground ~= false)
-    self.optionControls.showIconBackground = bgFrame.checkbox
-    bgFrame.checkbox:SetScript("OnClick", function(self)
-        SQP:SetSetting('showIconBackground', self:GetChecked())
+    -- Display Style (Icon / Text)
+    local styleLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    styleLabel:SetPoint("TOPLEFT", 20, rightYOffset)
+    styleLabel:SetText("Display Style")
+    rightYOffset = rightYOffset - 22
+
+    local iconStyleBtn = self:CreateStyledButton(rightColumn, "Icon", 75, 25)
+    local textStyleBtn = self:CreateStyledButton(rightColumn, "Text", 75, 25)
+    iconStyleBtn:SetPoint("TOPLEFT", 20, rightYOffset)
+    textStyleBtn:SetPoint("LEFT", iconStyleBtn, "RIGHT", 8, 0)
+
+    local function UpdateStyleButtons()
+        iconStyleBtn:SetAlpha(SQPSettings.showIconBackground ~= false and 1 or 0.6)
+        textStyleBtn:SetAlpha(SQPSettings.showIconBackground == false and 1 or 0.6)
+    end
+    UpdateStyleButtons()
+    self.optionControls.updateStyleButtons = UpdateStyleButtons
+
+    iconStyleBtn:SetScript("OnClick", function()
+        SQP:SetSetting('showIconBackground', true)
+        UpdateStyleButtons()
         SQP:RefreshAllNameplates()
     end)
-    rightYOffset = rightYOffset - 28
+    textStyleBtn:SetScript("OnClick", function()
+        SQP:SetSetting('showIconBackground', false)
+        UpdateStyleButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    rightYOffset = rightYOffset - 34
 
     -- Animate Main Icon
     local animateFrame = self:CreateStyledCheckbox(rightColumn,

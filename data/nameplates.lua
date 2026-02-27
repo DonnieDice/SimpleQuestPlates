@@ -101,7 +101,7 @@ function SQP:CreateQuestPlate(nameplate)
         SQPSettings.killIconOffsetX or 12,
         SQPSettings.killIconOffsetY or 12
     )
-    killIcon:SetSize(16, 16)
+    killIcon:SetSize(SQPSettings.killIconSize or 16, SQPSettings.killIconSize or 16)
     killIcon:SetTexture('Interface/Cursor/Attack')
     if not killIcon:GetTexture() then
         killIcon:SetTexture('Interface/Icons/INV_Sword_04')
@@ -119,7 +119,7 @@ function SQP:CreateQuestPlate(nameplate)
         lootIcon:SetTexture('Interface/Icons/INV_Misc_Bag_10')
         lootIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
     end
-    lootIcon:SetSize(16, 16)
+    lootIcon:SetSize(SQPSettings.lootIconSize or 16, SQPSettings.lootIconSize or 16)
     lootIcon:SetPoint(
         'TOPLEFT',
         icon,
@@ -284,7 +284,8 @@ function SQP:UpdateQuestFont(fontString, outlineFontString, percentFontString, p
             outlineFontString:Hide()
         else
             local outlineFlag = outlineWidth >= 3 and "THICKOUTLINE" or "OUTLINE"
-            outlineFontString:SetFont(fontName, fontSize, outlineFlag)
+            local outlineSize = math.max(6, fontSize - 2)
+            outlineFontString:SetFont(fontName, outlineSize, outlineFlag)
             outlineFontString:SetTextColor(r or 0, g or 0, b or 0, a or 1)
             outlineFontString:SetShadowOffset(0, 0)
             outlineFontString:SetShadowColor(0, 0, 0, 0)
@@ -308,7 +309,8 @@ function SQP:UpdateQuestFont(fontString, outlineFontString, percentFontString, p
                 percentOutlineFontString:Hide()
             else
                 local outlineFlag = outlineWidth >= 3 and "THICKOUTLINE" or "OUTLINE"
-                percentOutlineFontString:SetFont(fontName, percentSize, outlineFlag)
+                local percentOutlineSize = math.max(6, percentSize - 2)
+                percentOutlineFontString:SetFont(fontName, percentOutlineSize, outlineFlag)
                 percentOutlineFontString:SetTextColor(r or 0, g or 0, b or 0, a or 1)
                 percentOutlineFontString:SetShadowOffset(0, 0)
                 percentOutlineFontString:SetShadowColor(0, 0, 0, 0)
@@ -347,6 +349,7 @@ function SQP:RefreshAllNameplates()
                     SQPSettings.killIconOffsetX or 12,
                     SQPSettings.killIconOffsetY or 12
                 )
+                questFrame.killIcon:SetSize(SQPSettings.killIconSize or 16, SQPSettings.killIconSize or 16)
             end
             if questFrame.lootIcon then
                 questFrame.lootIcon:ClearAllPoints()
@@ -357,6 +360,7 @@ function SQP:RefreshAllNameplates()
                     SQPSettings.lootIconOffsetX or -12,
                     SQPSettings.lootIconOffsetY or 12
                 )
+                questFrame.lootIcon:SetSize(SQPSettings.lootIconSize or 16, SQPSettings.lootIconSize or 16)
             end
             
             -- Update font settings

@@ -80,7 +80,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.8.1" -- Addon version (also in TOC file)
+SQP.VERSION = "1.8.2" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -122,14 +122,17 @@ SQP.DEFAULTS = {
     showLootIcon = true,
     animateQuestIcon = false,
     animateQuestIcons = false,   -- Animate kill/loot task icons
-    outlineAlpha = 1.0,          -- Opacity of outline text layer (0.0-1.0)
+    outlineAlpha = 0.7,          -- Opacity of outline text layer (0.0-1.0)
     showIconBackground = true,   -- Show jellybean icon background; false = text-only mode
     killIconOffsetX = 12,
     killIconOffsetY = 12,
     lootIconOffsetX = -12,
     lootIconOffsetY = 12,
-    percentIconOffsetX = 0,
+    percentIconOffsetX = 10,
     percentIconOffsetY = 0,
+    killIconSize = 16,
+    lootIconSize = 16,
+    percentIconSize = 14,
     iconTintMain = false,
     iconTintMainColor = {1, 1, 1}, -- White
     iconTintQuest = false,
