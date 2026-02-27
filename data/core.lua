@@ -80,7 +80,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.7.6" -- Addon version (also in TOC file)
+SQP.VERSION = "1.7.8" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -112,8 +112,8 @@ SQP.DEFAULTS = {
     itemColor = {0.2, 1, 0.2}, -- Green
     killColor = {1, 0.82, 0}, -- Gold
     percentColor = {0.2, 1, 1}, -- Cyan
-    fontOutline = "THICKOUTLINE", -- NONE, THINOUTLINE, THICKOUTLINE, MONOCHROME
-    outlineWidth = 3, -- 0=none, 2=normal, 3=thick
+    fontOutline = "OUTLINE", -- NONE, OUTLINE, THICKOUTLINE
+    outlineWidth = 2, -- 0=none, 2=normal, 3=thick
     fontSize = 12,
     fontFamily = "Fonts\\FRIZQT__.TTF",
     outlineColor = {0, 0, 0}, -- Black
@@ -121,6 +121,7 @@ SQP.DEFAULTS = {
     showKillIcon = true,
     showLootIcon = true,
     animateQuestIcon = false,
+    animateQuestIcons = false,   -- Animate kill/loot mini-icons
     showIconBackground = true,   -- Show jellybean icon background; false = text-only mode
     killIconOffsetX = 12,
     killIconOffsetY = 12,

@@ -89,7 +89,8 @@ function SQP:CreateQuestPlate(nameplate)
     end
     killIcon:Hide()
     questFrame.killIcon = killIcon
-    
+    questFrame.killIconPulse = CreatePulse(killIcon)
+
     -- Loot icon
     local lootIcon = questFrame:CreateTexture(nil, "OVERLAY", nil, 1)
     if lootIcon.SetAtlas then
@@ -108,7 +109,8 @@ function SQP:CreateQuestPlate(nameplate)
     )
     lootIcon:Hide()
     questFrame.lootIcon = lootIcon
-    
+    questFrame.lootIconPulse = CreatePulse(lootIcon)
+
     -- Quest count text
     local iconText = questFrame:CreateFontString(nil, 'OVERLAY', 'SystemFont_Outline_Small')
     if iconText.SetDrawLayer then

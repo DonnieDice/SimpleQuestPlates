@@ -595,6 +595,25 @@ function SQP:UpdateQuestIcon(plate, unitID)
             end
         end
     end
+
+    -- Animate quest type mini-icons
+    if Q then
+        local animateQI = SQPSettings.animateQuestIcons
+        if Q.killIconPulse then
+            if animateQI and Q.killIcon and Q.killIcon:IsShown() then
+                if not Q.killIconPulse:IsPlaying() then Q.killIconPulse:Play() end
+            else
+                if Q.killIconPulse:IsPlaying() then Q.killIconPulse:Stop() end
+            end
+        end
+        if Q.lootIconPulse then
+            if animateQI and Q.lootIcon and Q.lootIcon:IsShown() then
+                if not Q.lootIconPulse:IsPlaying() then Q.lootIconPulse:Play() end
+            else
+                if Q.lootIconPulse:IsPlaying() then Q.lootIconPulse:Stop() end
+            end
+        end
+    end
 end
 
 -- Cache quest indexes for faster lookups

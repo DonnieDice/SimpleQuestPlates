@@ -59,6 +59,7 @@ function SQP:CreateOptionsPanel()
     -- Populate tab content
     self:CreateGeneralOptions(tabPanels.general.content)
     self:CreateFontOptions(tabPanels.font.content)
+    self:CreateColorsOptions(tabPanels.colors.content)
     self:CreateIconOptions(tabPanels.icon.content)
     self:CreateQuestIconOptions(tabPanels.quest_icons.content)
     self:CreateAboutSection(tabPanels.about.content)
