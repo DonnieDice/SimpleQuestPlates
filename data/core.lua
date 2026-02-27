@@ -80,7 +80,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.7.3" -- Addon version (also in TOC file)
+SQP.VERSION = "1.7.4" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -113,9 +113,11 @@ SQP.DEFAULTS = {
     killColor = {1, 0.82, 0}, -- Gold
     percentColor = {0.2, 1, 1}, -- Cyan
     fontOutline = "THICKOUTLINE", -- NONE, THINOUTLINE, THICKOUTLINE, MONOCHROME
+    outlineWidth = 3, -- 0=none, 2=normal, 3=thick
     fontSize = 12,
-    fontColor = {1, 1, 1}, -- White
+    fontFamily = "Fonts\\FRIZQT__.TTF",
     outlineColor = {0, 0, 0}, -- Black
+    showMessages = true,
     showKillIcon = true,
     showLootIcon = true,
     animateQuestIcon = false,

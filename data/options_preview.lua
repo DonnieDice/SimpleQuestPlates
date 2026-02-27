@@ -61,7 +61,7 @@ function SQP:CreatePreviewSection(parent)
     questFrame:SetAllPoints()
     
     -- Quest icon
-    local icon = questFrame:CreateTexture(nil, "OVERLAY", nil, 7)
+    local icon = questFrame:CreateTexture(nil, "OVERLAY", nil, 1)
     icon:SetSize(28, 22)
     icon:SetTexture('Interface/QuestFrame/AutoQuest-Parts')
     icon:SetTexCoord(0.30273438, 0.41992188, 0.015625, 0.953125)
@@ -134,7 +134,7 @@ function SQP:CreatePreviewSection(parent)
     end
     
     -- Loot icon
-    local lootIcon = questFrame:CreateTexture(nil, "OVERLAY", nil, 7)
+    local lootIcon = questFrame:CreateTexture(nil, "OVERLAY", nil, 1)
     if lootIcon.SetAtlas then
         lootIcon:SetAtlas('Banker')
     else
@@ -146,7 +146,7 @@ function SQP:CreatePreviewSection(parent)
     lootIcon:Hide()
 
     -- Kill icon (hostile cursor knife/sword)
-    local killIcon = questFrame:CreateTexture(nil, "OVERLAY", nil, 7)
+    local killIcon = questFrame:CreateTexture(nil, "OVERLAY", nil, 1)
     killIcon:SetTexture('Interface/Cursor/Attack')
     if not killIcon:GetTexture() then
         killIcon:SetTexture('Interface/Icons/INV_Sword_04')

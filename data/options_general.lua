@@ -28,13 +28,48 @@ function SQP:CreateGeneralOptions(content)
     
     -- LEFT COLUMN
     local yOffset = -20
-    
+
+    -- Addon Enable/Disable
+    local addonStateLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    addonStateLabel:SetPoint("TOPLEFT", 20, yOffset)
+    addonStateLabel:SetText("|cff58be81" .. (self.L["OPTIONS_ADDON_STATE"] or "Addon State") .. "|r")
+    yOffset = yOffset - 20
+
+    local enableButton = self:CreateStyledButton(leftColumn, self.L["OPTIONS_ENABLE"] or "Enable", 80, 25)
+    enableButton:SetPoint("TOPLEFT", 20, yOffset)
+    local disableButton = self:CreateStyledButton(leftColumn, self.L["OPTIONS_DISABLE"] or "Disable", 80, 25)
+    disableButton:SetPoint("LEFT", enableButton, "RIGHT", 10, 0)
+
+    local function UpdateEnabledButtons()
+        if SQPSettings.enabled ~= false then
+            enableButton:SetAlpha(1)
+            disableButton:SetAlpha(0.6)
+        else
+            enableButton:SetAlpha(0.6)
+            disableButton:SetAlpha(1)
+        end
+    end
+    UpdateEnabledButtons()
+    self.optionControls.updateEnabledButtons = UpdateEnabledButtons
+
+    enableButton:SetScript("OnClick", function()
+        SQP:SetSetting('enabled', true)
+        UpdateEnabledButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    disableButton:SetScript("OnClick", function()
+        SQP:SetSetting('enabled', false)
+        UpdateEnabledButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    yOffset = yOffset - 35
+
     -- General Settings Section
     local generalSection = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     generalSection:SetPoint("TOPLEFT", 20, yOffset)
     generalSection:SetText("|cff58be81" .. (self.L["OPTIONS_GENERAL"] or "General Settings") .. "|r")
-    yOffset = yOffset - 20  -- Further condensed
-    
+    yOffset = yOffset - 20
+
     -- Debug mode checkbox
     local debugFrame = self:CreateStyledCheckbox(leftColumn, self.L["OPTIONS_DEBUG"] or "Enable Debug Mode")
     debugFrame:SetPoint("TOPLEFT", 20, yOffset)

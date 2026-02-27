@@ -30,7 +30,7 @@ function SQP:CreateQuestPlate(nameplate)
     self.QuestPlates[nameplate] = questFrame
     
     -- Quest icon (jellybean)
-    local icon = questFrame:CreateTexture(nil, "OVERLAY", nil, 7)
+    local icon = questFrame:CreateTexture(nil, "OVERLAY", nil, 1)
     icon:SetSize(28, 22)
     icon:SetTexture('Interface/QuestFrame/AutoQuest-Parts')
     icon:SetTexCoord(0.30273438, 0.41992188, 0.015625, 0.953125)
@@ -156,7 +156,7 @@ function SQP:CreateQuestPlate(nameplate)
     questFrame.percentOutlinePulse = CreatePulse(percentIconOutline)
     
     -- Quest complete animation
-    local qmark = questFrame:CreateTexture(nil, 'OVERLAY')
+    local qmark = questFrame:CreateTexture(nil, 'OVERLAY', nil, 7)
     qmark:SetSize(28, 28)
     qmark:SetPoint('CENTER', icon)
     qmark:SetTexture('Interface/WorldMap/UI-WorldMap-QuestIcon')
