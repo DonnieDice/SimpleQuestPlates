@@ -110,12 +110,12 @@ function SQP:InitializeTabs(container, previewContainer)
     local tabPanels = {}
     
     local tabInfo = {
-        {id = "general", text = "General"},
-        {id = "icon",    text = "Main Icon"},
-        {id = "kill",    text = "Kill"},
-        {id = "loot",    text = "Loot"},
-        {id = "percent", text = "Percent"},
-        {id = "about",   text = "About"},
+        {id = "general",     text = "General"},
+        {id = "font",        text = "Font"},
+        {id = "colors",      text = "Colors"},
+        {id = "icon",        text = "Main Icon"},
+        {id = "quest_icons", text = "Task Icons"},
+        {id = "about",       text = "About"},
     }
     
     -- Create tabs

@@ -1,14 +1,5 @@
 # Changelog
 
-## v1.8.4
-- Tab reorganization: Font settings moved into General tab (right column); Colors and Task Icons tabs dissolved; Kill, Loot, Percent each get their own tab with all relevant controls (visibility, color, tint, size, offsets).
-- Add "Show Percent Icon" toggle to Percent tab, parity with Kill and Loot.
-- Fix: percentIconSize slider now actually controls the font size of the "%" (and "75%") text — was hardcoded to fontSize+4.
-- Fix: preview animation (Animate Main Icon) no longer blocked by IsShown guard — tickers now fire unconditionally and are cleaned up by OnHide; OnShow restarts the animation when the panel becomes visible.
-- Update defaults to tuned in-game values: offsetX=12, offsetY=3, scale=1.1, no outline, killIconOffsetX=2, killIconOffsetY=15, lootIconOffsetX=-38, lootIconOffsetY=16, percentIconOffsetX=-17, killIconSize/lootIconSize=14, percentIconSize=8, animateQuestIcons=true.
-- Restore About tab content: description box, key features list, slash commands reference, RGX community link.
-- Main Icon tab now includes tinting controls in the right column.
-
 ## v1.8.3
 - Shrink options panel header (60px, smaller logo/title) and preview container (148px) to free ~90px of body space, preventing tab content from overflowing the bottom of the panel.
 - Reduce tab bar height and inter-section gaps to further maximise body content area.

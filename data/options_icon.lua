@@ -44,9 +44,9 @@ function SQP:CreateIconOptions(content)
     xValue:SetText(tostring(SQPSettings.offsetX))
 
     local xReset = self:CreateInlineResetButton(leftColumn, function()
-        SQP:SetSetting('offsetX', 12)
-        xSlider:SetValue(12)
-        xValue:SetText("12")
+        SQP:SetSetting('offsetX', 0)
+        xSlider:SetValue(0)
+        xValue:SetText("0")
         SQP:RefreshAllNameplates()
     end)
     xReset:SetPoint("LEFT", xValue, "RIGHT", 4, 0)
@@ -74,9 +74,9 @@ function SQP:CreateIconOptions(content)
     yValue:SetText(tostring(SQPSettings.offsetY))
 
     local yReset = self:CreateInlineResetButton(leftColumn, function()
-        SQP:SetSetting('offsetY', 3)
-        ySlider:SetValue(3)
-        yValue:SetText("3")
+        SQP:SetSetting('offsetY', 0)
+        ySlider:SetValue(0)
+        yValue:SetText("0")
         SQP:RefreshAllNameplates()
     end)
     yReset:SetPoint("LEFT", yValue, "RIGHT", 4, 0)
@@ -153,9 +153,9 @@ function SQP:CreateIconOptions(content)
     scaleValue:SetText(format("%.1f", SQPSettings.scale))
 
     local scaleReset = self:CreateInlineResetButton(rightColumn, function()
-        SQP:SetSetting('scale', 1.1)
-        scaleSlider:SetValue(1.1)
-        scaleValue:SetText("1.1")
+        SQP:SetSetting('scale', 1.0)
+        scaleSlider:SetValue(1.0)
+        scaleValue:SetText("1.0")
         SQP:RefreshAllNameplates()
     end)
     scaleReset:SetPoint("LEFT", scaleValue, "RIGHT", 4, 0)
@@ -207,64 +207,5 @@ function SQP:CreateIconOptions(content)
     animateFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting('animateQuestIcon', self:GetChecked())
         SQP:RefreshAllNameplates()
-    end)
-    rightYOffset = rightYOffset - 34
-
-    -- Main Icon Tinting
-    local tintHeader = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintHeader:SetPoint("TOPLEFT", 20, rightYOffset)
-    tintHeader:SetText("|cff58be81Main Icon Tinting|r")
-    rightYOffset = rightYOffset - 22
-
-    local tintCbFrame = self:CreateStyledCheckbox(rightColumn, "Enable Tinting")
-    tintCbFrame:SetPoint("TOPLEFT", 20, rightYOffset)
-    tintCbFrame.checkbox:SetChecked(SQPSettings.iconTintMain == true)
-    self.optionControls.iconTintMain = tintCbFrame.checkbox
-    rightYOffset = rightYOffset - 26
-
-    local tintColorBtn = CreateFrame("Button", nil, rightColumn)
-    tintColorBtn:SetSize(20, 20)
-    tintColorBtn:SetPoint("TOPLEFT", 30, rightYOffset)
-    local tintBg = tintColorBtn:CreateTexture(nil, "BACKGROUND")
-    tintBg:SetAllPoints(); tintBg:SetColorTexture(0, 0, 0, 1)
-    local tintSw = tintColorBtn:CreateTexture(nil, "ARTWORK")
-    tintSw:SetSize(16, 16); tintSw:SetPoint("CENTER")
-    tintSw:SetColorTexture(unpack(SQPSettings.iconTintMainColor or {1, 1, 1}))
-
-    local tintColorLbl = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintColorLbl:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
-    tintColorLbl:SetText("Tint Color")
-
-    local tintReset = self:CreateInlineResetButton(rightColumn, function()
-        SQP:SetSetting('iconTintMainColor', {1, 1, 1})
-        tintSw:SetColorTexture(1, 1, 1); SQP:RefreshAllNameplates()
-    end)
-    tintReset:SetPoint("LEFT", tintColorLbl, "RIGHT", 6, 0)
-
-    local function UpdateTintAlpha()
-        local a = SQPSettings.iconTintMain == true and 1 or 0.4
-        tintColorBtn:SetAlpha(a); tintColorLbl:SetAlpha(a); tintReset:SetAlpha(a * 0.7)
-    end
-    UpdateTintAlpha()
-
-    tintCbFrame.checkbox:SetScript("OnClick", function(self)
-        SQP:SetSetting('iconTintMain', self:GetChecked())
-        UpdateTintAlpha(); SQP:RefreshAllNameplates()
-    end)
-
-    tintColorBtn:SetScript("OnClick", function()
-        if not SQPSettings.iconTintMain then return end
-        local r, g, b = unpack(SQPSettings.iconTintMainColor or {1, 1, 1})
-        local info = {r = r, g = g, b = b, hasOpacity = false}
-        info.swatchFunc = function()
-            local nr, ng, nb = ColorPickerFrame:GetColorRGB()
-            SQP:SetSetting('iconTintMainColor', {nr, ng, nb})
-            tintSw:SetColorTexture(nr, ng, nb); SQP:RefreshAllNameplates()
-        end
-        info.cancelFunc = function()
-            SQP:SetSetting('iconTintMainColor', {r, g, b})
-            tintSw:SetColorTexture(r, g, b); SQP:RefreshAllNameplates()
-        end
-        ColorPickerFrame:SetupColorPickerAndShow(info)
     end)
 end
