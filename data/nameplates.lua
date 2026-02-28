@@ -294,7 +294,7 @@ function SQP:UpdateQuestFont(fontString, outlineFontString, percentFontString, p
     end
 
     if percentFontString then
-        local percentSize = fontSize + 4
+        local percentSize = (SQPSettings and SQPSettings.percentIconSize) or (fontSize + 4)
         local percentMainOutline = percentOutlineFontString and "" or (noOutline and "" or fontOutline)
         percentFontString:SetFont(fontName, percentSize, percentMainOutline)
         percentFontString:SetShadowOffset(1, -1)

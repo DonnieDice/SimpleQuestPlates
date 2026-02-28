@@ -424,7 +424,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
         questTintR, questTintG, questTintB, questTintA = unpack(SQPSettings.iconTintQuestColor)
     end
 
-    local showPercentIcon = showIcon and questType == 3
+    local showPercentIcon = showIcon and questType == 3 and SQPSettings.showPercentIcon ~= false
     local percentText = tostring(displayText) .. "%"
     if showPercentIcon then
         if Q.icon then
