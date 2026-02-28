@@ -284,8 +284,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIcon then
                     self.percentIcon:ClearAllPoints()
                     self.percentIcon:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 8,
-                        SQPSettings.percentIconOffsetY or 3)
+                        SQPSettings.percentIconOffsetX or -17,
+                        SQPSettings.percentIconOffsetY or 0)
                     self.percentIcon:SetText("%")
                     if mainTintEnabled then
                         self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
@@ -297,8 +297,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIconOutline then
                     self.percentIconOutline:ClearAllPoints()
                     self.percentIconOutline:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 8,
-                        SQPSettings.percentIconOffsetY or 3)
+                        SQPSettings.percentIconOffsetX or -17,
+                        SQPSettings.percentIconOffsetY or 0)
                     self.percentIconOutline:SetText("%")
                     local outlineWidth = SQP:GetOutlineInfo()
                     if outlineWidth and outlineWidth > 0 then
@@ -315,8 +315,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIcon then
                     self.percentIcon:ClearAllPoints()
                     self.percentIcon:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 8,
-                        SQPSettings.percentIconOffsetY or 3)
+                        SQPSettings.percentIconOffsetX or -17,
+                        SQPSettings.percentIconOffsetY or 0)
                     self.percentIcon:SetText("75%")
                     if mainTintEnabled then
                         self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
@@ -328,8 +328,8 @@ function SQP:CreatePreviewSection(parent)
                 if self.percentIconOutline then
                     self.percentIconOutline:ClearAllPoints()
                     self.percentIconOutline:SetPoint('CENTER', icon,
-                        SQPSettings.percentIconOffsetX or 8,
-                        SQPSettings.percentIconOffsetY or 3)
+                        SQPSettings.percentIconOffsetX or -17,
+                        SQPSettings.percentIconOffsetY or 0)
                     self.percentIconOutline:SetText("75%")
                     local outlineWidth = SQP:GetOutlineInfo()
                     if outlineWidth and outlineWidth > 0 then
@@ -361,7 +361,6 @@ function SQP:CreatePreviewSection(parent)
                     local startTime = GetTime()
                     local pf = self
                     self.percentTicker = C_Timer.NewTicker(0.033, function()
-                        if not previewFrame:IsShown() then return end
                         local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.2) + 1) / 2
                         local a = 0.6 + t * 0.4
                         if pf.percentIcon then pf.percentIcon:SetAlpha(a) end
@@ -371,18 +370,20 @@ function SQP:CreatePreviewSection(parent)
                     end)
                 end
             else
-                -- Animate main jellybean icon
-                if icon:IsShown() then
-                    local startTime = GetTime()
-                    self.iconTicker = C_Timer.NewTicker(0.033, function()
-                        if not previewFrame:IsShown() then return end
-                        local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.0) + 1) / 2
-                        icon:SetAlpha(0.15 + t * 0.85)
-                    end)
-                end
+                -- Animate main jellybean icon (no IsShown guard — ticker is cancelled by OnHide)
+                local startTime = GetTime()
+                self.iconTicker = C_Timer.NewTicker(0.033, function()
+                    local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.0) + 1) / 2
+                    icon:SetAlpha(0.15 + t * 0.85)
+                end)
             end
         end
     end
+
+    -- Restart animation when the panel becomes visible again
+    previewFrame:SetScript("OnShow", function(self)
+        self:UpdatePreview()
+    end)
 
     -- Initial update
     previewFrame:UpdatePreview()

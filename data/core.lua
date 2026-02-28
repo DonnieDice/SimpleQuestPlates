@@ -80,7 +80,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.8.3" -- Addon version (also in TOC file)
+SQP.VERSION = "1.8.4" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -99,44 +99,45 @@ do
     SQP.tocversion = tocversion or 0
 end
 
--- Default settings
+-- Default settings (based on tuned in-game values)
 SQP.DEFAULTS = {
     enabled = true,
-    scale = 1.0,
-    offsetX = 0,
-    offsetY = 0,
-    anchor = "RIGHT", -- LEFT or RIGHT
-    relativeTo = "LEFT", -- ANCHOR_LEFT or ANCHOR_RIGHT
+    scale = 1.1,
+    offsetX = 12,
+    offsetY = 3,
+    anchor = "RIGHT",
+    relativeTo = "LEFT",
     hideInCombat = false,
     hideInInstance = false,
-    itemColor = {0.2, 1, 0.2}, -- Green
-    killColor = {1, 0.82, 0}, -- Gold
-    percentColor = {0.2, 1, 1}, -- Cyan
-    fontOutline = "OUTLINE", -- NONE, OUTLINE, THICKOUTLINE
-    outlineWidth = 2, -- 0=none, 2=normal, 3=thick
+    itemColor = {0.2, 1, 0.2},   -- Green
+    killColor = {1, 0.82, 0},    -- Gold
+    percentColor = {0.2, 1, 1},  -- Cyan
+    fontOutline = "",            -- No outline by default
+    outlineWidth = 0,
     fontSize = 12,
     fontFamily = "Fonts\\FRIZQT__.TTF",
-    outlineColor = {0, 0, 0}, -- Black
+    outlineColor = {0, 0, 0},
+    outlineAlpha = 0,
     showMessages = true,
     showKillIcon = true,
     showLootIcon = true,
+    showPercentIcon = true,
     animateQuestIcon = false,
-    animateQuestIcons = false,   -- Animate kill/loot task icons
-    outlineAlpha = 0.7,          -- Opacity of outline text layer (0.0-1.0)
-    showIconBackground = true,   -- Show jellybean icon background; false = text-only mode
-    killIconOffsetX = 12,
-    killIconOffsetY = 12,
-    lootIconOffsetX = -12,
-    lootIconOffsetY = 12,
-    percentIconOffsetX = 8,
-    percentIconOffsetY = 3,
-    killIconSize = 16,
-    lootIconSize = 16,
-    percentIconSize = 14,
+    animateQuestIcons = true,
+    showIconBackground = true,
+    killIconOffsetX = 2,
+    killIconOffsetY = 15,
+    lootIconOffsetX = -38,
+    lootIconOffsetY = 16,
+    percentIconOffsetX = -17,
+    percentIconOffsetY = 0,
+    killIconSize = 14,
+    lootIconSize = 14,
+    percentIconSize = 8,
     iconTintMain = false,
-    iconTintMainColor = {1, 1, 1}, -- White
+    iconTintMainColor = {1, 1, 1},
     iconTintQuest = false,
-    iconTintQuestColor = {1, 1, 1}, -- White
+    iconTintQuestColor = {1, 1, 1},
     debug = false,
 }
 
