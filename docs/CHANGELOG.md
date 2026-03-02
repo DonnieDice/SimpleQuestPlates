@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.9.0
+- Per-type granular controls: Kill, Loot, and Percent tabs now each have Display Style (Icon/Text), Animate Main Icon, and Main Icon Tinting — fully independent per quest type.
+- Per-type mini icon tinting: Kill and Loot icon tinting are now separate settings (killTintIcon/lootTintIcon), replacing the previously shared iconTintQuest.
+- Per-type jellybean tinting (killTintMain, lootTintMain, percentTintMain) replaces the global iconTintMain setting.
+- Per-type main icon animation (killAnimateMain, lootAnimateMain, percentAnimateMain) replaces the global animateQuestIcon.
+- Preview auto-switches quest type when you click a tab (Kill → kill preview, Loot → loot preview, Percent → percent preview).
+- All option controls on Kill/Loot/Percent tabs now immediately switch the preview to the relevant quest type when interacted with.
+- Removed Kill/Loot/Percent quest type buttons from beneath the preview — tab selection handles switching instead.
+- Preview container height reduced from 148px to 108px, gaining more space for tab body content.
+- Font settings simplified: outline width, opacity, and color controls removed from per-type font sections; font size and family remain.
+- Loot tab now also exposes Animate Task Icons (was only on Kill tab).
+- About tab redesigned with two-column layout (info/features on left, commands/tab guide on right) to fit all content without overflow.
+- General tab note updated to reflect that font, tinting, and animation are all per quest type.
+
 ## v1.8.4
 - Tab reorganization: Font settings moved into General tab (right column); Colors and Task Icons tabs dissolved; Kill, Loot, Percent each get their own tab with all relevant controls (visibility, color, tint, size, offsets).
 - Add "Show Percent Icon" toggle to Percent tab, parity with Kill and Loot.

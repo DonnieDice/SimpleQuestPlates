@@ -2,7 +2,7 @@
 -- RGX | Simple Quest Plates! - options_loot.lua
 
 -- Author: DonnieDice
--- Description: Loot icon tab (visibility, color, tint, size, offsets)
+-- Description: Loot icon tab (visibility, display style, animate, color, tinting, size, font)
 --=====================================================================================
 
 local addonName, SQP = ...
@@ -53,7 +53,13 @@ function SQP:CreateLootOptions(content)
         return yOff - 36
     end
 
-    -- ── LEFT COLUMN: Toggles + Color + Tinting ────────────────────────────────
+    local function ActivateLoot()
+        if SQP.previewFrame and SQP.previewFrame.activateLootMode then
+            SQP.previewFrame.activateLootMode()
+        end
+    end
+
+    -- ── LEFT COLUMN ────────────────────────────────────────────────────────────
     local yOffset = -15
 
     local header = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -68,9 +74,26 @@ function SQP:CreateLootOptions(content)
     self.optionControls.showLootIcon = showFrame.checkbox
     showFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting('showLootIcon', self:GetChecked())
-        if SQP.previewFrame and SQP.previewFrame.activateLootMode then
-            SQP.previewFrame.activateLootMode()
-        end
+        ActivateLoot()
+        SQP:RefreshAllNameplates()
+    end)
+    yOffset = yOffset - 30
+
+    -- Display Style
+    yOffset = self:CreateDisplayStyleSection(leftColumn, ActivateLoot, yOffset)
+
+    -- Animate Task Icons
+    local animHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    animHeader:SetPoint("TOPLEFT", 20, yOffset)
+    animHeader:SetText("|cff58be81Animate|r")
+    yOffset = yOffset - 20
+
+    local animFrame = self:CreateStyledCheckbox(leftColumn, "Animate Task Icons")
+    animFrame:SetPoint("TOPLEFT", 20, yOffset)
+    animFrame.checkbox:SetChecked(SQPSettings.animateQuestIcons == true)
+    self.optionControls.animateQuestIconsLoot = animFrame.checkbox
+    animFrame.checkbox:SetScript("OnClick", function(self)
+        SQP:SetSetting('animateQuestIcons', self:GetChecked())
         SQP:RefreshAllNameplates()
     end)
     yOffset = yOffset - 34
@@ -102,9 +125,7 @@ function SQP:CreateLootOptions(content)
     colorReset:SetPoint("LEFT", colorLbl, "RIGHT", 5, 0)
 
     colorBtn:SetScript("OnClick", function()
-        if SQP.previewFrame and SQP.previewFrame.activateLootMode then
-            SQP.previewFrame.activateLootMode()
-        end
+        ActivateLoot()
         local r, g, b = unpack(SQPSettings.itemColor or lootDefault)
         local info = {r = r, g = g, b = b, hasOpacity = false}
         info.swatchFunc = function()
@@ -120,70 +141,10 @@ function SQP:CreateLootOptions(content)
     end)
     yOffset = yOffset - 34
 
-    -- Loot Icon Tinting (shared iconTintQuest / iconTintQuestColor with Kill tab)
-    local tintHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintHeader:SetPoint("TOPLEFT", 20, yOffset)
-    tintHeader:SetText("|cff58be81Icon Tinting|r")
-    yOffset = yOffset - 20
+    -- Loot Icon Tinting (mini icon)
+    yOffset = self:CreateMiniIconTintSection(leftColumn, "loot", ActivateLoot, yOffset)
 
-    local tintNote = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-    tintNote:SetPoint("TOPLEFT", 20, yOffset)
-    tintNote:SetText("|cffaaaaaa(Shared with Kill tab)|r")
-    yOffset = yOffset - 18
-
-    local tintCbFrame = self:CreateStyledCheckbox(leftColumn, "Enable Tinting")
-    tintCbFrame:SetPoint("TOPLEFT", 20, yOffset)
-    tintCbFrame.checkbox:SetChecked(SQPSettings.iconTintQuest == true)
-    self.optionControls.iconTintQuestLoot = tintCbFrame.checkbox
-    yOffset = yOffset - 26
-
-    local tintColorBtn = CreateFrame("Button", nil, leftColumn)
-    tintColorBtn:SetSize(20, 20)
-    tintColorBtn:SetPoint("TOPLEFT", 30, yOffset)
-    local tintBg = tintColorBtn:CreateTexture(nil, "BACKGROUND")
-    tintBg:SetAllPoints(); tintBg:SetColorTexture(0, 0, 0, 1)
-    local tintSw = tintColorBtn:CreateTexture(nil, "ARTWORK")
-    tintSw:SetSize(16, 16); tintSw:SetPoint("CENTER")
-    tintSw:SetColorTexture(unpack(SQPSettings.iconTintQuestColor or {1, 1, 1}))
-
-    local tintColorLbl = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintColorLbl:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
-    tintColorLbl:SetText("Tint Color")
-
-    local tintReset = self:CreateInlineResetButton(leftColumn, function()
-        SQP:SetSetting('iconTintQuestColor', {1, 1, 1})
-        tintSw:SetColorTexture(1, 1, 1); SQP:RefreshAllNameplates()
-    end)
-    tintReset:SetPoint("LEFT", tintColorLbl, "RIGHT", 6, 0)
-
-    local function UpdateTintAlpha()
-        local a = SQPSettings.iconTintQuest == true and 1 or 0.4
-        tintColorBtn:SetAlpha(a); tintColorLbl:SetAlpha(a); tintReset:SetAlpha(a * 0.7)
-    end
-    UpdateTintAlpha()
-
-    tintCbFrame.checkbox:SetScript("OnClick", function(self)
-        SQP:SetSetting('iconTintQuest', self:GetChecked())
-        UpdateTintAlpha(); SQP:RefreshAllNameplates()
-    end)
-
-    tintColorBtn:SetScript("OnClick", function()
-        if not SQPSettings.iconTintQuest then return end
-        local r, g, b = unpack(SQPSettings.iconTintQuestColor or {1, 1, 1})
-        local info = {r = r, g = g, b = b, hasOpacity = false}
-        info.swatchFunc = function()
-            local nr, ng, nb = ColorPickerFrame:GetColorRGB()
-            SQP:SetSetting('iconTintQuestColor', {nr, ng, nb})
-            tintSw:SetColorTexture(nr, ng, nb); SQP:RefreshAllNameplates()
-        end
-        info.cancelFunc = function()
-            SQP:SetSetting('iconTintQuestColor', {r, g, b})
-            tintSw:SetColorTexture(r, g, b); SQP:RefreshAllNameplates()
-        end
-        ColorPickerFrame:SetupColorPickerAndShow(info)
-    end)
-
-    -- ── RIGHT COLUMN: Size & Position ─────────────────────────────────────────
+    -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15
 
     local posHeader = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -194,4 +155,9 @@ function SQP:CreateLootOptions(content)
     rightYOffset = MakeSlider(rightColumn, "Size",     "lootIconSize",    14,   8,  40, rightYOffset)
     rightYOffset = MakeSlider(rightColumn, "Offset X", "lootIconOffsetX", -38, -80, 80, rightYOffset)
     rightYOffset = MakeSlider(rightColumn, "Offset Y", "lootIconOffsetY",  16, -80, 80, rightYOffset)
+
+    rightYOffset = self:CreateFontSection(rightColumn, "loot", rightYOffset, "SQPLootFontDropdown")
+
+    -- Main Icon (jellybean) animate + tinting
+    rightYOffset = self:CreateMainIconSection(rightColumn, "loot", ActivateLoot, rightYOffset)
 end

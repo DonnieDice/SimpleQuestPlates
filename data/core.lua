@@ -80,7 +80,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.8.4" -- Addon version (also in TOC file)
+SQP.VERSION = "1.9.0" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -122,6 +122,27 @@ SQP.DEFAULTS = {
     showKillIcon = true,
     showLootIcon = true,
     showPercentIcon = true,
+    -- Per-type font: kill
+    killFontSize = 12,
+    killFontFamily = "Fonts\\FRIZQT__.TTF",
+    killFontOutline = "",
+    killOutlineWidth = 0,
+    killOutlineAlpha = 0,
+    killOutlineColor = {0, 0, 0},
+    -- Per-type font: loot
+    lootFontSize = 12,
+    lootFontFamily = "Fonts\\FRIZQT__.TTF",
+    lootFontOutline = "",
+    lootOutlineWidth = 0,
+    lootOutlineAlpha = 0,
+    lootOutlineColor = {0, 0, 0},
+    -- Per-type font: percent
+    percentFontSize = 8,
+    percentFontFamily = "Fonts\\FRIZQT__.TTF",
+    percentFontOutline = "",
+    percentOutlineWidth = 0,
+    percentOutlineAlpha = 0,
+    percentOutlineColor = {0, 0, 0},
     animateQuestIcon = false,
     animateQuestIcons = true,
     showIconBackground = true,
@@ -138,14 +159,35 @@ SQP.DEFAULTS = {
     iconTintMainColor = {1, 1, 1},
     iconTintQuest = false,
     iconTintQuestColor = {1, 1, 1},
+    -- Per-type main icon (jellybean) animation
+    killAnimateMain = false,
+    lootAnimateMain = false,
+    percentAnimateMain = false,
+    -- Per-type main icon (jellybean) tinting
+    killTintMain = false,
+    killTintMainColor = {1, 1, 1},
+    lootTintMain = false,
+    lootTintMainColor = {1, 1, 1},
+    percentTintMain = false,
+    percentTintMainColor = {1, 1, 1},
+    -- Per-type mini icon tinting (kill/loot task icons)
+    killTintIcon = false,
+    killTintIconColor = {1, 1, 1},
+    lootTintIcon = false,
+    lootTintIconColor = {1, 1, 1},
     debug = false,
 }
 
--- Determine effective outline settings
-function SQP:GetOutlineInfo()
+-- Determine effective outline settings for a quest type (or global if typeKey is nil)
+function SQP:GetOutlineInfo(typeKey)
     local settings = SQPSettings or self.DEFAULTS or {}
-    local fontOutline = settings.fontOutline or "OUTLINE"
-    local outlineWidth = settings.outlineWidth
+    local fontOutline, outlineWidth
+    if typeKey then
+        fontOutline  = settings[typeKey .. "FontOutline"]
+        outlineWidth = settings[typeKey .. "OutlineWidth"]
+    end
+    if fontOutline  == nil then fontOutline  = settings.fontOutline  or "" end
+    if outlineWidth == nil then outlineWidth = settings.outlineWidth or 0  end
     local noOutline = fontOutline == "" or fontOutline == "NONE"
     if noOutline then
         outlineWidth = 0
@@ -158,9 +200,7 @@ function SQP:GetOutlineInfo()
             outlineWidth = 1
         end
     end
-    if outlineWidth < 0 then
-        outlineWidth = 0
-    end
+    if outlineWidth < 0 then outlineWidth = 0 end
     return outlineWidth, fontOutline, noOutline
 end
 
@@ -246,7 +286,27 @@ function SQP:GetSavedSettings()
     if SQPSettings == nil then
         SQPSettings = {}
     end
-    
+
+    -- Migrate global font settings to per-type (must run before ApplyDefaults)
+    local function migrateFont(tk, sizeDefault)
+        if SQPSettings[tk.."FontSize"]    == nil then SQPSettings[tk.."FontSize"]    = SQPSettings.fontSize    or sizeDefault end
+        if SQPSettings[tk.."FontFamily"]  == nil then SQPSettings[tk.."FontFamily"]  = SQPSettings.fontFamily  or "Fonts\\FRIZQT__.TTF" end
+        if SQPSettings[tk.."FontOutline"] == nil then SQPSettings[tk.."FontOutline"] = SQPSettings.fontOutline or "" end
+        if SQPSettings[tk.."OutlineWidth"]== nil then SQPSettings[tk.."OutlineWidth"]= SQPSettings.outlineWidth or 0 end
+        if SQPSettings[tk.."OutlineAlpha"]== nil then SQPSettings[tk.."OutlineAlpha"]= SQPSettings.outlineAlpha or 0 end
+        if SQPSettings[tk.."OutlineColor"]== nil then
+            local oc = SQPSettings.outlineColor
+            SQPSettings[tk.."OutlineColor"] = oc and {oc[1], oc[2], oc[3]} or {0, 0, 0}
+        end
+    end
+    migrateFont("kill",    12)
+    migrateFont("loot",    12)
+    migrateFont("percent",  8)
+    -- percentIconSize → percentFontSize migration
+    if SQPSettings.percentFontSize == nil and SQPSettings.percentIconSize then
+        SQPSettings.percentFontSize = SQPSettings.percentIconSize
+    end
+
     -- Copy defaults if new or missing
     self:ApplyDefaults(SQPSettings)
 

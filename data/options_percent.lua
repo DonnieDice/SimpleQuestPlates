@@ -2,7 +2,7 @@
 -- RGX | Simple Quest Plates! - options_percent.lua
 
 -- Author: DonnieDice
--- Description: Percent quest tab (color, size, offsets)
+-- Description: Percent quest tab (visibility, display style, animate, color, tinting, position, font)
 --=====================================================================================
 
 local addonName, SQP = ...
@@ -53,7 +53,13 @@ function SQP:CreatePercentOptions(content)
         return yOff - 36
     end
 
-    -- ── LEFT COLUMN: Color ─────────────────────────────────────────────────────
+    local function ActivatePercent()
+        if SQP.previewFrame and SQP.previewFrame.activatePercentMode then
+            SQP.previewFrame.activatePercentMode()
+        end
+    end
+
+    -- ── LEFT COLUMN ────────────────────────────────────────────────────────────
     local yOffset = -15
 
     local header = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -75,12 +81,13 @@ function SQP:CreatePercentOptions(content)
     self.optionControls.showPercentIcon = showFrame.checkbox
     showFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting('showPercentIcon', self:GetChecked())
-        if SQP.previewFrame and SQP.previewFrame.activatePercentMode then
-            SQP.previewFrame.activatePercentMode()
-        end
+        ActivatePercent()
         SQP:RefreshAllNameplates()
     end)
     yOffset = yOffset - 30
+
+    -- Display Style
+    yOffset = self:CreateDisplayStyleSection(leftColumn, ActivatePercent, yOffset)
 
     -- Percent Color
     local colorHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -109,9 +116,7 @@ function SQP:CreatePercentOptions(content)
     colorReset:SetPoint("LEFT", colorLbl, "RIGHT", 5, 0)
 
     colorBtn:SetScript("OnClick", function()
-        if SQP.previewFrame and SQP.previewFrame.activatePercentMode then
-            SQP.previewFrame.activatePercentMode()
-        end
+        ActivatePercent()
         local r, g, b = unpack(SQPSettings.percentColor or pctDefault)
         local info = {r = r, g = g, b = b, hasOpacity = false}
         info.swatchFunc = function()
@@ -126,15 +131,19 @@ function SQP:CreatePercentOptions(content)
         ColorPickerFrame:SetupColorPickerAndShow(info)
     end)
 
-    -- ── RIGHT COLUMN: Size & Position ─────────────────────────────────────────
+    -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15
 
     local posHeader = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     posHeader:SetPoint("TOPLEFT", 20, rightYOffset)
-    posHeader:SetText("|cff58be81Size & Position|r")
+    posHeader:SetText("|cff58be81Position|r")
     rightYOffset = rightYOffset - 22
 
-    rightYOffset = MakeSlider(rightColumn, "Size",     "percentIconSize",     8,  8,   40, rightYOffset)
-    rightYOffset = MakeSlider(rightColumn, "Offset X", "percentIconOffsetX", -17, -80,  80, rightYOffset)
-    rightYOffset = MakeSlider(rightColumn, "Offset Y", "percentIconOffsetY",   0, -80,  80, rightYOffset)
+    rightYOffset = MakeSlider(rightColumn, "Offset X", "percentIconOffsetX", -17, -80, 80, rightYOffset)
+    rightYOffset = MakeSlider(rightColumn, "Offset Y", "percentIconOffsetY",   0, -80, 80, rightYOffset)
+
+    rightYOffset = self:CreateFontSection(rightColumn, "percent", rightYOffset, "SQPPercentFontDropdown")
+
+    -- Main Icon (jellybean/percent display) animate + tinting
+    rightYOffset = self:CreateMainIconSection(rightColumn, "percent", ActivatePercent, rightYOffset)
 end

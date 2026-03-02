@@ -123,8 +123,7 @@ function SQP:InitializeTabs(container, previewContainer)
         local tab = self:CreateTabButton(tabContainer, info.id, info.text)
         tab:SetPoint("LEFT", tabContainer, "LEFT", (i-1) * 105, 0)
         
-        -- Create panel without scrolling (all tabs fit now)
-        local needsScroll = false
+        local needsScroll = true
         local panel = self:CreateTabPanel(container, needsScroll)
         panel:SetPoint("TOPLEFT", tabContainer, "BOTTOMLEFT", 0, -3)
         panel:SetPoint("BOTTOMRIGHT", container, "BOTTOMRIGHT", -10, 10)
@@ -141,6 +140,18 @@ function SQP:InitializeTabs(container, previewContainer)
             -- Show selected panel and activate tab
             panel:Show()
             tab:SetActive(true)
+            -- Auto-switch preview to the relevant quest type
+            if SQP.previewFrame then
+                if info.id == "kill" and SQP.previewFrame.activateKillMode then
+                    SQP.previewFrame.activateKillMode()
+                elseif info.id == "loot" and SQP.previewFrame.activateLootMode then
+                    SQP.previewFrame.activateLootMode()
+                elseif info.id == "percent" and SQP.previewFrame.activatePercentMode then
+                    SQP.previewFrame.activatePercentMode()
+                elseif SQP.previewFrame.activateKillMode then
+                    SQP.previewFrame.activateKillMode()
+                end
+            end
         end)
         
         tabs[info.id] = tab

@@ -85,6 +85,299 @@ function SQP:CreateStyledSlider(parent, min, max, step, width)
     return slider
 end
 
+-- Create a per-type font settings section (size + family only)
+-- parent: frame to attach controls to
+-- typeKey: "kill", "loot", or "percent"
+-- yOffset: starting y position (negative)
+-- dropdownName: unique global name for the dropdown frame
+-- returns: next yOffset after all controls
+function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName)
+    if not self.optionControls then self.optionControls = {} end
+
+    local defaultSize = typeKey == "percent" and 8 or 12
+
+    -- Section header
+    local fontHeader = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    fontHeader:SetPoint("TOPLEFT", 20, yOffset)
+    fontHeader:SetText("|cff58be81Font|r")
+    yOffset = yOffset - 22
+
+    -- ── Font Size ──────────────────────────────────────────────────────────
+    local curSize = SQPSettings[typeKey.."FontSize"] or defaultSize
+    local sizeLabel = parent:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+    sizeLabel:SetPoint("TOPLEFT", 20, yOffset)
+    sizeLabel:SetText(string.format("Size: %d", curSize))
+    self.optionControls[typeKey.."FontSizeLabel"] = sizeLabel
+
+    local sizeSlider = self:CreateStyledSlider(parent, 6, 26, 1, 160)
+    sizeSlider:SetPoint("TOPLEFT", sizeLabel, "BOTTOMLEFT", 0, -4)
+    sizeSlider:SetValue(curSize)
+    self.optionControls[typeKey.."FontSize"] = sizeSlider
+
+    local sizeReset = self:CreateInlineResetButton(parent, function()
+        SQP:SetSetting(typeKey.."FontSize", defaultSize)
+        sizeSlider:SetValue(defaultSize)
+        sizeLabel:SetText(string.format("Size: %d", defaultSize))
+        SQP:RefreshAllNameplates()
+    end)
+    sizeReset:SetPoint("LEFT", sizeSlider, "RIGHT", 5, 0)
+
+    sizeSlider:SetScript("OnValueChanged", function(self, val)
+        val = math.floor(val + 0.5)
+        SQP:SetSetting(typeKey.."FontSize", val)
+        sizeLabel:SetText(string.format("Size: %d", val))
+        SQP:RefreshAllNameplates()
+    end)
+    yOffset = yOffset - 36
+
+    -- ── Font Family ────────────────────────────────────────────────────────
+    local familyLabel = parent:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+    familyLabel:SetPoint("TOPLEFT", 20, yOffset)
+    familyLabel:SetText("Family")
+
+    local fontDd = CreateFrame("Frame", dropdownName, parent, "UIDropDownMenuTemplate")
+    local familyReset = self:CreateInlineResetButton(parent, function()
+        SQP:SetSetting(typeKey.."FontFamily", "Fonts\\FRIZQT__.TTF")
+        UIDropDownMenu_SetText(fontDd, "Friz Quadrata")
+        SQP:RefreshAllNameplates()
+    end)
+    familyReset:SetPoint("LEFT", familyLabel, "RIGHT", 5, 0)
+    yOffset = yOffset - 20
+
+    fontDd:SetPoint("TOPLEFT", 5, yOffset)
+    UIDropDownMenu_SetWidth(fontDd, 160)
+    self.optionControls[typeKey.."FontFamily"] = fontDd
+
+    local fontOptions = {
+        {text = "Friz Quadrata", font = "Fonts\\FRIZQT__.TTF"},
+        {text = "Arial Narrow",  font = "Fonts\\ARIALN.TTF"},
+        {text = "Skurri",        font = "Fonts\\SKURRI.TTF"},
+        {text = "Morpheus",      font = "Fonts\\MORPHEUS.TTF"},
+        {text = "2002 (Pixel)",  font = "Fonts\\2002.TTF"},
+        {text = "2002 Bold",     font = "Fonts\\2002B.TTF"},
+        {text = "Nimrod MT",     font = "Fonts\\NIM_____.ttf"},
+    }
+
+    UIDropDownMenu_Initialize(fontDd, function(self, level)
+        for _, opt in ipairs(fontOptions) do
+            local info = UIDropDownMenu_CreateInfo()
+            info.text = opt.text
+            info.func = function()
+                SQP:SetSetting(typeKey.."FontFamily", opt.font)
+                UIDropDownMenu_SetText(fontDd, opt.text)
+                SQP:RefreshAllNameplates()
+            end
+            info.checked = (SQPSettings[typeKey.."FontFamily"] == opt.font)
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end)
+
+    local curFamily = SQPSettings[typeKey.."FontFamily"] or "Fonts\\FRIZQT__.TTF"
+    for _, opt in ipairs(fontOptions) do
+        if opt.font == curFamily then UIDropDownMenu_SetText(fontDd, opt.text); break end
+    end
+    yOffset = yOffset - 34
+
+    return yOffset
+end
+
+-- Create a Display Style (Icon / Text) section
+-- activatePreviewFn: optional function to call to switch the preview mode
+-- returns: next yOffset
+function SQP:CreateDisplayStyleSection(parent, activatePreviewFn, yOffset)
+    local dsHeader = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    dsHeader:SetPoint("TOPLEFT", 20, yOffset)
+    dsHeader:SetText("|cff58be81Display Style|r")
+    yOffset = yOffset - 22
+
+    local iconStyleBtn = self:CreateStyledButton(parent, "Icon", 75, 25)
+    local textStyleBtn = self:CreateStyledButton(parent, "Text", 75, 25)
+    iconStyleBtn:SetPoint("TOPLEFT", 20, yOffset)
+    textStyleBtn:SetPoint("LEFT", iconStyleBtn, "RIGHT", 8, 0)
+
+    local function UpdateStyleButtons()
+        iconStyleBtn:SetAlpha(SQPSettings.showIconBackground ~= false and 1 or 0.6)
+        textStyleBtn:SetAlpha(SQPSettings.showIconBackground == false and 1 or 0.6)
+    end
+    UpdateStyleButtons()
+
+    -- Register updater for cross-tab sync
+    if not SQP.styleButtonUpdaters then SQP.styleButtonUpdaters = {} end
+    table.insert(SQP.styleButtonUpdaters, UpdateStyleButtons)
+
+    iconStyleBtn:SetScript("OnClick", function()
+        SQP:SetSetting('showIconBackground', true)
+        if SQP.styleButtonUpdaters then
+            for _, fn in ipairs(SQP.styleButtonUpdaters) do fn() end
+        end
+        if activatePreviewFn then activatePreviewFn() end
+        SQP:RefreshAllNameplates()
+    end)
+    textStyleBtn:SetScript("OnClick", function()
+        SQP:SetSetting('showIconBackground', false)
+        if SQP.styleButtonUpdaters then
+            for _, fn in ipairs(SQP.styleButtonUpdaters) do fn() end
+        end
+        if activatePreviewFn then activatePreviewFn() end
+        SQP:RefreshAllNameplates()
+    end)
+    yOffset = yOffset - 34
+
+    return yOffset
+end
+
+-- Create a per-type mini icon tint section (kill or loot task icons)
+-- typeKey: "kill" or "loot"
+-- returns: next yOffset
+function SQP:CreateMiniIconTintSection(parent, typeKey, activatePreviewFn, yOffset)
+    local headerText = typeKey == "kill" and "Kill Icon Tinting" or "Loot Icon Tinting"
+    local tintKey = typeKey .. "TintIcon"
+    local tintColorKey = typeKey .. "TintIconColor"
+
+    local tintHeader = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    tintHeader:SetPoint("TOPLEFT", 20, yOffset)
+    tintHeader:SetText("|cff58be81" .. headerText .. "|r")
+    yOffset = yOffset - 20
+
+    local tintCbFrame = self:CreateStyledCheckbox(parent, "Enable Tinting")
+    tintCbFrame:SetPoint("TOPLEFT", 20, yOffset)
+    tintCbFrame.checkbox:SetChecked(SQPSettings[tintKey] == true)
+    self.optionControls[tintKey] = tintCbFrame.checkbox
+    yOffset = yOffset - 26
+
+    local tintColorBtn = CreateFrame("Button", nil, parent)
+    tintColorBtn:SetSize(20, 20)
+    tintColorBtn:SetPoint("TOPLEFT", 30, yOffset)
+    local tintBg = tintColorBtn:CreateTexture(nil, "BACKGROUND")
+    tintBg:SetAllPoints(); tintBg:SetColorTexture(0, 0, 0, 1)
+    local tintSw = tintColorBtn:CreateTexture(nil, "ARTWORK")
+    tintSw:SetSize(16, 16); tintSw:SetPoint("CENTER")
+    tintSw:SetColorTexture(unpack(SQPSettings[tintColorKey] or {1, 1, 1}))
+
+    local tintColorLbl = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    tintColorLbl:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
+    tintColorLbl:SetText("Tint Color")
+
+    local tintReset = self:CreateInlineResetButton(parent, function()
+        SQP:SetSetting(tintColorKey, {1, 1, 1})
+        tintSw:SetColorTexture(1, 1, 1); SQP:RefreshAllNameplates()
+    end)
+    tintReset:SetPoint("LEFT", tintColorLbl, "RIGHT", 6, 0)
+
+    local function UpdateTintAlpha()
+        local a = SQPSettings[tintKey] == true and 1 or 0.4
+        tintColorBtn:SetAlpha(a); tintColorLbl:SetAlpha(a); tintReset:SetAlpha(a * 0.7)
+    end
+    UpdateTintAlpha()
+
+    tintCbFrame.checkbox:SetScript("OnClick", function(self)
+        SQP:SetSetting(tintKey, self:GetChecked())
+        UpdateTintAlpha(); SQP:RefreshAllNameplates()
+    end)
+
+    tintColorBtn:SetScript("OnClick", function()
+        if not SQPSettings[tintKey] then return end
+        if activatePreviewFn then activatePreviewFn() end
+        local r, g, b = unpack(SQPSettings[tintColorKey] or {1, 1, 1})
+        local info = {r = r, g = g, b = b, hasOpacity = false}
+        info.swatchFunc = function()
+            local nr, ng, nb = ColorPickerFrame:GetColorRGB()
+            SQP:SetSetting(tintColorKey, {nr, ng, nb}); tintSw:SetColorTexture(nr, ng, nb)
+            SQP:RefreshAllNameplates()
+        end
+        info.cancelFunc = function()
+            SQP:SetSetting(tintColorKey, {r, g, b}); tintSw:SetColorTexture(r, g, b)
+            SQP:RefreshAllNameplates()
+        end
+        ColorPickerFrame:SetupColorPickerAndShow(info)
+    end)
+    yOffset = yOffset - 30
+
+    return yOffset
+end
+
+-- Create a per-type main icon (jellybean) tinting + animate section
+-- typeKey: "kill", "loot", or "percent"
+-- returns: next yOffset
+function SQP:CreateMainIconSection(parent, typeKey, activatePreviewFn, yOffset)
+    local tintKey = typeKey .. "TintMain"
+    local tintColorKey = typeKey .. "TintMainColor"
+    local animKey = typeKey .. "AnimateMain"
+
+    local header = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    header:SetPoint("TOPLEFT", 20, yOffset)
+    header:SetText("|cff58be81Main Icon|r")
+    yOffset = yOffset - 22
+
+    -- Animate Main Icon
+    local animFrame = self:CreateStyledCheckbox(parent, "Animate Main Icon")
+    animFrame:SetPoint("TOPLEFT", 20, yOffset)
+    animFrame.checkbox:SetChecked(SQPSettings[animKey] == true)
+    self.optionControls[animKey] = animFrame.checkbox
+    animFrame.checkbox:SetScript("OnClick", function(self)
+        SQP:SetSetting(animKey, self:GetChecked())
+        SQP:RefreshAllNameplates()
+    end)
+    yOffset = yOffset - 26
+
+    -- Enable Tinting
+    local tintCbFrame = self:CreateStyledCheckbox(parent, "Enable Tinting")
+    tintCbFrame:SetPoint("TOPLEFT", 20, yOffset)
+    tintCbFrame.checkbox:SetChecked(SQPSettings[tintKey] == true)
+    self.optionControls[tintKey] = tintCbFrame.checkbox
+    yOffset = yOffset - 26
+
+    local tintColorBtn = CreateFrame("Button", nil, parent)
+    tintColorBtn:SetSize(20, 20)
+    tintColorBtn:SetPoint("TOPLEFT", 30, yOffset)
+    local tintBg = tintColorBtn:CreateTexture(nil, "BACKGROUND")
+    tintBg:SetAllPoints(); tintBg:SetColorTexture(0, 0, 0, 1)
+    local tintSw = tintColorBtn:CreateTexture(nil, "ARTWORK")
+    tintSw:SetSize(16, 16); tintSw:SetPoint("CENTER")
+    tintSw:SetColorTexture(unpack(SQPSettings[tintColorKey] or {1, 1, 1}))
+
+    local tintColorLbl = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    tintColorLbl:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
+    tintColorLbl:SetText("Tint Color")
+
+    local tintReset = self:CreateInlineResetButton(parent, function()
+        SQP:SetSetting(tintColorKey, {1, 1, 1})
+        tintSw:SetColorTexture(1, 1, 1); SQP:RefreshAllNameplates()
+    end)
+    tintReset:SetPoint("LEFT", tintColorLbl, "RIGHT", 6, 0)
+
+    local function UpdateTintAlpha()
+        local a = SQPSettings[tintKey] == true and 1 or 0.4
+        tintColorBtn:SetAlpha(a); tintColorLbl:SetAlpha(a); tintReset:SetAlpha(a * 0.7)
+    end
+    UpdateTintAlpha()
+
+    tintCbFrame.checkbox:SetScript("OnClick", function(self)
+        SQP:SetSetting(tintKey, self:GetChecked())
+        UpdateTintAlpha(); SQP:RefreshAllNameplates()
+    end)
+
+    tintColorBtn:SetScript("OnClick", function()
+        if not SQPSettings[tintKey] then return end
+        if activatePreviewFn then activatePreviewFn() end
+        local r, g, b = unpack(SQPSettings[tintColorKey] or {1, 1, 1})
+        local info = {r = r, g = g, b = b, hasOpacity = false}
+        info.swatchFunc = function()
+            local nr, ng, nb = ColorPickerFrame:GetColorRGB()
+            SQP:SetSetting(tintColorKey, {nr, ng, nb}); tintSw:SetColorTexture(nr, ng, nb)
+            SQP:RefreshAllNameplates()
+        end
+        info.cancelFunc = function()
+            SQP:SetSetting(tintColorKey, {r, g, b}); tintSw:SetColorTexture(r, g, b)
+            SQP:RefreshAllNameplates()
+        end
+        ColorPickerFrame:SetupColorPickerAndShow(info)
+    end)
+    yOffset = yOffset - 30
+
+    return yOffset
+end
+
 -- Create custom checkbox
 function SQP:CreateStyledCheckbox(parent, text)
     local frame = CreateFrame("Frame", nil, parent)

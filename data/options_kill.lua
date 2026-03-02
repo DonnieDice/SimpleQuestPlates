@@ -2,7 +2,7 @@
 -- RGX | Simple Quest Plates! - options_kill.lua
 
 -- Author: DonnieDice
--- Description: Kill icon tab (visibility, animation, color, tint, size, offsets)
+-- Description: Kill icon tab (visibility, display style, animate, color, tinting, size, font)
 --=====================================================================================
 
 local addonName, SQP = ...
@@ -53,7 +53,13 @@ function SQP:CreateKillOptions(content)
         return yOff - 36
     end
 
-    -- ── LEFT COLUMN: Toggles + Color + Tinting ────────────────────────────────
+    local function ActivateKill()
+        if SQP.previewFrame and SQP.previewFrame.activateKillMode then
+            SQP.previewFrame.activateKillMode()
+        end
+    end
+
+    -- ── LEFT COLUMN ────────────────────────────────────────────────────────────
     local yOffset = -15
 
     local header = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -68,14 +74,20 @@ function SQP:CreateKillOptions(content)
     self.optionControls.showKillIcon = showFrame.checkbox
     showFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting('showKillIcon', self:GetChecked())
-        if SQP.previewFrame and SQP.previewFrame.activateKillMode then
-            SQP.previewFrame.activateKillMode()
-        end
+        ActivateKill()
         SQP:RefreshAllNameplates()
     end)
-    yOffset = yOffset - 26
+    yOffset = yOffset - 30
 
-    -- Animate Task Icons (global — affects kill + loot)
+    -- Display Style
+    yOffset = self:CreateDisplayStyleSection(leftColumn, ActivateKill, yOffset)
+
+    -- Animate Task Icons (kill + loot mini icons)
+    local animHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    animHeader:SetPoint("TOPLEFT", 20, yOffset)
+    animHeader:SetText("|cff58be81Animate|r")
+    yOffset = yOffset - 20
+
     local animFrame = self:CreateStyledCheckbox(leftColumn, "Animate Task Icons")
     animFrame:SetPoint("TOPLEFT", 20, yOffset)
     animFrame.checkbox:SetChecked(SQPSettings.animateQuestIcons == true)
@@ -113,9 +125,7 @@ function SQP:CreateKillOptions(content)
     colorReset:SetPoint("LEFT", colorLbl, "RIGHT", 5, 0)
 
     colorBtn:SetScript("OnClick", function()
-        if SQP.previewFrame and SQP.previewFrame.activateKillMode then
-            SQP.previewFrame.activateKillMode()
-        end
+        ActivateKill()
         local r, g, b = unpack(SQPSettings.killColor or killDefault)
         local info = {r = r, g = g, b = b, hasOpacity = false}
         info.swatchFunc = function()
@@ -131,70 +141,10 @@ function SQP:CreateKillOptions(content)
     end)
     yOffset = yOffset - 34
 
-    -- Kill Icon Tinting (shared iconTintQuest / iconTintQuestColor with Loot tab)
-    local tintHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintHeader:SetPoint("TOPLEFT", 20, yOffset)
-    tintHeader:SetText("|cff58be81Icon Tinting|r")
-    yOffset = yOffset - 20
+    -- Kill Icon Tinting (mini icon)
+    yOffset = self:CreateMiniIconTintSection(leftColumn, "kill", ActivateKill, yOffset)
 
-    local tintNote = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-    tintNote:SetPoint("TOPLEFT", 20, yOffset)
-    tintNote:SetText("|cffaaaaaa(Shared with Loot tab)|r")
-    yOffset = yOffset - 18
-
-    local tintCbFrame = self:CreateStyledCheckbox(leftColumn, "Enable Tinting")
-    tintCbFrame:SetPoint("TOPLEFT", 20, yOffset)
-    tintCbFrame.checkbox:SetChecked(SQPSettings.iconTintQuest == true)
-    self.optionControls.iconTintQuest = tintCbFrame.checkbox
-    yOffset = yOffset - 26
-
-    local tintColorBtn = CreateFrame("Button", nil, leftColumn)
-    tintColorBtn:SetSize(20, 20)
-    tintColorBtn:SetPoint("TOPLEFT", 30, yOffset)
-    local tintBg = tintColorBtn:CreateTexture(nil, "BACKGROUND")
-    tintBg:SetAllPoints(); tintBg:SetColorTexture(0, 0, 0, 1)
-    local tintSw = tintColorBtn:CreateTexture(nil, "ARTWORK")
-    tintSw:SetSize(16, 16); tintSw:SetPoint("CENTER")
-    tintSw:SetColorTexture(unpack(SQPSettings.iconTintQuestColor or {1, 1, 1}))
-
-    local tintColorLbl = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintColorLbl:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
-    tintColorLbl:SetText("Tint Color")
-
-    local tintReset = self:CreateInlineResetButton(leftColumn, function()
-        SQP:SetSetting('iconTintQuestColor', {1, 1, 1})
-        tintSw:SetColorTexture(1, 1, 1); SQP:RefreshAllNameplates()
-    end)
-    tintReset:SetPoint("LEFT", tintColorLbl, "RIGHT", 6, 0)
-
-    local function UpdateTintAlpha()
-        local a = SQPSettings.iconTintQuest == true and 1 or 0.4
-        tintColorBtn:SetAlpha(a); tintColorLbl:SetAlpha(a); tintReset:SetAlpha(a * 0.7)
-    end
-    UpdateTintAlpha()
-
-    tintCbFrame.checkbox:SetScript("OnClick", function(self)
-        SQP:SetSetting('iconTintQuest', self:GetChecked())
-        UpdateTintAlpha(); SQP:RefreshAllNameplates()
-    end)
-
-    tintColorBtn:SetScript("OnClick", function()
-        if not SQPSettings.iconTintQuest then return end
-        local r, g, b = unpack(SQPSettings.iconTintQuestColor or {1, 1, 1})
-        local info = {r = r, g = g, b = b, hasOpacity = false}
-        info.swatchFunc = function()
-            local nr, ng, nb = ColorPickerFrame:GetColorRGB()
-            SQP:SetSetting('iconTintQuestColor', {nr, ng, nb})
-            tintSw:SetColorTexture(nr, ng, nb); SQP:RefreshAllNameplates()
-        end
-        info.cancelFunc = function()
-            SQP:SetSetting('iconTintQuestColor', {r, g, b})
-            tintSw:SetColorTexture(r, g, b); SQP:RefreshAllNameplates()
-        end
-        ColorPickerFrame:SetupColorPickerAndShow(info)
-    end)
-
-    -- ── RIGHT COLUMN: Size & Position ─────────────────────────────────────────
+    -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15
 
     local posHeader = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -205,4 +155,9 @@ function SQP:CreateKillOptions(content)
     rightYOffset = MakeSlider(rightColumn, "Size",     "killIconSize",    14,  8,   40, rightYOffset)
     rightYOffset = MakeSlider(rightColumn, "Offset X", "killIconOffsetX",  2, -80,  80, rightYOffset)
     rightYOffset = MakeSlider(rightColumn, "Offset Y", "killIconOffsetY", 15, -80,  80, rightYOffset)
+
+    rightYOffset = self:CreateFontSection(rightColumn, "kill", rightYOffset, "SQPKillFontDropdown")
+
+    -- Main Icon (jellybean) animate + tinting
+    rightYOffset = self:CreateMainIconSection(rightColumn, "kill", ActivateKill, rightYOffset)
 end
