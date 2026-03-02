@@ -1,4 +1,8 @@
-## v1.9.1
+## v1.9.2
+- Percent tab now fully matches Kill and Loot tab structure: dedicated Animate section (header + "Animate Main Icon" checkbox controlling `percentAnimateMain`) appears before the Color section, consistent with the Animate sections on Kill and Loot tabs.
+- Main Icon tint section on Percent tab no longer duplicates the Animate checkbox (it now uses `skipAnimate=true`).
+- Preview type-switcher buttons (Kill / Loot / %) moved from top-right of preview frame to centered bottom, below the nameplate preview.
+- Preview title "Live Preview" moved back to centered top of the preview frame.
 - Merged General and Main Icon tabs into a single Global tab (position, scale, anchor, addon state, combat toggles).
 - Main Icon tinting and animation moved from right column to left column on Kill, Loot, and Percent tabs — no more overflow.
 - Tint sections redesigned as compact inline rows (color swatch + checkbox on one line) — saves ~30px per section.

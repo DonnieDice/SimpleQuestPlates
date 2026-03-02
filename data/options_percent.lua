@@ -82,6 +82,23 @@ function SQP:CreatePercentOptions(content)
     -- Display Style
     yOffset = self:CreateDisplayStyleSection(leftColumn, ActivatePercent, yOffset)
 
+    -- Animate Main Icon
+    local animHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    animHeader:SetPoint("TOPLEFT", 20, yOffset)
+    animHeader:SetText("|cff58be81Animate|r")
+    yOffset = yOffset - 20
+
+    local animFrame = self:CreateStyledCheckbox(leftColumn, "Animate Main Icon")
+    animFrame:SetPoint("TOPLEFT", 20, yOffset)
+    animFrame.checkbox:SetChecked(SQPSettings.percentAnimateMain == true)
+    self.optionControls.percentAnimateMain = animFrame.checkbox
+    animFrame.checkbox:SetScript("OnClick", function(self)
+        SQP:SetSetting('percentAnimateMain', self:GetChecked())
+        ActivatePercent()
+        SQP:RefreshAllNameplates()
+    end)
+    yOffset = yOffset - 34
+
     -- Percent Color
     local colorHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     colorHeader:SetPoint("TOPLEFT", 20, yOffset)
@@ -125,8 +142,8 @@ function SQP:CreatePercentOptions(content)
     end)
     yOffset = yOffset - 34
 
-    -- Main Icon (jellybean/percent display) animate + tinting
-    yOffset = self:CreateMainIconSection(leftColumn, "percent", ActivatePercent, yOffset)
+    -- Main Icon (jellybean/percent display) tinting (animate is in its own section above)
+    yOffset = self:CreateMainIconSection(leftColumn, "percent", ActivatePercent, yOffset, true)
 
     -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15

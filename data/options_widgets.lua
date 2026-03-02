@@ -295,10 +295,11 @@ function SQP:CreateMiniIconTintSection(parent, typeKey, activatePreviewFn, yOffs
 end
 
 -- Create a per-type main icon (jellybean) animate + tinting section
--- Compact: header (18px) + animate checkbox (26px) + inline tint row (26px) = 70px total
+-- Compact: header (18px) + animate checkbox (26px, optional) + inline tint row (26px)
+-- skipAnimate: pass true when the tab already has a dedicated Animate section above
 -- typeKey: "kill", "loot", or "percent"
 -- returns: next yOffset
-function SQP:CreateMainIconSection(parent, typeKey, activatePreviewFn, yOffset)
+function SQP:CreateMainIconSection(parent, typeKey, activatePreviewFn, yOffset, skipAnimate)
     local tintKey      = typeKey .. "TintMain"
     local tintColorKey = typeKey .. "TintMainColor"
     local animKey      = typeKey .. "AnimateMain"
@@ -309,16 +310,18 @@ function SQP:CreateMainIconSection(parent, typeKey, activatePreviewFn, yOffset)
     header:SetText("|cff58be81Main Icon|r")
     yOffset = yOffset - 18
 
-    -- Animate Main Icon checkbox
-    local animFrame = self:CreateStyledCheckbox(parent, "Animate Main Icon")
-    animFrame:SetPoint("TOPLEFT", 20, yOffset)
-    animFrame.checkbox:SetChecked(SQPSettings[animKey] == true)
-    self.optionControls[animKey] = animFrame.checkbox
-    animFrame.checkbox:SetScript("OnClick", function(self)
-        SQP:SetSetting(animKey, self:GetChecked())
-        SQP:RefreshAllNameplates()
-    end)
-    yOffset = yOffset - 26
+    -- Animate Main Icon checkbox (skip if tab already exposes it in its own Animate section)
+    if not skipAnimate then
+        local animFrame = self:CreateStyledCheckbox(parent, "Animate Main Icon")
+        animFrame:SetPoint("TOPLEFT", 20, yOffset)
+        animFrame.checkbox:SetChecked(SQPSettings[animKey] == true)
+        self.optionControls[animKey] = animFrame.checkbox
+        animFrame.checkbox:SetScript("OnClick", function(self)
+            SQP:SetSetting(animKey, self:GetChecked())
+            SQP:RefreshAllNameplates()
+        end)
+        yOffset = yOffset - 26
+    end
 
     -- Inline tint row: [Swatch] [☑ Tint Main Icon] [Reset]
     local tintColorBtn = CreateFrame("Button", nil, parent)
