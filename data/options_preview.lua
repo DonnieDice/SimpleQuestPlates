@@ -15,10 +15,18 @@ function SQP:CreatePreviewSection(parent)
     previewFrame:SetSize(parent:GetWidth() - 40, 95)
     previewFrame:SetPoint("CENTER", parent, "CENTER", 0, 0)
 
-    -- Preview title
-    local previewTitle = previewFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-    previewTitle:SetPoint("TOP", previewFrame, "TOP", 0, -5)
+    -- Preview title (left-aligned)
+    local previewTitle = previewFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    previewTitle:SetPoint("TOPLEFT", previewFrame, "TOPLEFT", 10, -7)
     previewTitle:SetText("|cff58be81Live Preview|r")
+
+    -- Type-switcher buttons (top-right area)
+    local killTypeBtn = self:CreateStyledButton(previewFrame, "Kill", 44, 18)
+    local lootTypeBtn = self:CreateStyledButton(previewFrame, "Loot", 44, 18)
+    local pctTypeBtn  = self:CreateStyledButton(previewFrame, "%",   22, 18)
+    pctTypeBtn:SetPoint("TOPRIGHT", previewFrame, "TOPRIGHT", -4, -4)
+    lootTypeBtn:SetPoint("RIGHT", pctTypeBtn, "LEFT", -4, 0)
+    killTypeBtn:SetPoint("RIGHT", lootTypeBtn, "LEFT", -4, 0)
 
     -- Create fake nameplate
     local nameplate = CreateFrame("Frame", nil, previewFrame)
@@ -181,10 +189,10 @@ function SQP:CreatePreviewSection(parent)
                 'TOPRIGHT',
                 icon,
                 'BOTTOMLEFT',
-                SQPSettings.killIconOffsetX or 12,
-                SQPSettings.killIconOffsetY or 12
+                SQPSettings.killIconOffsetX or 2,
+                SQPSettings.killIconOffsetY or 15
             )
-            self.killIcon:SetSize(SQPSettings.killIconSize or 16, SQPSettings.killIconSize or 16)
+            self.killIcon:SetSize(SQPSettings.killIconSize or 14, SQPSettings.killIconSize or 14)
         end
         if self.lootIcon then
             self.lootIcon:ClearAllPoints()
@@ -192,10 +200,10 @@ function SQP:CreatePreviewSection(parent)
                 'TOPLEFT',
                 icon,
                 'BOTTOMRIGHT',
-                SQPSettings.lootIconOffsetX or -12,
-                SQPSettings.lootIconOffsetY or 12
+                SQPSettings.lootIconOffsetX or -38,
+                SQPSettings.lootIconOffsetY or 16
             )
-            self.lootIcon:SetSize(SQPSettings.lootIconSize or 16, SQPSettings.lootIconSize or 16)
+            self.lootIcon:SetSize(SQPSettings.lootIconSize or 14, SQPSettings.lootIconSize or 14)
         end
 
         -- Update scale
@@ -240,11 +248,7 @@ function SQP:CreatePreviewSection(parent)
             if self.percentIcon then self.percentIcon:Hide() end
             if self.percentIconOutline then self.percentIconOutline:Hide() end
             if self.lootIcon then
-                if SQPSettings.showLootIcon ~= false then
-                    self.lootIcon:Show()
-                else
-                    self.lootIcon:Hide()
-                end
+                if SQPSettings.showLootIcon ~= false then self.lootIcon:Show() else self.lootIcon:Hide() end
             end
             if self.killIcon then self.killIcon:Hide() end
             if SQPSettings.showIconBackground == false then
@@ -260,11 +264,7 @@ function SQP:CreatePreviewSection(parent)
             if self.percentIconOutline then self.percentIconOutline:Hide() end
             if self.lootIcon then self.lootIcon:Hide() end
             if self.killIcon then
-                if SQPSettings.showKillIcon ~= false then
-                    self.killIcon:Show()
-                else
-                    self.killIcon:Hide()
-                end
+                if SQPSettings.showKillIcon ~= false then self.killIcon:Show() else self.killIcon:Hide() end
             end
             if SQPSettings.showIconBackground == false then
                 self.iconText:SetText("5/8")
@@ -279,7 +279,7 @@ function SQP:CreatePreviewSection(parent)
             if self.killIcon  then self.killIcon:Hide()  end
 
             if SQPSettings.showPercentIcon ~= false then
-                local pOffX = SQPSettings.percentIconOffsetX or -17
+                local pOffX = SQPSettings.percentIconOffsetX or 18
                 local pOffY = SQPSettings.percentIconOffsetY or 0
                 local pOW   = SQP:GetOutlineInfo("percent")
                 if SQPSettings.showIconBackground ~= false then
@@ -362,7 +362,6 @@ function SQP:CreatePreviewSection(parent)
 
         if SQPSettings[animKey] then
             if previewTypeKey == "percent" then
-                -- Animate percent icon
                 if self.percentIcon and self.percentIcon:IsShown() then
                     local startTime = GetTime()
                     local pf = self
@@ -376,7 +375,6 @@ function SQP:CreatePreviewSection(parent)
                     end)
                 end
             else
-                -- Animate main jellybean icon
                 local startTime = GetTime()
                 self.iconTicker = C_Timer.NewTicker(0.033, function()
                     local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.0) + 1) / 2
@@ -391,8 +389,13 @@ function SQP:CreatePreviewSection(parent)
         self:UpdatePreview()
     end)
 
-    -- Initial update
-    previewFrame:UpdatePreview()
+    -- Type-switcher button alpha updater
+    local function UpdateTypeButtons(activeType)
+        killTypeBtn:SetAlpha(activeType == "kill"    and 1 or 0.45)
+        lootTypeBtn:SetAlpha(activeType == "loot"    and 1 or 0.45)
+        pctTypeBtn:SetAlpha( activeType == "percent" and 1 or 0.45)
+    end
+    UpdateTypeButtons("kill")
 
     -- External helpers to switch preview mode from tab clicks and option controls
     previewFrame.activateKillMode = function()
@@ -400,6 +403,7 @@ function SQP:CreatePreviewSection(parent)
         lootIcon:Hide()
         killIcon:Hide()
         previewFrame.questType = "kill"
+        UpdateTypeButtons("kill")
         previewFrame:UpdatePreview()
     end
 
@@ -408,6 +412,7 @@ function SQP:CreatePreviewSection(parent)
         lootIcon:Show()
         killIcon:Hide()
         previewFrame.questType = "loot"
+        UpdateTypeButtons("loot")
         previewFrame:UpdatePreview()
     end
 
@@ -416,8 +421,17 @@ function SQP:CreatePreviewSection(parent)
         lootIcon:Hide()
         killIcon:Hide()
         previewFrame.questType = "percent"
+        UpdateTypeButtons("percent")
         previewFrame:UpdatePreview()
     end
+
+    -- Set button scripts (after activate functions are defined)
+    killTypeBtn:SetScript("OnClick", function() previewFrame.activateKillMode() end)
+    lootTypeBtn:SetScript("OnClick", function() previewFrame.activateLootMode() end)
+    pctTypeBtn:SetScript("OnClick",  function() previewFrame.activatePercentMode() end)
+
+    -- Initial update
+    previewFrame:UpdatePreview()
 
     return previewFrame
 end

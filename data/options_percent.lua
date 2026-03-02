@@ -2,7 +2,7 @@
 -- RGX | Simple Quest Plates! - options_percent.lua
 
 -- Author: DonnieDice
--- Description: Percent quest tab (visibility, display style, animate, color, tinting, position, font)
+-- Description: Percent quest tab (visibility, display style, color, animate, tinting, position, font)
 --=====================================================================================
 
 local addonName, SQP = ...
@@ -67,13 +67,6 @@ function SQP:CreatePercentOptions(content)
     header:SetText("|cff58be81Percent Icon|r")
     yOffset = yOffset - 22
 
-    local noteText = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-    noteText:SetPoint("TOPLEFT", 20, yOffset)
-    noteText:SetText("|cffaaaaaaShown for quests tracked by percentage (area/time).|r")
-    noteText:SetWidth(240)
-    noteText:SetJustifyH("LEFT")
-    yOffset = yOffset - 28
-
     -- Show Percent Icon
     local showFrame = self:CreateStyledCheckbox(leftColumn, "Show Percent Icon")
     showFrame:SetPoint("TOPLEFT", 20, yOffset)
@@ -130,6 +123,10 @@ function SQP:CreatePercentOptions(content)
         end
         ColorPickerFrame:SetupColorPickerAndShow(info)
     end)
+    yOffset = yOffset - 34
+
+    -- Main Icon (jellybean/percent display) animate + tinting
+    yOffset = self:CreateMainIconSection(leftColumn, "percent", ActivatePercent, yOffset)
 
     -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15
@@ -139,11 +136,8 @@ function SQP:CreatePercentOptions(content)
     posHeader:SetText("|cff58be81Position|r")
     rightYOffset = rightYOffset - 22
 
-    rightYOffset = MakeSlider(rightColumn, "Offset X", "percentIconOffsetX", -17, -80, 80, rightYOffset)
-    rightYOffset = MakeSlider(rightColumn, "Offset Y", "percentIconOffsetY",   0, -80, 80, rightYOffset)
+    rightYOffset = MakeSlider(rightColumn, "Offset X", "percentIconOffsetX", 18, -80, 80, rightYOffset)
+    rightYOffset = MakeSlider(rightColumn, "Offset Y", "percentIconOffsetY",  0, -80, 80, rightYOffset)
 
     rightYOffset = self:CreateFontSection(rightColumn, "percent", rightYOffset, "SQPPercentFontDropdown")
-
-    -- Main Icon (jellybean/percent display) animate + tinting
-    rightYOffset = self:CreateMainIconSection(rightColumn, "percent", ActivatePercent, rightYOffset)
 end

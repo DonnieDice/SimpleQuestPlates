@@ -138,6 +138,12 @@ function SQP:QUEST_REMOVED(questID)
         end
     end
     self:UNIT_QUEST_LOG_CHANGED('player')
+    self:RefreshAllNameplates()
+end
+
+function SQP:QUEST_COMPLETE()
+    -- Quest objectives all met — refresh immediately so icons hide promptly
+    self:RefreshAllNameplates()
 end
 
 function SQP:QUEST_WATCH_LIST_CHANGED(questID, added)
@@ -187,6 +193,7 @@ end
 SQP.eventFrame:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 SQP.eventFrame:RegisterEvent("QUEST_ACCEPTED")
 SQP.eventFrame:RegisterEvent("QUEST_REMOVED")
+SQP.eventFrame:RegisterEvent("QUEST_COMPLETE")
 SQP.eventFrame:RegisterEvent("QUEST_WATCH_LIST_CHANGED")
 SQP.eventFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
 SQP.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")

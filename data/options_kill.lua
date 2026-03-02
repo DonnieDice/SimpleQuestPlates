@@ -141,8 +141,12 @@ function SQP:CreateKillOptions(content)
     end)
     yOffset = yOffset - 34
 
-    -- Kill Icon Tinting (mini icon)
+    -- Kill Icon Tinting (mini icon, compact inline row)
     yOffset = self:CreateMiniIconTintSection(leftColumn, "kill", ActivateKill, yOffset)
+    yOffset = yOffset - 6
+
+    -- Main Icon (jellybean) animate + tinting
+    yOffset = self:CreateMainIconSection(leftColumn, "kill", ActivateKill, yOffset)
 
     -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15
@@ -157,7 +161,4 @@ function SQP:CreateKillOptions(content)
     rightYOffset = MakeSlider(rightColumn, "Offset Y", "killIconOffsetY", 15, -80,  80, rightYOffset)
 
     rightYOffset = self:CreateFontSection(rightColumn, "kill", rightYOffset, "SQPKillFontDropdown")
-
-    -- Main Icon (jellybean) animate + tinting
-    rightYOffset = self:CreateMainIconSection(rightColumn, "kill", ActivateKill, rightYOffset)
 end

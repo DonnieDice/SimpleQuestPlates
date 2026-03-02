@@ -404,11 +404,24 @@ function SQP:UpdateQuestIcon(plate, unitID)
     end
 
     if questRelatedOnly and not showIcon then
-        showIcon = true
-        displayText = "?"
-        displayColor = SQPSettings.killColor or {1, 0.82, 0}
-        Q.hasItem = false
-        Q.questType = 1
+        -- Only show "?" if at least one incomplete quest exists (prevents stale icons after quest completion)
+        local hasIncomplete = false
+        if SQP.Compat and SQP.Compat.GetNumQuestLogEntries then
+            for i = 1, SQP.Compat.GetNumQuestLogEntries() do
+                local info = SQP.Compat.GetInfo(i)
+                if info and not info.isHeader and not info.isHidden and (not info.isComplete or info.isComplete == 0) then
+                    hasIncomplete = true
+                    break
+                end
+            end
+        end
+        if hasIncomplete then
+            showIcon = true
+            displayText = "?"
+            displayColor = SQPSettings.killColor or {1, 0.82, 0}
+            Q.hasItem = false
+            Q.questType = 1
+        end
     end
 
     Q.questRelatedOnly = questRelatedOnly

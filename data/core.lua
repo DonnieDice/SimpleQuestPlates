@@ -80,7 +80,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.9.0" -- Addon version (also in TOC file)
+SQP.VERSION = "1.9.1" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -103,7 +103,7 @@ end
 SQP.DEFAULTS = {
     enabled = true,
     scale = 1.1,
-    offsetX = 12,
+    offsetX = 0,
     offsetY = 3,
     anchor = "RIGHT",
     relativeTo = "LEFT",
@@ -150,7 +150,7 @@ SQP.DEFAULTS = {
     killIconOffsetY = 15,
     lootIconOffsetX = -38,
     lootIconOffsetY = 16,
-    percentIconOffsetX = -17,
+    percentIconOffsetX = 18,
     percentIconOffsetY = 0,
     killIconSize = 14,
     lootIconSize = 14,

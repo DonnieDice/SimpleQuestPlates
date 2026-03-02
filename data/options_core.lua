@@ -57,8 +57,7 @@ function SQP:CreateOptionsPanel()
     local tabs, tabPanels = self:InitializeTabs(container, previewContainer)
     
     -- Populate tab content
-    self:CreateGeneralOptions(tabPanels.general.content)
-    self:CreateIconOptions(tabPanels.icon.content)
+    self:CreateGlobalOptions(tabPanels.global.content)
     self:CreateKillOptions(tabPanels.kill.content)
     self:CreateLootOptions(tabPanels.loot.content)
     self:CreatePercentOptions(tabPanels.percent.content)

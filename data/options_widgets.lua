@@ -227,52 +227,48 @@ function SQP:CreateDisplayStyleSection(parent, activatePreviewFn, yOffset)
 end
 
 -- Create a per-type mini icon tint section (kill or loot task icons)
+-- Compact single-row: [Swatch] [☑ Tint Icon] [Reset]
 -- typeKey: "kill" or "loot"
 -- returns: next yOffset
 function SQP:CreateMiniIconTintSection(parent, typeKey, activatePreviewFn, yOffset)
-    local headerText = typeKey == "kill" and "Kill Icon Tinting" or "Loot Icon Tinting"
-    local tintKey = typeKey .. "TintIcon"
+    local tintKey      = typeKey .. "TintIcon"
     local tintColorKey = typeKey .. "TintIconColor"
+    local labelText    = typeKey == "kill" and "Tint Kill Icon" or "Tint Loot Icon"
 
-    local tintHeader = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintHeader:SetPoint("TOPLEFT", 20, yOffset)
-    tintHeader:SetText("|cff58be81" .. headerText .. "|r")
-    yOffset = yOffset - 20
-
-    local tintCbFrame = self:CreateStyledCheckbox(parent, "Enable Tinting")
-    tintCbFrame:SetPoint("TOPLEFT", 20, yOffset)
-    tintCbFrame.checkbox:SetChecked(SQPSettings[tintKey] == true)
-    self.optionControls[tintKey] = tintCbFrame.checkbox
-    yOffset = yOffset - 26
-
+    -- Color swatch button (also acts as color picker opener)
     local tintColorBtn = CreateFrame("Button", nil, parent)
     tintColorBtn:SetSize(20, 20)
-    tintColorBtn:SetPoint("TOPLEFT", 30, yOffset)
+    tintColorBtn:SetPoint("TOPLEFT", 20, yOffset)
     local tintBg = tintColorBtn:CreateTexture(nil, "BACKGROUND")
     tintBg:SetAllPoints(); tintBg:SetColorTexture(0, 0, 0, 1)
     local tintSw = tintColorBtn:CreateTexture(nil, "ARTWORK")
     tintSw:SetSize(16, 16); tintSw:SetPoint("CENTER")
     tintSw:SetColorTexture(unpack(SQPSettings[tintColorKey] or {1, 1, 1}))
 
-    local tintColorLbl = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintColorLbl:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
-    tintColorLbl:SetText("Tint Color")
+    -- Checkbox + label inline with swatch
+    local tintCbFrame = self:CreateStyledCheckbox(parent, labelText)
+    tintCbFrame:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
+    tintCbFrame.checkbox:SetChecked(SQPSettings[tintKey] == true)
+    self.optionControls[tintKey] = tintCbFrame.checkbox
 
     local tintReset = self:CreateInlineResetButton(parent, function()
         SQP:SetSetting(tintColorKey, {1, 1, 1})
-        tintSw:SetColorTexture(1, 1, 1); SQP:RefreshAllNameplates()
+        tintSw:SetColorTexture(1, 1, 1)
+        SQP:RefreshAllNameplates()
     end)
-    tintReset:SetPoint("LEFT", tintColorLbl, "RIGHT", 6, 0)
+    tintReset:SetPoint("LEFT", tintCbFrame.label, "RIGHT", 6, 0)
 
     local function UpdateTintAlpha()
         local a = SQPSettings[tintKey] == true and 1 or 0.4
-        tintColorBtn:SetAlpha(a); tintColorLbl:SetAlpha(a); tintReset:SetAlpha(a * 0.7)
+        tintColorBtn:SetAlpha(a)
+        tintReset:SetAlpha(a * 0.7)
     end
     UpdateTintAlpha()
 
     tintCbFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting(tintKey, self:GetChecked())
-        UpdateTintAlpha(); SQP:RefreshAllNameplates()
+        UpdateTintAlpha()
+        SQP:RefreshAllNameplates()
     end)
 
     tintColorBtn:SetScript("OnClick", function()
@@ -282,34 +278,38 @@ function SQP:CreateMiniIconTintSection(parent, typeKey, activatePreviewFn, yOffs
         local info = {r = r, g = g, b = b, hasOpacity = false}
         info.swatchFunc = function()
             local nr, ng, nb = ColorPickerFrame:GetColorRGB()
-            SQP:SetSetting(tintColorKey, {nr, ng, nb}); tintSw:SetColorTexture(nr, ng, nb)
+            SQP:SetSetting(tintColorKey, {nr, ng, nb})
+            tintSw:SetColorTexture(nr, ng, nb)
             SQP:RefreshAllNameplates()
         end
         info.cancelFunc = function()
-            SQP:SetSetting(tintColorKey, {r, g, b}); tintSw:SetColorTexture(r, g, b)
+            SQP:SetSetting(tintColorKey, {r, g, b})
+            tintSw:SetColorTexture(r, g, b)
             SQP:RefreshAllNameplates()
         end
         ColorPickerFrame:SetupColorPickerAndShow(info)
     end)
-    yOffset = yOffset - 30
+    yOffset = yOffset - 26
 
     return yOffset
 end
 
--- Create a per-type main icon (jellybean) tinting + animate section
+-- Create a per-type main icon (jellybean) animate + tinting section
+-- Compact: header (18px) + animate checkbox (26px) + inline tint row (26px) = 70px total
 -- typeKey: "kill", "loot", or "percent"
 -- returns: next yOffset
 function SQP:CreateMainIconSection(parent, typeKey, activatePreviewFn, yOffset)
-    local tintKey = typeKey .. "TintMain"
+    local tintKey      = typeKey .. "TintMain"
     local tintColorKey = typeKey .. "TintMainColor"
-    local animKey = typeKey .. "AnimateMain"
+    local animKey      = typeKey .. "AnimateMain"
 
+    -- Section header (tight gap)
     local header = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     header:SetPoint("TOPLEFT", 20, yOffset)
     header:SetText("|cff58be81Main Icon|r")
-    yOffset = yOffset - 22
+    yOffset = yOffset - 18
 
-    -- Animate Main Icon
+    -- Animate Main Icon checkbox
     local animFrame = self:CreateStyledCheckbox(parent, "Animate Main Icon")
     animFrame:SetPoint("TOPLEFT", 20, yOffset)
     animFrame.checkbox:SetChecked(SQPSettings[animKey] == true)
@@ -320,41 +320,40 @@ function SQP:CreateMainIconSection(parent, typeKey, activatePreviewFn, yOffset)
     end)
     yOffset = yOffset - 26
 
-    -- Enable Tinting
-    local tintCbFrame = self:CreateStyledCheckbox(parent, "Enable Tinting")
-    tintCbFrame:SetPoint("TOPLEFT", 20, yOffset)
-    tintCbFrame.checkbox:SetChecked(SQPSettings[tintKey] == true)
-    self.optionControls[tintKey] = tintCbFrame.checkbox
-    yOffset = yOffset - 26
-
+    -- Inline tint row: [Swatch] [☑ Tint Main Icon] [Reset]
     local tintColorBtn = CreateFrame("Button", nil, parent)
     tintColorBtn:SetSize(20, 20)
-    tintColorBtn:SetPoint("TOPLEFT", 30, yOffset)
+    tintColorBtn:SetPoint("TOPLEFT", 20, yOffset)
     local tintBg = tintColorBtn:CreateTexture(nil, "BACKGROUND")
     tintBg:SetAllPoints(); tintBg:SetColorTexture(0, 0, 0, 1)
     local tintSw = tintColorBtn:CreateTexture(nil, "ARTWORK")
     tintSw:SetSize(16, 16); tintSw:SetPoint("CENTER")
     tintSw:SetColorTexture(unpack(SQPSettings[tintColorKey] or {1, 1, 1}))
 
-    local tintColorLbl = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    tintColorLbl:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
-    tintColorLbl:SetText("Tint Color")
+    local tintCbFrame = self:CreateStyledCheckbox(parent, "Tint Main Icon")
+    tintCbFrame:SetPoint("LEFT", tintColorBtn, "RIGHT", 6, 0)
+    tintCbFrame.checkbox:SetChecked(SQPSettings[tintKey] == true)
+    self.optionControls[tintKey] = tintCbFrame.checkbox
 
     local tintReset = self:CreateInlineResetButton(parent, function()
         SQP:SetSetting(tintColorKey, {1, 1, 1})
-        tintSw:SetColorTexture(1, 1, 1); SQP:RefreshAllNameplates()
+        tintSw:SetColorTexture(1, 1, 1)
+        SQP:RefreshAllNameplates()
     end)
-    tintReset:SetPoint("LEFT", tintColorLbl, "RIGHT", 6, 0)
+    tintReset:SetPoint("LEFT", tintCbFrame.label, "RIGHT", 6, 0)
 
     local function UpdateTintAlpha()
         local a = SQPSettings[tintKey] == true and 1 or 0.4
-        tintColorBtn:SetAlpha(a); tintColorLbl:SetAlpha(a); tintReset:SetAlpha(a * 0.7)
+        tintColorBtn:SetAlpha(a)
+        tintReset:SetAlpha(a * 0.7)
     end
     UpdateTintAlpha()
 
     tintCbFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting(tintKey, self:GetChecked())
-        UpdateTintAlpha(); SQP:RefreshAllNameplates()
+        UpdateTintAlpha()
+        if activatePreviewFn then activatePreviewFn() end
+        SQP:RefreshAllNameplates()
     end)
 
     tintColorBtn:SetScript("OnClick", function()
@@ -364,16 +363,18 @@ function SQP:CreateMainIconSection(parent, typeKey, activatePreviewFn, yOffset)
         local info = {r = r, g = g, b = b, hasOpacity = false}
         info.swatchFunc = function()
             local nr, ng, nb = ColorPickerFrame:GetColorRGB()
-            SQP:SetSetting(tintColorKey, {nr, ng, nb}); tintSw:SetColorTexture(nr, ng, nb)
+            SQP:SetSetting(tintColorKey, {nr, ng, nb})
+            tintSw:SetColorTexture(nr, ng, nb)
             SQP:RefreshAllNameplates()
         end
         info.cancelFunc = function()
-            SQP:SetSetting(tintColorKey, {r, g, b}); tintSw:SetColorTexture(r, g, b)
+            SQP:SetSetting(tintColorKey, {r, g, b})
+            tintSw:SetColorTexture(r, g, b)
             SQP:RefreshAllNameplates()
         end
         ColorPickerFrame:SetupColorPickerAndShow(info)
     end)
-    yOffset = yOffset - 30
+    yOffset = yOffset - 26
 
     return yOffset
 end

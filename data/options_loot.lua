@@ -141,8 +141,12 @@ function SQP:CreateLootOptions(content)
     end)
     yOffset = yOffset - 34
 
-    -- Loot Icon Tinting (mini icon)
+    -- Loot Icon Tinting (mini icon, compact inline row)
     yOffset = self:CreateMiniIconTintSection(leftColumn, "loot", ActivateLoot, yOffset)
+    yOffset = yOffset - 6
+
+    -- Main Icon (jellybean) animate + tinting
+    yOffset = self:CreateMainIconSection(leftColumn, "loot", ActivateLoot, yOffset)
 
     -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15
@@ -157,7 +161,4 @@ function SQP:CreateLootOptions(content)
     rightYOffset = MakeSlider(rightColumn, "Offset Y", "lootIconOffsetY",  16, -80, 80, rightYOffset)
 
     rightYOffset = self:CreateFontSection(rightColumn, "loot", rightYOffset, "SQPLootFontDropdown")
-
-    -- Main Icon (jellybean) animate + tinting
-    rightYOffset = self:CreateMainIconSection(rightColumn, "loot", ActivateLoot, rightYOffset)
 end

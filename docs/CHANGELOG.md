@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.9.1
+- Merged General and Main Icon tabs into a single Global tab (position, scale, anchor, addon state, combat toggles).
+- Main Icon tinting and animation moved from right column to left column on Kill, Loot, and Percent tabs — no more overflow.
+- Tint sections redesigned as compact inline rows (color swatch + checkbox on one line) — saves ~30px per section.
+- Percent tab now matches Kill and Loot tab structure: Show icon, Display Style, Color, Main Icon animate/tint on left; Position and Font on right.
+- Removed per-tab scroll — all tabs now fit content without scrolling.
+- Re-added small Kill / Loot / % preview type switcher buttons in the preview header for use when adjusting Global settings.
+- Default global horizontal offset changed to 0 (was 12).
+- Default percent icon X offset changed to 18 (was -17).
+- Removed informational text block from General tab (now Global tab).
+- About tab drastically simplified — title, version, description, community link, and slash commands only.
+- Fix: Icons no longer shown on mobs that are no longer quest requirements — QUEST_COMPLETE event now immediately refreshes nameplates, and the questRelatedOnly fallback verifies at least one incomplete quest exists before showing "?".
+- Fix: QUEST_REMOVED now immediately refreshes nameplates instead of waiting for the throttled QUEST_LOG_UPDATE.
+
 ## v1.9.0
 - Per-type granular controls: Kill, Loot, and Percent tabs now each have Display Style (Icon/Text), Animate Main Icon, and Main Icon Tinting — fully independent per quest type.
 - Per-type mini icon tinting: Kill and Loot icon tinting are now separate settings (killTintIcon/lootTintIcon), replacing the previously shared iconTintQuest.

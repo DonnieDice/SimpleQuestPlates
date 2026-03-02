@@ -2,13 +2,13 @@
 -- RGX | Simple Quest Plates! - options_general.lua
 
 -- Author: DonnieDice
--- Description: General settings tab (addon state, combat, font)
+-- Description: Global settings tab (addon state, combat, position, scale)
 --=====================================================================================
 
 local addonName, SQP = ...
 local format = string.format
 
-function SQP:CreateGeneralOptions(content)
+function SQP:CreateGlobalOptions(content)
     if not self.optionControls then self.optionControls = {} end
 
     local leftColumn = CreateFrame("Frame", nil, content)
@@ -21,7 +21,7 @@ function SQP:CreateGeneralOptions(content)
     rightColumn:SetPoint("BOTTOMRIGHT")
     rightColumn:SetPoint("LEFT", leftColumn, "RIGHT", 20, 0)
 
-    -- ── LEFT COLUMN: Addon state + toggles + combat ───────────────────────────
+    -- ── LEFT COLUMN: Addon state + toggles + combat ────────────────────────────
     local yOffset = -15
 
     -- Addon State
@@ -112,25 +112,132 @@ function SQP:CreateGeneralOptions(content)
     resetButton:SetAlpha(0.8)
     resetButton:SetScript("OnClick", function() StaticPopup_Show("SQP_RESET_CONFIRM") end)
 
-    -- ── RIGHT COLUMN: Font redirect note ─────────────────────────────────────
+    -- ── RIGHT COLUMN: Position & Scale ────────────────────────────────────────
     local rightYOffset = -15
 
-    local fontTitle = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    fontTitle:SetPoint("TOPLEFT", 20, rightYOffset)
-    fontTitle:SetText("|cff58be81Font Settings|r")
+    local posScaleLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    posScaleLabel:SetPoint("TOPLEFT", 20, rightYOffset)
+    posScaleLabel:SetText("|cff58be81Position & Scale|r")
+    rightYOffset = rightYOffset - 20
+
+    -- Global Scale
+    local scaleLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+    scaleLabel:SetPoint("TOPLEFT", 20, rightYOffset)
+    scaleLabel:SetText(format("Scale: %.1f", SQPSettings.scale or 1.1))
+    self.optionControls.scaleLabel = scaleLabel
+
+    local scaleSlider = self:CreateStyledSlider(rightColumn, 0.5, 3.0, 0.1, 160)
+    scaleSlider:SetPoint("TOPLEFT", scaleLabel, "BOTTOMLEFT", 0, -4)
+    scaleSlider:SetValue(SQPSettings.scale or 1.1)
+    self.optionControls.scale = scaleSlider
+
+    local scaleReset = self:CreateInlineResetButton(rightColumn, function()
+        SQP:SetSetting('scale', 1.1)
+        scaleSlider:SetValue(1.1)
+        scaleLabel:SetText("Scale: 1.1")
+        SQP:RefreshAllNameplates()
+    end)
+    scaleReset:SetPoint("LEFT", scaleSlider, "RIGHT", 4, 0)
+
+    scaleSlider:SetScript("OnValueChanged", function(self, value)
+        value = math.floor(value * 10 + 0.5) / 10
+        SQP:SetSetting('scale', value)
+        scaleLabel:SetText(format("Scale: %.1f", value))
+        SQP:RefreshAllNameplates()
+    end)
+    rightYOffset = rightYOffset - 48
+
+    -- X Offset
+    local xLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+    xLabel:SetPoint("TOPLEFT", 20, rightYOffset)
+    xLabel:SetText(format("Offset X: %d", SQPSettings.offsetX or 0))
+    self.optionControls.offsetXLabel = xLabel
+
+    local xSlider = self:CreateStyledSlider(rightColumn, -100, 100, 1, 160)
+    xSlider:SetPoint("TOPLEFT", xLabel, "BOTTOMLEFT", 0, -4)
+    xSlider:SetValue(SQPSettings.offsetX or 0)
+    self.optionControls.offsetX = xSlider
+
+    local xReset = self:CreateInlineResetButton(rightColumn, function()
+        SQP:SetSetting('offsetX', 0)
+        xSlider:SetValue(0)
+        xLabel:SetText("Offset X: 0")
+        SQP:RefreshAllNameplates()
+    end)
+    xReset:SetPoint("LEFT", xSlider, "RIGHT", 4, 0)
+
+    xSlider:SetScript("OnValueChanged", function(self, value)
+        value = math.floor(value + 0.5)
+        SQP:SetSetting('offsetX', value)
+        xLabel:SetText(format("Offset X: %d", value))
+        SQP:RefreshAllNameplates()
+    end)
+    rightYOffset = rightYOffset - 48
+
+    -- Y Offset
+    local yLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+    yLabel:SetPoint("TOPLEFT", 20, rightYOffset)
+    yLabel:SetText(format("Offset Y: %d", SQPSettings.offsetY or 3))
+    self.optionControls.offsetYLabel = yLabel
+
+    local ySlider = self:CreateStyledSlider(rightColumn, -100, 100, 1, 160)
+    ySlider:SetPoint("TOPLEFT", yLabel, "BOTTOMLEFT", 0, -4)
+    ySlider:SetValue(SQPSettings.offsetY or 3)
+    self.optionControls.offsetY = ySlider
+
+    local yReset = self:CreateInlineResetButton(rightColumn, function()
+        SQP:SetSetting('offsetY', 3)
+        ySlider:SetValue(3)
+        yLabel:SetText("Offset Y: 3")
+        SQP:RefreshAllNameplates()
+    end)
+    yReset:SetPoint("LEFT", ySlider, "RIGHT", 4, 0)
+
+    ySlider:SetScript("OnValueChanged", function(self, value)
+        value = math.floor(value + 0.5)
+        SQP:SetSetting('offsetY', value)
+        yLabel:SetText(format("Offset Y: %d", value))
+        SQP:RefreshAllNameplates()
+    end)
+    rightYOffset = rightYOffset - 48
+
+    -- Nameplate Side
+    local anchorLabel = rightColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+    anchorLabel:SetPoint("TOPLEFT", 20, rightYOffset)
+    anchorLabel:SetText("Nameplate Side")
     rightYOffset = rightYOffset - 22
 
-    local noteFrame = CreateFrame("Frame", nil, rightColumn, "BackdropTemplate")
-    noteFrame:SetHeight(65)
-    noteFrame:SetPoint("TOPLEFT", 20, rightYOffset)
-    noteFrame:SetPoint("TOPRIGHT", -10, rightYOffset)
-    noteFrame:SetBackdrop(self.BACKDROP_DARK)
-    noteFrame:SetBackdropColor(0.06, 0.06, 0.06, 0.8)
-    noteFrame:SetBackdropBorderColor(unpack(self.SECTION_COLOR))
+    local leftBtn  = self:CreateStyledButton(rightColumn, "Left Side",  90, 25)
+    local rightBtn = self:CreateStyledButton(rightColumn, "Right Side", 90, 25)
+    leftBtn:SetPoint("TOPLEFT", 20, rightYOffset)
+    rightBtn:SetPoint("LEFT", leftBtn, "RIGHT", 8, 0)
+    self.optionControls.anchorButtons = {left = leftBtn, right = rightBtn}
 
-    local noteText = noteFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-    noteText:SetPoint("TOPLEFT", noteFrame, "TOPLEFT", 10, -10)
-    noteText:SetPoint("TOPRIGHT", noteFrame, "TOPRIGHT", -10, -10)
-    noteText:SetJustifyH("LEFT")
-    noteText:SetText("Font, tinting, and animation are per quest type.\n\nSee the |cff58be81Kill|r, |cff58be81Loot|r, and |cff58be81Percent|r tabs for font, tint, and animate controls.")
+    local function UpdateAnchorButtons()
+        leftBtn:SetAlpha( SQPSettings.anchor == "RIGHT" and 1 or 0.6)
+        rightBtn:SetAlpha(SQPSettings.anchor == "LEFT"  and 1 or 0.6)
+    end
+    self.optionControls.updateAnchorButtons = UpdateAnchorButtons
+    UpdateAnchorButtons()
+
+    leftBtn:SetScript("OnClick", function()
+        SQP:SetSetting('anchor', "RIGHT")
+        SQP:SetSetting('relativeTo', "LEFT")
+        UpdateAnchorButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    rightBtn:SetScript("OnClick", function()
+        SQP:SetSetting('anchor', "LEFT")
+        SQP:SetSetting('relativeTo', "RIGHT")
+        UpdateAnchorButtons()
+        SQP:RefreshAllNameplates()
+    end)
+
+    local anchorReset = self:CreateInlineResetButton(rightColumn, function()
+        SQP:SetSetting('anchor', "RIGHT")
+        SQP:SetSetting('relativeTo', "LEFT")
+        UpdateAnchorButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    anchorReset:SetPoint("LEFT", rightBtn, "RIGHT", 6, 0)
 end
