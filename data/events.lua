@@ -44,8 +44,8 @@ end
 -- PLAYER_LOGIN: Initialize addon systems
 function SQP:PLAYER_LOGIN()
     -- Welcome message (two-line SQP green format)
-    local loadedLine = self.L["MSG_LOADED_LINE1"] or "|cff58be81Loaded successfully.|r Type |cff58be81/sqp help|r for commands."
-    local versionLine = self.L["MSG_LOADED_LINE2"] or "|cff58be81Version:|r |cff58be81v%s|r"
+    local loadedLine = self.L["MSG_LOADED_LINE1"] or "Loaded successfully. Type |cfffff569/sqp help|r for commands."
+    local versionLine = self.L["MSG_LOADED_LINE2"] or "|cfffff569Version:|r |cff7598b6v%s|r"
     self:PrintMessage(loadedLine)
     self:PrintMessage(string.format(versionLine, self.VERSION))
     

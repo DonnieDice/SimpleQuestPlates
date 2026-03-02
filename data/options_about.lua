@@ -30,7 +30,7 @@ function SQP:CreateAboutSection(content)
     -- Version + Author
     local versionText = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     versionText:SetPoint("TOPLEFT", 20, yOffset)
-    versionText:SetText("v" .. (SQP.VERSION or "1.0.0") .. "  |cffaaaaaaRetail — The War Within|r")
+    versionText:SetText("v" .. (SQP.VERSION or "1.0.0") .. "  |cffaaaaaaRetail — Warcraft Midnight|r")
     yOffset = yOffset - 20
 
     local authorText = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
@@ -70,7 +70,7 @@ function SQP:CreateAboutSection(content)
 
     local discordLink = communityFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
     discordLink:SetPoint("TOPLEFT", discordDesc, "BOTTOMLEFT", 0, -3)
-    discordLink:SetText("|cffffffdadiscord.gg/N7kdKAHVVF|r")
+    discordLink:SetText("|cffffffdadiscord.gg/rgxmods|r")
 
     -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15

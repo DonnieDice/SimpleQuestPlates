@@ -8,6 +8,8 @@
 local addonName, SQP = ...
 local CreateFrame = CreateFrame
 local floor = math.floor
+local pcall = pcall
+local tonumber = tonumber
 
 -- Create preview nameplate section
 function SQP:CreatePreviewSection(parent)
@@ -204,10 +206,29 @@ function SQP:CreatePreviewSection(parent)
         return value
     end
 
+    -- Safely read frame dimensions that may be protected/tainted values.
+    local function GetFrameDimension(frame, methodName, fallback)
+        if not frame then return fallback end
+        local getter = frame[methodName]
+        if type(getter) ~= "function" then return fallback end
+
+        local okCall, rawValue = pcall(getter, frame)
+        if not okCall then return fallback end
+
+        local okNumber, numericValue = pcall(tonumber, rawValue)
+        if not okNumber or not numericValue then
+            return fallback
+        end
+
+        return numericValue
+    end
+
     local function GetReferenceNameplate()
         if SQP.ActiveNameplates then
             for plate in pairs(SQP.ActiveNameplates) do
-                if plate and plate.GetWidth and plate.GetHeight and plate:GetWidth() > 0 and plate:GetHeight() > 0 then
+                local w = GetFrameDimension(plate, "GetWidth", nil)
+                local h = GetFrameDimension(plate, "GetHeight", nil)
+                if w and h then
                     return plate
                 end
             end
@@ -250,13 +271,17 @@ function SQP:CreatePreviewSection(parent)
         local healthWidth, healthHeight = 100, 12
         local refPlate = GetReferenceNameplate()
         if refPlate then
-            plateWidth  = Clamp(floor((refPlate:GetWidth()  or plateWidth)  + 0.5), 80, 260)
-            plateHeight = Clamp(floor((refPlate:GetHeight() or plateHeight) + 0.5), 24, 80)
+            local refPlateWidth = GetFrameDimension(refPlate, "GetWidth", plateWidth)
+            local refPlateHeight = GetFrameDimension(refPlate, "GetHeight", plateHeight)
+            plateWidth = Clamp(floor(refPlateWidth + 0.5), 80, 260)
+            plateHeight = Clamp(floor(refPlateHeight + 0.5), 24, 80)
 
             local refHealth = GetReferenceHealthBar(refPlate)
-            if refHealth and refHealth.GetWidth and refHealth.GetHeight and refHealth:GetWidth() > 0 and refHealth:GetHeight() > 0 then
-                healthWidth  = Clamp(floor(refHealth:GetWidth()  + 0.5), 70, 240)
-                healthHeight = Clamp(floor(refHealth:GetHeight() + 0.5), 6, 24)
+            local refHealthWidth = GetFrameDimension(refHealth, "GetWidth", nil)
+            local refHealthHeight = GetFrameDimension(refHealth, "GetHeight", nil)
+            if refHealthWidth and refHealthHeight then
+                healthWidth = Clamp(floor(refHealthWidth + 0.5), 70, 240)
+                healthHeight = Clamp(floor(refHealthHeight + 0.5), 6, 24)
             else
                 healthWidth = Clamp(plateWidth - 12, 70, 240)
             end

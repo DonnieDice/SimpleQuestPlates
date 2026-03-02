@@ -90,9 +90,9 @@ local L = {
     
     -- Messages
     ["MSG_LOADED"] = "v%s loaded successfully. Type |cfffff569/sqp help|r for commands.",
-    ["MSG_LOADED_LINE1"] = "|cff58be81Loaded successfully.|r Type |cff58be81/sqp help|r for commands.",
-    ["MSG_LOADED_LINE2"] = "|cff58be81Version:|r |cff58be81v%s|r",
-    ["MSG_DISCORD"] = "Join our Discord: |cff58be81discord.gg/N7kdKAHVVF|r",
+    ["MSG_LOADED_LINE1"] = "Loaded successfully. Type |cfffff569/sqp help|r for commands.",
+    ["MSG_LOADED_LINE2"] = "|cfffff569Version:|r |cff7598b6v%s|r",
+    ["MSG_DISCORD"] = "Join our Discord: |cff58be81discord.gg/rgxmods|r",
     ["SETTINGS_RESET"] = "|cff58be81All settings have been reset to defaults|r",
 }
 
