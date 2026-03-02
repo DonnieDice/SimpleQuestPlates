@@ -7,6 +7,7 @@
 
 local addonName, SQP = ...
 local CreateFrame = CreateFrame
+local floor = math.floor
 
 -- Create preview nameplate section
 function SQP:CreatePreviewSection(parent)
@@ -28,9 +29,9 @@ function SQP:CreatePreviewSection(parent)
     lootTypeBtn:SetPoint("LEFT", killTypeBtn, "RIGHT", 4, 0)
     pctTypeBtn:SetPoint("LEFT",  lootTypeBtn, "RIGHT", 4, 0)
 
-    -- Create fake nameplate
+    -- Create fake nameplate (geometry is synced to a live nameplate when available)
     local nameplate = CreateFrame("Frame", nil, previewFrame)
-    nameplate:SetSize(200, 40)
+    nameplate:SetSize(112, 44)
     nameplate:SetPoint("CENTER", previewFrame, "CENTER", 0, -5)
 
     -- Nameplate background
@@ -40,7 +41,7 @@ function SQP:CreatePreviewSection(parent)
 
     -- Health bar
     local healthBar = CreateFrame("StatusBar", nil, nameplate)
-    healthBar:SetSize(180, 12)
+    healthBar:SetSize(100, 12)
     healthBar:SetPoint("CENTER", nameplate, "CENTER", 0, 0)
     healthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
     healthBar:SetStatusBarColor(1, 0.2, 0.2)
@@ -142,6 +143,43 @@ function SQP:CreatePreviewSection(parent)
     killIcon:SetPoint('TOPRIGHT', icon, 'BOTTOMLEFT', 12, 12)
     killIcon:Hide()
 
+    -- Use animation groups (matching live nameplate behavior) for stable preview pulses.
+    local function CreateMainPulse(region)
+        local pulse = region:CreateAnimationGroup()
+        pulse:SetLooping("REPEAT")
+        local fadeOut = pulse:CreateAnimation("Alpha")
+        fadeOut:SetOrder(1)
+        fadeOut:SetFromAlpha(1)
+        fadeOut:SetToAlpha(0.15)
+        fadeOut:SetDuration(0.5)
+        fadeOut:SetSmoothing("IN_OUT")
+        local fadeIn = pulse:CreateAnimation("Alpha")
+        fadeIn:SetOrder(2)
+        fadeIn:SetFromAlpha(0.15)
+        fadeIn:SetToAlpha(1)
+        fadeIn:SetDuration(0.5)
+        fadeIn:SetSmoothing("IN_OUT")
+        return pulse
+    end
+
+    local function CreatePulse(region)
+        local pulse = region:CreateAnimationGroup()
+        pulse:SetLooping("REPEAT")
+        local fadeOut = pulse:CreateAnimation("Alpha")
+        fadeOut:SetOrder(1)
+        fadeOut:SetFromAlpha(1)
+        fadeOut:SetToAlpha(0.6)
+        fadeOut:SetDuration(0.6)
+        fadeOut:SetSmoothing("IN_OUT")
+        local fadeIn = pulse:CreateAnimation("Alpha")
+        fadeIn:SetOrder(2)
+        fadeIn:SetFromAlpha(0.6)
+        fadeIn:SetToAlpha(1)
+        fadeIn:SetDuration(0.6)
+        fadeIn:SetSmoothing("IN_OUT")
+        return pulse
+    end
+
     -- Store references
     previewFrame.nameplate = nameplate
     previewFrame.questFrame = questFrame
@@ -153,26 +191,80 @@ function SQP:CreatePreviewSection(parent)
     previewFrame.lootIcon = lootIcon
     previewFrame.killIcon = killIcon
     previewFrame.questType = "kill"
-    previewFrame.iconTicker = nil
-    previewFrame.percentTicker = nil
+    previewFrame.iconPulse = CreateMainPulse(icon)
+    previewFrame.percentPulse = CreatePulse(percentIcon)
+    previewFrame.percentOutlinePulse = CreatePulse(percentIconOutline)
+    previewFrame.killIconPulse = CreatePulse(killIcon)
+    previewFrame.lootIconPulse = CreatePulse(lootIcon)
 
-    -- Cancel animation tickers when preview panel hides
+    -- Mirror a live nameplate's geometry so preview offsets match in-world placement.
+    local function Clamp(value, minValue, maxValue)
+        if value < minValue then return minValue end
+        if value > maxValue then return maxValue end
+        return value
+    end
+
+    local function GetReferenceNameplate()
+        if SQP.ActiveNameplates then
+            for plate in pairs(SQP.ActiveNameplates) do
+                if plate and plate.GetWidth and plate.GetHeight and plate:GetWidth() > 0 and plate:GetHeight() > 0 then
+                    return plate
+                end
+            end
+        end
+        if C_NamePlate and C_NamePlate.GetNamePlateForUnit then
+            local targetPlate = C_NamePlate.GetNamePlateForUnit("target")
+            if targetPlate and targetPlate.GetWidth and targetPlate.GetHeight then
+                return targetPlate
+            end
+        end
+        return nil
+    end
+
+    local function GetReferenceHealthBar(plate)
+        if not plate or not plate.UnitFrame then return nil end
+        return plate.UnitFrame.healthBar
+            or plate.UnitFrame.HealthBar
+            or plate.UnitFrame.healthbar
+            or plate.UnitFrame.health
+    end
+
+    -- Stop preview pulses when panel hides
     previewFrame:SetScript("OnHide", function(self)
-        if self.iconTicker then
-            self.iconTicker:Cancel()
-            self.iconTicker = nil
-            icon:SetAlpha(1)
-        end
-        if self.percentTicker then
-            self.percentTicker:Cancel()
-            self.percentTicker = nil
-            percentIcon:SetAlpha(1)
-            percentIconOutline:SetAlpha(1)
-        end
+        if self.iconPulse and self.iconPulse:IsPlaying() then self.iconPulse:Stop() end
+        if self.percentPulse and self.percentPulse:IsPlaying() then self.percentPulse:Stop() end
+        if self.percentOutlinePulse and self.percentOutlinePulse:IsPlaying() then self.percentOutlinePulse:Stop() end
+        if self.killIconPulse and self.killIconPulse:IsPlaying() then self.killIconPulse:Stop() end
+        if self.lootIconPulse and self.lootIconPulse:IsPlaying() then self.lootIconPulse:Stop() end
+        icon:SetAlpha(1)
+        percentIcon:SetAlpha(1)
+        percentIconOutline:SetAlpha(1)
+        killIcon:SetAlpha(1)
+        lootIcon:SetAlpha(1)
     end)
 
     -- Update function
     function previewFrame:UpdatePreview()
+        -- Sync preview nameplate + health bar size to a real nameplate when possible.
+        local plateWidth, plateHeight = 112, 44
+        local healthWidth, healthHeight = 100, 12
+        local refPlate = GetReferenceNameplate()
+        if refPlate then
+            plateWidth  = Clamp(floor((refPlate:GetWidth()  or plateWidth)  + 0.5), 80, 260)
+            plateHeight = Clamp(floor((refPlate:GetHeight() or plateHeight) + 0.5), 24, 80)
+
+            local refHealth = GetReferenceHealthBar(refPlate)
+            if refHealth and refHealth.GetWidth and refHealth.GetHeight and refHealth:GetWidth() > 0 and refHealth:GetHeight() > 0 then
+                healthWidth  = Clamp(floor(refHealth:GetWidth()  + 0.5), 70, 240)
+                healthHeight = Clamp(floor(refHealth:GetHeight() + 0.5), 6, 24)
+            else
+                healthWidth = Clamp(plateWidth - 12, 70, 240)
+            end
+        end
+
+        nameplate:SetSize(plateWidth, plateHeight)
+        healthBar:SetSize(healthWidth, healthHeight)
+
         -- Update icon position
         icon:ClearAllPoints()
         icon:SetPoint(
@@ -213,18 +305,12 @@ function SQP:CreatePreviewSection(parent)
         local previewTypeKey = self.questType or "kill"
         SQP:UpdateQuestFont(iconText, iconTextOutline, percentIcon, percentIconOutline, previewTypeKey)
 
-        -- Update icon tinting (per-type)
-        local mainTintEnabled = SQPSettings[previewTypeKey.."TintMain"] and SQPSettings[previewTypeKey.."TintMainColor"]
-        local mainTintR, mainTintG, mainTintB, mainTintA = 1, 1, 1, 1
-        if mainTintEnabled then
-            mainTintR, mainTintG, mainTintB, mainTintA = unpack(SQPSettings[previewTypeKey.."TintMainColor"])
-            icon:SetVertexColor(mainTintR, mainTintG, mainTintB, mainTintA)
-        else
-            icon:SetVertexColor(1, 1, 1, 1)
-        end
+        -- Main icon tinting removed (redundant with color controls)
+        icon:SetVertexColor(1, 1, 1, 1)
 
         local killTintEnabled = SQPSettings.killTintIcon and SQPSettings.killTintIconColor
         local lootTintEnabled = SQPSettings.lootTintIcon and SQPSettings.lootTintIconColor
+        local percentTintEnabled = SQPSettings.percentTintIcon and SQPSettings.percentTintIconColor
         if self.killIcon then
             if killTintEnabled then
                 local r, g, b, a = unpack(SQPSettings.killTintIconColor)
@@ -242,39 +328,60 @@ function SQP:CreatePreviewSection(parent)
             end
         end
 
+        local function SetPreviewPercentColor(fs)
+            if not fs then return end
+            if percentTintEnabled then
+                local r, g, b, a = unpack(SQPSettings.percentTintIconColor)
+                fs:SetTextColor(r, g, b, a or 1)
+            else
+                fs:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
+            end
+        end
+
+        local function IsPreviewIconStyleEnabled(typeKey)
+            local value = SQPSettings[typeKey .. "ShowIconBackground"]
+            if value == nil then
+                value = SQPSettings.showIconBackground
+            end
+            return value ~= false
+        end
+
         -- Update quest type display
         if self.questType == "loot" then
-            if SQPSettings.showIconBackground ~= false then icon:Show() else icon:Hide() end
+            local lootIconMode = IsPreviewIconStyleEnabled("loot")
+            if lootIconMode then icon:Show() else icon:Hide() end
             if self.percentIcon then self.percentIcon:Hide() end
             if self.percentIconOutline then self.percentIconOutline:Hide() end
             if self.lootIcon then
                 if SQPSettings.showLootIcon ~= false then self.lootIcon:Show() else self.lootIcon:Hide() end
             end
             if self.killIcon then self.killIcon:Hide() end
-            if SQPSettings.showIconBackground == false then
-                self.iconText:SetText("2/5")
-                if self.iconTextOutline then self.iconTextOutline:SetText("2/5") end
-            else
+            if lootIconMode then
                 self.iconText:SetText("2")
                 if self.iconTextOutline then self.iconTextOutline:SetText("2") end
+            else
+                self.iconText:SetText("2/5")
+                if self.iconTextOutline then self.iconTextOutline:SetText("2/5") end
             end
         elseif self.questType == "kill" then
-            if SQPSettings.showIconBackground ~= false then icon:Show() else icon:Hide() end
+            local killIconMode = IsPreviewIconStyleEnabled("kill")
+            if killIconMode then icon:Show() else icon:Hide() end
             if self.percentIcon then self.percentIcon:Hide() end
             if self.percentIconOutline then self.percentIconOutline:Hide() end
             if self.lootIcon then self.lootIcon:Hide() end
             if self.killIcon then
                 if SQPSettings.showKillIcon ~= false then self.killIcon:Show() else self.killIcon:Hide() end
             end
-            if SQPSettings.showIconBackground == false then
-                self.iconText:SetText("5/8")
-                if self.iconTextOutline then self.iconTextOutline:SetText("5/8") end
-            else
+            if killIconMode then
                 self.iconText:SetText("5")
                 if self.iconTextOutline then self.iconTextOutline:SetText("5") end
+            else
+                self.iconText:SetText("5/8")
+                if self.iconTextOutline then self.iconTextOutline:SetText("5/8") end
             end
         else
             -- Percent quest
+            local percentIconMode = IsPreviewIconStyleEnabled("percent")
             if self.lootIcon then self.lootIcon:Hide() end
             if self.killIcon  then self.killIcon:Hide()  end
 
@@ -282,7 +389,7 @@ function SQP:CreatePreviewSection(parent)
                 local pOffX = SQPSettings.percentIconOffsetX or 18
                 local pOffY = SQPSettings.percentIconOffsetY or 0
                 local pOW   = SQP:GetOutlineInfo("percent")
-                if SQPSettings.showIconBackground ~= false then
+                if percentIconMode then
                     -- Icon mode: jellybean + number + "%" at offset
                     icon:Show()
                     self.iconText:SetText("75")
@@ -291,11 +398,7 @@ function SQP:CreatePreviewSection(parent)
                         self.percentIcon:ClearAllPoints()
                         self.percentIcon:SetPoint('CENTER', icon, pOffX, pOffY)
                         self.percentIcon:SetText("%")
-                        if mainTintEnabled then
-                            self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
-                        else
-                            self.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
-                        end
+                        SetPreviewPercentColor(self.percentIcon)
                         self.percentIcon:Show()
                     end
                     if self.percentIconOutline then
@@ -313,11 +416,7 @@ function SQP:CreatePreviewSection(parent)
                         self.percentIcon:ClearAllPoints()
                         self.percentIcon:SetPoint('CENTER', icon, pOffX, pOffY)
                         self.percentIcon:SetText("75%")
-                        if mainTintEnabled then
-                            self.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
-                        else
-                            self.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
-                        end
+                        SetPreviewPercentColor(self.percentIcon)
                         self.percentIcon:Show()
                     end
                     if self.percentIconOutline then
@@ -331,7 +430,7 @@ function SQP:CreatePreviewSection(parent)
                 -- showPercentIcon disabled
                 if self.percentIcon then self.percentIcon:Hide() end
                 if self.percentIconOutline then self.percentIconOutline:Hide() end
-                if SQPSettings.showIconBackground ~= false then
+                if percentIconMode then
                     icon:Show()
                     self.iconText:SetText("75")
                     if self.iconTextOutline then self.iconTextOutline:SetText("75") end
@@ -343,43 +442,61 @@ function SQP:CreatePreviewSection(parent)
             end
         end
 
-        -- Manage animation via C_Timer (cancel first, then restart if enabled)
-        if self.iconTicker then
-            self.iconTicker:Cancel()
-            self.iconTicker = nil
-            icon:SetAlpha(1)
-        end
-        if self.percentTicker then
-            self.percentTicker:Cancel()
-            self.percentTicker = nil
-            percentIcon:SetAlpha(1)
-            percentIconOutline:SetAlpha(1)
-        end
-
+        -- Manage main icon pulse animation (per-tab setting)
         local animKey = (previewTypeKey == "kill" and "killAnimateMain") or
                         (previewTypeKey == "loot" and "lootAnimateMain") or
                         "percentAnimateMain"
+        local animateMain = SQPSettings[animKey] == true
 
-        if SQPSettings[animKey] then
-            if previewTypeKey == "percent" then
-                if self.percentIcon and self.percentIcon:IsShown() then
-                    local startTime = GetTime()
-                    local pf = self
-                    self.percentTicker = C_Timer.NewTicker(0.033, function()
-                        local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.2) + 1) / 2
-                        local a = 0.6 + t * 0.4
-                        if pf.percentIcon then pf.percentIcon:SetAlpha(a) end
-                        if pf.percentIconOutline and pf.percentIconOutline:IsShown() then
-                            pf.percentIconOutline:SetAlpha(a)
-                        end
-                    end)
+        if previewTypeKey == "percent" then
+            if self.iconPulse and self.iconPulse:IsPlaying() then self.iconPulse:Stop() end
+            if self.percentPulse then
+                if animateMain and self.percentIcon and self.percentIcon:IsShown() then
+                    if not self.percentPulse:IsPlaying() then self.percentPulse:Play() end
+                else
+                    if self.percentPulse:IsPlaying() then self.percentPulse:Stop() end
+                    percentIcon:SetAlpha(1)
                 end
+            end
+            if self.percentOutlinePulse then
+                if animateMain and self.percentIconOutline and self.percentIconOutline:IsShown() then
+                    if not self.percentOutlinePulse:IsPlaying() then self.percentOutlinePulse:Play() end
+                else
+                    if self.percentOutlinePulse:IsPlaying() then self.percentOutlinePulse:Stop() end
+                    percentIconOutline:SetAlpha(1)
+                end
+            end
+        else
+            if self.percentPulse and self.percentPulse:IsPlaying() then self.percentPulse:Stop() end
+            if self.percentOutlinePulse and self.percentOutlinePulse:IsPlaying() then self.percentOutlinePulse:Stop() end
+            percentIcon:SetAlpha(1)
+            percentIconOutline:SetAlpha(1)
+            if self.iconPulse then
+                if animateMain and icon:IsShown() then
+                    if not self.iconPulse:IsPlaying() then self.iconPulse:Play() end
+                else
+                    if self.iconPulse:IsPlaying() then self.iconPulse:Stop() end
+                    icon:SetAlpha(1)
+                end
+            end
+        end
+
+        -- Manage task icon pulse animation (shared kill/loot mini-icon toggle)
+        local animateTasks = SQPSettings.animateQuestIcons == true
+        if self.killIconPulse then
+            if animateTasks and self.killIcon and self.killIcon:IsShown() then
+                if not self.killIconPulse:IsPlaying() then self.killIconPulse:Play() end
             else
-                local startTime = GetTime()
-                self.iconTicker = C_Timer.NewTicker(0.033, function()
-                    local t = (math.sin((GetTime() - startTime) * math.pi * 2 / 1.0) + 1) / 2
-                    icon:SetAlpha(0.15 + t * 0.85)
-                end)
+                if self.killIconPulse:IsPlaying() then self.killIconPulse:Stop() end
+                killIcon:SetAlpha(1)
+            end
+        end
+        if self.lootIconPulse then
+            if animateTasks and self.lootIcon and self.lootIcon:IsShown() then
+                if not self.lootIconPulse:IsPlaying() then self.lootIconPulse:Play() end
+            else
+                if self.lootIconPulse:IsPlaying() then self.lootIconPulse:Stop() end
+                lootIcon:SetAlpha(1)
             end
         end
     end

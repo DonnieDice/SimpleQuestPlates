@@ -168,5 +168,5 @@ function SQP:CreateIconOptions(content)
     rightYOffset = rightYOffset - 48
 
     -- Display Style (also available on Kill / Loot / Percent tabs)
-    rightYOffset = self:CreateDisplayStyleSection(rightColumn, nil, rightYOffset)
+    rightYOffset = self:CreateDisplayStyleSection(rightColumn, nil, nil, rightYOffset)
 end

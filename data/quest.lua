@@ -367,13 +367,20 @@ function SQP:UpdateQuestIcon(plate, unitID)
     local showIcon = false
     local displayText = "?"
     local displayColor = {1, 1, 1} -- Default white
+    local function IsIconStyleEnabled(typeKey)
+        local value = SQPSettings[typeKey .. "ShowIconBackground"]
+        if value == nil then
+            value = SQPSettings.showIconBackground
+        end
+        return value ~= false
+    end
 
     if progressGlob and questType ~= 2 then
         -- Priority: Item > Kill > Percent
         if itemsNeeded > 0 then
             showIcon = true
             displayText = itemsNeeded
-            if SQPSettings.showIconBackground == false then
+            if not IsIconStyleEnabled("loot") then
                 local px, py = strmatch(progressGlob or "", '(%d+)%s*/%s*(%d+)')
                 if px and py then displayText = px .. "/" .. py end
             end
@@ -383,7 +390,8 @@ function SQP:UpdateQuestIcon(plate, unitID)
         elseif objectiveCount > 0 then
             showIcon = true
             displayText = objectiveCount
-            if SQPSettings.showIconBackground == false then
+            local styleTypeKey = (questType == 3) and "percent" or "kill"
+            if not IsIconStyleEnabled(styleTypeKey) then
                 local px, py = strmatch(progressGlob or "", '(%d+)%s*/%s*(%d+)')
                 if px and py then displayText = px .. "/" .. py end
             end
@@ -428,11 +436,6 @@ function SQP:UpdateQuestIcon(plate, unitID)
 
     -- Per-type tinting: determine effective quest type
     local effectiveType = (Q.hasItem and "loot") or ((questType or 0) == 3 and "percent") or "kill"
-    local mainTintEnabled = SQPSettings[effectiveType.."TintMain"] and SQPSettings[effectiveType.."TintMainColor"]
-    local mainTintR, mainTintG, mainTintB, mainTintA = 1, 1, 1, 1
-    if mainTintEnabled then
-        mainTintR, mainTintG, mainTintB, mainTintA = unpack(SQPSettings[effectiveType.."TintMainColor"])
-    end
     local killTintEnabled = SQPSettings.killTintIcon and SQPSettings.killTintIconColor
     local killTintR, killTintG, killTintB, killTintA = 1, 1, 1, 1
     if killTintEnabled then
@@ -443,12 +446,18 @@ function SQP:UpdateQuestIcon(plate, unitID)
     if lootTintEnabled then
         lootTintR, lootTintG, lootTintB, lootTintA = unpack(SQPSettings.lootTintIconColor)
     end
+    local percentTintEnabled = SQPSettings.percentTintIcon and SQPSettings.percentTintIconColor
+    local percentTintR, percentTintG, percentTintB, percentTintA = 1, 1, 1, 1
+    if percentTintEnabled then
+        percentTintR, percentTintG, percentTintB, percentTintA = unpack(SQPSettings.percentTintIconColor)
+    end
 
+    local percentIconMode = IsIconStyleEnabled("percent")
     local showPercentIcon = showIcon and questType == 3 and SQPSettings.showPercentIcon ~= false
     local percentText = tostring(displayText) .. "%"
     if showPercentIcon then
         if Q.icon then
-            if SQPSettings.showIconBackground ~= false then
+            if percentIconMode then
                 Q.icon:Show()
             else
                 Q.icon:Hide()
@@ -456,13 +465,13 @@ function SQP:UpdateQuestIcon(plate, unitID)
         end
         if Q.percentIcon then
             -- Icon mode: show "%" as separate indicator; Text mode: show combined "75%"
-            if SQPSettings.showIconBackground ~= false then
+            if percentIconMode then
                 Q.percentIcon:SetText("%")
             else
                 Q.percentIcon:SetText(percentText)
             end
-            if mainTintEnabled then
-                Q.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
+            if percentTintEnabled then
+                Q.percentIcon:SetTextColor(percentTintR, percentTintG, percentTintB, percentTintA or 1)
             else
                 Q.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
             end
@@ -485,7 +494,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
             Q.percentIconOutline:Hide()
         end
         if Q.icon then
-            if SQPSettings.showIconBackground ~= false then
+            if IsIconStyleEnabled(effectiveType) then
                 Q.icon:Show()
             else
                 Q.icon:Hide()
@@ -543,7 +552,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
         -- Update and show the icon; percent quests show number+% in percentIcon, not iconText
         if showPercentIcon then
             -- Icon mode: show the number on the jellybean; text mode: number is inside percentIcon
-            if SQPSettings.showIconBackground ~= false then
+            if percentIconMode then
                 Q.iconText:SetText(tostring(displayText))
                 if Q.iconTextOutline then Q.iconTextOutline:SetText(tostring(displayText)) end
             else
@@ -563,9 +572,7 @@ function SQP:UpdateQuestIcon(plate, unitID)
             Q.ani:Stop()
             Q:Show()
             Q.ani:Play()
-            if mainTintEnabled and Q.icon then
-                Q.icon:SetVertexColor(mainTintR, mainTintG, mainTintB, mainTintA)
-            else
+            if Q.icon then
                 Q.icon:SetVertexColor(1, 1, 1, 1)
             end
             if SQPSettings.debug then

@@ -80,7 +80,7 @@ function SQP:CreateKillOptions(content)
     yOffset = yOffset - 30
 
     -- Display Style
-    yOffset = self:CreateDisplayStyleSection(leftColumn, ActivateKill, yOffset)
+    yOffset = self:CreateDisplayStyleSection(leftColumn, "kill", ActivateKill, yOffset)
 
     -- Animate Task Icons (kill + loot mini icons)
     local animHeader = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -94,6 +94,19 @@ function SQP:CreateKillOptions(content)
     self.optionControls.animateQuestIcons = animFrame.checkbox
     animFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting('animateQuestIcons', self:GetChecked())
+        if SQP.optionControls and SQP.optionControls.animateQuestIconsLoot then
+            SQP.optionControls.animateQuestIconsLoot:SetChecked(self:GetChecked())
+        end
+        SQP:RefreshAllNameplates()
+    end)
+    yOffset = yOffset - 34
+
+    local animMainFrame = self:CreateStyledCheckbox(leftColumn, "Animate Main Icon")
+    animMainFrame:SetPoint("TOPLEFT", 20, yOffset)
+    animMainFrame.checkbox:SetChecked(SQPSettings.killAnimateMain == true)
+    self.optionControls.killAnimateMain = animMainFrame.checkbox
+    animMainFrame.checkbox:SetScript("OnClick", function(self)
+        SQP:SetSetting('killAnimateMain', self:GetChecked())
         SQP:RefreshAllNameplates()
     end)
     yOffset = yOffset - 34
@@ -113,6 +126,7 @@ function SQP:CreateKillOptions(content)
     local sw = colorBtn:CreateTexture(nil, "ARTWORK")
     sw:SetSize(16, 16); sw:SetPoint("CENTER")
     sw:SetColorTexture(unpack(SQPSettings.killColor or killDefault))
+    SQP.optionControls.killColorSwatch = sw
 
     local colorLbl = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     colorLbl:SetPoint("LEFT", colorBtn, "RIGHT", 6, 0)
@@ -143,10 +157,6 @@ function SQP:CreateKillOptions(content)
 
     -- Kill Icon Tinting (mini icon, compact inline row)
     yOffset = self:CreateMiniIconTintSection(leftColumn, "kill", ActivateKill, yOffset)
-    yOffset = yOffset - 6
-
-    -- Main Icon (jellybean) animate + tinting
-    yOffset = self:CreateMainIconSection(leftColumn, "kill", ActivateKill, yOffset)
 
     -- ── RIGHT COLUMN ──────────────────────────────────────────────────────────
     local rightYOffset = -15
@@ -160,5 +170,42 @@ function SQP:CreateKillOptions(content)
     rightYOffset = MakeSlider(rightColumn, "Offset X", "killIconOffsetX",  2, -80,  80, rightYOffset)
     rightYOffset = MakeSlider(rightColumn, "Offset Y", "killIconOffsetY", 15, -80,  80, rightYOffset)
 
-    rightYOffset = self:CreateFontSection(rightColumn, "kill", rightYOffset, "SQPKillFontDropdown")
+    rightYOffset = self:CreateFontSection(rightColumn, "kill", rightYOffset, "SQPKillFontDropdown", ActivateKill)
+
+    -- Reset this tab to kill defaults
+    rightYOffset = rightYOffset - 14
+    local resetBtn = self:CreateStyledButton(rightColumn, "Reset Kill Settings", 160, 22)
+    resetBtn:SetPoint("TOPLEFT", 20, rightYOffset)
+    resetBtn:SetScript("OnClick", function()
+        local D = SQP.DEFAULTS
+        local oc = SQP.optionControls
+        SQP:SetSetting('showKillIcon',      D.showKillIcon)
+        SQP:SetSetting('killShowIconBackground', D.killShowIconBackground)
+        SQP:SetSetting('animateQuestIcons', D.animateQuestIcons)
+        SQP:SetSetting('killAnimateMain',   D.killAnimateMain)
+        SQP:SetSetting('killColor',         {unpack(D.killColor)})
+        SQP:SetSetting('killTintIcon',      D.killTintIcon)
+        SQP:SetSetting('killTintIconColor', {unpack(D.killTintIconColor)})
+        SQP:SetSetting('killFontSize',      D.killFontSize)
+        SQP:SetSetting('killFontFamily',    D.killFontFamily)
+        -- Update checkboxes
+        if oc.showKillIcon      then oc.showKillIcon:SetChecked(D.showKillIcon) end
+        if oc.killShowIconBackgroundStyleUpdater then oc.killShowIconBackgroundStyleUpdater() end
+        if oc.animateQuestIcons then oc.animateQuestIcons:SetChecked(D.animateQuestIcons) end
+        if oc.animateQuestIconsLoot then oc.animateQuestIconsLoot:SetChecked(D.animateQuestIcons) end
+        if oc.killAnimateMain   then oc.killAnimateMain:SetChecked(D.killAnimateMain) end
+        if oc.killTintIcon      then oc.killTintIcon:SetChecked(D.killTintIcon) end
+        -- Update color swatches
+        if oc.killColorSwatch              then oc.killColorSwatch:SetColorTexture(unpack(D.killColor)) end
+        if oc.killTintIconColorSwatch      then oc.killTintIconColorSwatch:SetColorTexture(unpack(D.killTintIconColor)) end
+        if oc.killTintIconAlphaUpdate      then oc.killTintIconAlphaUpdate() end
+        -- Update sliders (OnValueChanged fires and updates label + setting)
+        if oc.killIconSize    then oc.killIconSize:SetValue(D.killIconSize) end
+        if oc.killIconOffsetX then oc.killIconOffsetX:SetValue(D.killIconOffsetX) end
+        if oc.killIconOffsetY then oc.killIconOffsetY:SetValue(D.killIconOffsetY) end
+        if oc.killFontSize    then oc.killFontSize:SetValue(D.killFontSize) end
+        if oc.killFontFamily and UIDropDownMenu_SetText then UIDropDownMenu_SetText(oc.killFontFamily, "Friz Quadrata") end
+        SQP:RefreshAllNameplates()
+        ActivateKill()
+    end)
 end

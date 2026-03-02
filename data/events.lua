@@ -43,8 +43,11 @@ end
 
 -- PLAYER_LOGIN: Initialize addon systems
 function SQP:PLAYER_LOGIN()
-    -- Welcome message
-    self:PrintMessage(string.format(self.L["MSG_LOADED"], self.VERSION))
+    -- Welcome message (two-line SQP green format)
+    local loadedLine = self.L["MSG_LOADED_LINE1"] or "|cff58be81Loaded successfully.|r Type |cff58be81/sqp help|r for commands."
+    local versionLine = self.L["MSG_LOADED_LINE2"] or "|cff58be81Version:|r |cff58be81v%s|r"
+    self:PrintMessage(loadedLine)
+    self:PrintMessage(string.format(versionLine, self.VERSION))
     
     -- Create options panel
     self:CreateOptionsPanel()

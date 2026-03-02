@@ -319,6 +319,14 @@ function SQP:RefreshAllNameplates()
     -- Update settings for all quest plates
     for plate, questFrame in pairs(self.QuestPlates) do
         if questFrame and questFrame.icon then
+            local function IsIconStyleEnabled(typeKey)
+                local value = SQPSettings[typeKey .. "ShowIconBackground"]
+                if value == nil then
+                    value = SQPSettings.showIconBackground
+                end
+                return value ~= false
+            end
+
             questFrame.icon:ClearAllPoints()
             questFrame.icon:SetPoint(
                 SQPSettings.anchor or 'RIGHT',
@@ -430,9 +438,15 @@ function SQP:RefreshAllNameplates()
 
             if questFrame.percentIcon then
                 if questFrame.questType == 3 then
+                    local percentIconMode = IsIconStyleEnabled("percent")
                     questFrame.percentIcon:ClearAllPoints()
                     questFrame.percentIcon:SetPoint('CENTER', questFrame.icon, SQPSettings.percentIconOffsetX or 0, SQPSettings.percentIconOffsetY or 0)
-                    questFrame.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
+                    if SQPSettings.percentTintIcon and SQPSettings.percentTintIconColor then
+                        local r, g, b, a = unpack(SQPSettings.percentTintIconColor)
+                        questFrame.percentIcon:SetTextColor(r, g, b, a or 1)
+                    else
+                        questFrame.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
+                    end
                     questFrame.percentIcon:Show()
                     if questFrame.percentIconOutline then
                         questFrame.percentIconOutline:ClearAllPoints()
@@ -445,29 +459,31 @@ function SQP:RefreshAllNameplates()
                         end
                     end
                     if questFrame.icon then
-                        questFrame.icon:Hide()
+                        if percentIconMode then
+                            questFrame.icon:Show()
+                        else
+                            questFrame.icon:Hide()
+                        end
                     end
                 else
+                    local nonPercentType = questFrame.hasItem and "loot" or "kill"
+                    local nonPercentIconMode = IsIconStyleEnabled(nonPercentType)
                     questFrame.percentIcon:Hide()
                     if questFrame.percentIconOutline then
                         questFrame.percentIconOutline:Hide()
                     end
                     if questFrame.icon then
-                        questFrame.icon:Show()
+                        if nonPercentIconMode then
+                            questFrame.icon:Show()
+                        else
+                            questFrame.icon:Hide()
+                        end
                     end
                 end
             end
             
-            -- Update icon tinting (per-type)
-            local questTypeKey = (questFrame.hasItem and "loot") or (questFrame.questType == 3 and "percent") or "kill"
-            local mainTintEnabled = SQPSettings[questTypeKey.."TintMain"] and SQPSettings[questTypeKey.."TintMainColor"]
-            local mainTintR, mainTintG, mainTintB, mainTintA = 1, 1, 1, 1
-            if mainTintEnabled then
-                mainTintR, mainTintG, mainTintB, mainTintA = unpack(SQPSettings[questTypeKey.."TintMainColor"])
-                questFrame.icon:SetVertexColor(mainTintR, mainTintG, mainTintB, mainTintA)
-            else
-                questFrame.icon:SetVertexColor(1, 1, 1, 1)
-            end
+            -- Main icon tinting removed (redundant with color controls)
+            questFrame.icon:SetVertexColor(1, 1, 1, 1)
 
             local killTintEnabled = SQPSettings.killTintIcon and SQPSettings.killTintIconColor
             local killTintR, killTintG, killTintB, killTintA = 1, 1, 1, 1
@@ -478,6 +494,11 @@ function SQP:RefreshAllNameplates()
             local lootTintR, lootTintG, lootTintB, lootTintA = 1, 1, 1, 1
             if lootTintEnabled then
                 lootTintR, lootTintG, lootTintB, lootTintA = unpack(SQPSettings.lootTintIconColor)
+            end
+            local percentTintEnabled = SQPSettings.percentTintIcon and SQPSettings.percentTintIconColor
+            local percentTintR, percentTintG, percentTintB, percentTintA = 1, 1, 1, 1
+            if percentTintEnabled then
+                percentTintR, percentTintG, percentTintB, percentTintA = unpack(SQPSettings.percentTintIconColor)
             end
 
             if questFrame.killIcon then
@@ -495,8 +516,8 @@ function SQP:RefreshAllNameplates()
                 end
             end
             if questFrame.percentIcon and questFrame.questType == 3 then
-                if mainTintEnabled then
-                    questFrame.percentIcon:SetTextColor(mainTintR, mainTintG, mainTintB, mainTintA or 1)
+                if percentTintEnabled then
+                    questFrame.percentIcon:SetTextColor(percentTintR, percentTintG, percentTintB, percentTintA or 1)
                 else
                     questFrame.percentIcon:SetTextColor(unpack(SQPSettings.percentColor or {0.2, 1, 1}))
                 end

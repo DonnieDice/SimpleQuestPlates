@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.9.3
+- Display Style (Icon/Text) is now truly per-tab: Kill, Loot, and Percent each use independent settings (`killShowIconBackground`, `lootShowIconBackground`, `percentShowIconBackground`) with migration from legacy `showIconBackground`.
+- Added tab-scoped reset buttons with clearer wording: `Reset Kill Settings`, `Reset Loot Settings`, and `Reset Percent Settings`.
+- Removed redundant Main Icon tint behavior from runtime and preview (main icon now uses color controls instead of duplicate tint toggles).
+- Percent tab parity improvements: added compact `Tint Percent Sign` section so Percent layout/options align more closely with Kill/Loot structure.
+- Login message now uses a two-line format with BLU/CCU-style coloring (loaded line + separate version line).
+- Fixed checkbox persistence for boolean settings so `Animate Task Icons` and other true-default toggles reliably save OFF states.
+
 ## v1.9.2
 - Percent tab now fully matches Kill and Loot tab structure: dedicated Animate section (header + "Animate Main Icon" checkbox controlling `percentAnimateMain`) appears before the Color section, consistent with the Animate sections on Kill and Loot tabs.
 - Main Icon tint section on Percent tab no longer duplicates the Animate checkbox (it now uses `skipAnimate=true`).

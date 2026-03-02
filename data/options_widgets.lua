@@ -90,8 +90,9 @@ end
 -- typeKey: "kill", "loot", or "percent"
 -- yOffset: starting y position (negative)
 -- dropdownName: unique global name for the dropdown frame
+-- activatePreviewFn: optional function to switch preview mode before refresh
 -- returns: next yOffset after all controls
-function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName)
+function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName, activatePreviewFn)
     if not self.optionControls then self.optionControls = {} end
 
     local defaultSize = typeKey == "percent" and 8 or 12
@@ -118,6 +119,7 @@ function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName)
         SQP:SetSetting(typeKey.."FontSize", defaultSize)
         sizeSlider:SetValue(defaultSize)
         sizeLabel:SetText(string.format("Size: %d", defaultSize))
+        if activatePreviewFn then activatePreviewFn() end
         SQP:RefreshAllNameplates()
     end)
     sizeReset:SetPoint("LEFT", sizeSlider, "RIGHT", 5, 0)
@@ -126,6 +128,7 @@ function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName)
         val = math.floor(val + 0.5)
         SQP:SetSetting(typeKey.."FontSize", val)
         sizeLabel:SetText(string.format("Size: %d", val))
+        if activatePreviewFn then activatePreviewFn() end
         SQP:RefreshAllNameplates()
     end)
     yOffset = yOffset - 36
@@ -139,6 +142,7 @@ function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName)
     local familyReset = self:CreateInlineResetButton(parent, function()
         SQP:SetSetting(typeKey.."FontFamily", "Fonts\\FRIZQT__.TTF")
         UIDropDownMenu_SetText(fontDd, "Friz Quadrata")
+        if activatePreviewFn then activatePreviewFn() end
         SQP:RefreshAllNameplates()
     end)
     familyReset:SetPoint("LEFT", familyLabel, "RIGHT", 5, 0)
@@ -165,6 +169,7 @@ function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName)
             info.func = function()
                 SQP:SetSetting(typeKey.."FontFamily", opt.font)
                 UIDropDownMenu_SetText(fontDd, opt.text)
+                if activatePreviewFn then activatePreviewFn() end
                 SQP:RefreshAllNameplates()
             end
             info.checked = (SQPSettings[typeKey.."FontFamily"] == opt.font)
@@ -182,9 +187,22 @@ function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName)
 end
 
 -- Create a Display Style (Icon / Text) section
+-- typeKey: "kill", "loot", "percent", or nil (legacy/global)
 -- activatePreviewFn: optional function to call to switch the preview mode
 -- returns: next yOffset
-function SQP:CreateDisplayStyleSection(parent, activatePreviewFn, yOffset)
+function SQP:CreateDisplayStyleSection(parent, typeKey, activatePreviewFn, yOffset)
+    if type(typeKey) == "function" then
+        yOffset = activatePreviewFn
+        activatePreviewFn = typeKey
+        typeKey = nil
+    end
+    if yOffset == nil and type(activatePreviewFn) == "number" then
+        yOffset = activatePreviewFn
+        activatePreviewFn = nil
+    end
+
+    local settingKey = typeKey and (typeKey .. "ShowIconBackground") or "showIconBackground"
+
     local dsHeader = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     dsHeader:SetPoint("TOPLEFT", 20, yOffset)
     dsHeader:SetText("|cff58be81Display Style|r")
@@ -195,29 +213,48 @@ function SQP:CreateDisplayStyleSection(parent, activatePreviewFn, yOffset)
     iconStyleBtn:SetPoint("TOPLEFT", 20, yOffset)
     textStyleBtn:SetPoint("LEFT", iconStyleBtn, "RIGHT", 8, 0)
 
+    local function IsIconStyleEnabled()
+        local value = SQPSettings[settingKey]
+        if value == nil and typeKey then
+            value = SQPSettings.showIconBackground
+        end
+        return value ~= false
+    end
+
     local function UpdateStyleButtons()
-        iconStyleBtn:SetAlpha(SQPSettings.showIconBackground ~= false and 1 or 0.6)
-        textStyleBtn:SetAlpha(SQPSettings.showIconBackground == false and 1 or 0.6)
+        local iconStyle = IsIconStyleEnabled()
+        iconStyleBtn:SetAlpha(iconStyle and 1 or 0.6)
+        textStyleBtn:SetAlpha(iconStyle and 0.6 or 1)
     end
     UpdateStyleButtons()
+    if self.optionControls then
+        self.optionControls[settingKey .. "StyleUpdater"] = UpdateStyleButtons
+    end
 
-    -- Register updater for cross-tab sync
+    -- Register updater for cross-panel sync of this specific display-style key
     if not SQP.styleButtonUpdaters then SQP.styleButtonUpdaters = {} end
-    table.insert(SQP.styleButtonUpdaters, UpdateStyleButtons)
+    if not SQP.styleButtonUpdaters[settingKey] then
+        SQP.styleButtonUpdaters[settingKey] = {}
+    end
+    table.insert(SQP.styleButtonUpdaters[settingKey], UpdateStyleButtons)
+
+    local function BroadcastStyleUpdate()
+        local updaters = SQP.styleButtonUpdaters and SQP.styleButtonUpdaters[settingKey]
+        if not updaters then return end
+        for _, fn in ipairs(updaters) do
+            fn()
+        end
+    end
 
     iconStyleBtn:SetScript("OnClick", function()
-        SQP:SetSetting('showIconBackground', true)
-        if SQP.styleButtonUpdaters then
-            for _, fn in ipairs(SQP.styleButtonUpdaters) do fn() end
-        end
+        SQP:SetSetting(settingKey, true)
+        BroadcastStyleUpdate()
         if activatePreviewFn then activatePreviewFn() end
         SQP:RefreshAllNameplates()
     end)
     textStyleBtn:SetScript("OnClick", function()
-        SQP:SetSetting('showIconBackground', false)
-        if SQP.styleButtonUpdaters then
-            for _, fn in ipairs(SQP.styleButtonUpdaters) do fn() end
-        end
+        SQP:SetSetting(settingKey, false)
+        BroadcastStyleUpdate()
         if activatePreviewFn then activatePreviewFn() end
         SQP:RefreshAllNameplates()
     end)
@@ -233,7 +270,14 @@ end
 function SQP:CreateMiniIconTintSection(parent, typeKey, activatePreviewFn, yOffset)
     local tintKey      = typeKey .. "TintIcon"
     local tintColorKey = typeKey .. "TintIconColor"
-    local labelText    = typeKey == "kill" and "Tint Kill Icon" or "Tint Loot Icon"
+    local labelText
+    if typeKey == "kill" then
+        labelText = "Tint Kill Icon"
+    elseif typeKey == "loot" then
+        labelText = "Tint Loot Icon"
+    else
+        labelText = "Tint Percent Sign"
+    end
 
     -- Color swatch button (also acts as color picker opener)
     local tintColorBtn = CreateFrame("Button", nil, parent)
@@ -254,6 +298,7 @@ function SQP:CreateMiniIconTintSection(parent, typeKey, activatePreviewFn, yOffs
     local tintReset = self:CreateInlineResetButton(parent, function()
         SQP:SetSetting(tintColorKey, {1, 1, 1})
         tintSw:SetColorTexture(1, 1, 1)
+        if activatePreviewFn then activatePreviewFn() end
         SQP:RefreshAllNameplates()
     end)
     tintReset:SetPoint("LEFT", tintCbFrame.label, "RIGHT", 6, 0)
@@ -264,10 +309,14 @@ function SQP:CreateMiniIconTintSection(parent, typeKey, activatePreviewFn, yOffs
         tintReset:SetAlpha(a * 0.7)
     end
     UpdateTintAlpha()
+    -- Store for external access (e.g. tab reset buttons)
+    self.optionControls[tintColorKey.."Swatch"] = tintSw
+    self.optionControls[tintKey.."AlphaUpdate"] = UpdateTintAlpha
 
     tintCbFrame.checkbox:SetScript("OnClick", function(self)
         SQP:SetSetting(tintKey, self:GetChecked())
         UpdateTintAlpha()
+        if activatePreviewFn then activatePreviewFn() end
         SQP:RefreshAllNameplates()
     end)
 
