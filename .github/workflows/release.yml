@@ -84,15 +84,15 @@ jobs:
           # Determine release type emoji and color
           RELEASE_TYPE="${{ steps.set_release_type.outputs.release_type }}"
           if [ "$RELEASE_TYPE" = "alpha" ]; then
-            EMOJI="🔬"
+            EMOJI="ðŸ”¬"
             TYPE_TEXT=" Alpha"
             COLOR=16711680
           elif [ "$RELEASE_TYPE" = "beta" ]; then
-            EMOJI="🧪"
+            EMOJI="ðŸ§ª"
             TYPE_TEXT=" Beta"
             COLOR=16744448
           else
-            EMOJI="🎯"
+            EMOJI="ðŸŽ¯"
             TYPE_TEXT=""
             COLOR=5820057
           fi
@@ -117,7 +117,7 @@ jobs:
               "avatar_url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png",
               "embeds": [{
                 "title": "\($emoji) SQP | Simple Quest Plates - \($version)\($type_text)",
-                "description": "**See quest progress at a glance!** A new version of SQP has been released!\n\n📝 **What'\''s New:**\n\($changelog)\n\n**Display quest objective progress directly on enemy nameplates!**",
+                "description": "**See quest progress at a glance!** A new version of SQP has been released!\n\nðŸ“ **What'\''s New:**\n\($changelog)\n\n**Display quest objective progress directly on enemy nameplates!**",
                 "url": "https://github.com/donniedice/SimpleQuestPlates/releases/tag/\($tag)",
                 "color": $color,
                 "thumbnail": {
@@ -125,18 +125,18 @@ jobs:
                 },
                 "fields": [
                   {
-                    "name": "📥 Downloads",
+                    "name": "ðŸ“¥ Downloads",
                     "value": "[CurseForge](https://www.curseforge.com/wow/addons/simple-quest-plates)\n[WoWInterface](https://www.wowinterface.com/downloads/info26957)\n[GitHub](https://github.com/donniedice/SimpleQuestPlates)",
                     "inline": true
                   },
                   {
-                    "name": "🎮 Compatibility",
-                    "value": "✅ Midnight\n✅ Classic Era\n✅ TBC Anniversary\n✅ MoP Classic",
+                    "name": "ðŸŽ® Compatibility",
+                    "value": "âœ… Midnight\nâœ… Classic Era\nâœ… TBC Anniversary\nâœ… MoP Classic",
                     "inline": true
                   },
                   {
-                    "name": "💬 Support",
-                    "value": "[Join Discord](https://discord.gg/N7kdKAHVVF)\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)",
+                    "name": "ðŸ’¬ Support",
+                    "value": "[Join Discord](https://discord.gg/rgxmods)\n[Report Issues](https://github.com/donniedice/SimpleQuestPlates/issues)",
                     "inline": true
                   }
                 ],
@@ -180,7 +180,7 @@ jobs:
               "username": "SQP Build Failed",
               "avatar_url": "https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/logo.png",
               "embeds": [{
-                "title": "❌ SQP Build Failed",
+                "title": "âŒ SQP Build Failed",
                 "description": "The release workflow encountered an error",
                 "url": "https://github.com/donniedice/SimpleQuestPlates/actions/runs/\($run_id)",
                 "color": 15158332,

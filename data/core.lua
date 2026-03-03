@@ -80,7 +80,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.9.5" -- Addon version (also in TOC file)
+SQP.VERSION = "1.9.6" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -307,7 +307,7 @@ function SQP:GetSavedSettings()
     migrateFont("kill",    12)
     migrateFont("loot",    12)
     migrateFont("percent",  8)
-    -- percentIconSize → percentFontSize migration
+    -- percentIconSize -> percentFontSize migration
     if SQPSettings.percentFontSize == nil and SQPSettings.percentIconSize then
         SQPSettings.percentFontSize = SQPSettings.percentIconSize
     end
