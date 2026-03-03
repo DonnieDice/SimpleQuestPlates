@@ -207,6 +207,25 @@ function SQP:CreatePreviewSection(parent)
     end
 
     -- Safely read frame dimensions that may be protected/tainted values.
+    local function ToPlainNumber(value)
+        if value == nil then return nil end
+
+        if type(value) == "number" then
+            -- Secret/tainted numbers can fail arithmetic; guard with pcall.
+            local okMath, plainValue = pcall(function(v) return v + 0 end, value)
+            if okMath and type(plainValue) == "number" then
+                return plainValue
+            end
+        end
+
+        local okString, stringValue = pcall(tostring, value)
+        if not okString or not stringValue then
+            return nil
+        end
+
+        return tonumber(stringValue)
+    end
+
     local function GetFrameDimension(frame, methodName, fallback)
         if not frame then return fallback end
         local getter = frame[methodName]
@@ -215,8 +234,8 @@ function SQP:CreatePreviewSection(parent)
         local okCall, rawValue = pcall(getter, frame)
         if not okCall then return fallback end
 
-        local okNumber, numericValue = pcall(tonumber, rawValue)
-        if not okNumber or not numericValue then
+        local numericValue = ToPlainNumber(rawValue)
+        if not numericValue then
             return fallback
         end
 
