@@ -54,13 +54,11 @@ jobs:
           echo "Extracted version: $version"
           echo "version=$version" >> $GITHUB_OUTPUT
 
-      - name: Extract Changelog
+      - name: Extract Changes
         id: extract_changelog
         run: |
           if [ -f "docs/CHANGES.md" ]; then
             echo "changelog_file=docs/CHANGES.md" >> $GITHUB_OUTPUT
-          elif [ -f "docs/CHANGELOG.md" ]; then
-            echo "changelog_file=docs/CHANGELOG.md" >> $GITHUB_OUTPUT
           else
             echo "No changelog available" > /tmp/sqp_changes.md
             echo "changelog_file=/tmp/sqp_changes.md" >> $GITHUB_OUTPUT

@@ -29,8 +29,7 @@ SimpleQuestPlates is a WoW addon that displays quest objective progress on enemy
 2. Update:
    - `SimpleQuestPlates.toc`
    - `data/core.lua`
-3. Replace changelog content with single current-version section in:
-   - `docs/CHANGELOG.md`
+3. Replace changelog content with a single current-version section in:
    - `docs/CHANGES.md`
 4. Commit, tag (`vX.Y.Z`), and push branch + tag.
 
@@ -45,4 +44,5 @@ SimpleQuestPlates is a WoW addon that displays quest objective progress on enemy
 ## Notes
 
 - `enUS.lua` is the fallback baseline for localization keys.
+- Locale modules cover: `enUS`, `enGB`, `deDE`, `esES`/`esMX`, `frFR`, `itIT`, `koKR`, `ptBR`, `ruRU`, `zhCN`, `zhTW`.
 - Compatibility behavior is centralized in `data/compat.lua` and `data/compat_mop.lua`.

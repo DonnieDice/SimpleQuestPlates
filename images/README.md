@@ -8,6 +8,9 @@ Image assets used by the addon and repository docs.
 - `logo.png` - Project logo
 - `in-game-options.png` - Options UI screenshot used in docs
 - `kiwi.gif` - Community branding asset
+- `image.png` - Additional documentation/screenshot asset
+- `image2.png` - Additional documentation/screenshot asset
+- `image3.png` - Additional documentation/screenshot asset
 
 ## Notes
 

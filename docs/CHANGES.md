@@ -12,3 +12,9 @@
   - `data/options_rgx.lua`
 - Cleaned and synchronized repository documentation (root README, directory READMEs, roadmap, assistant docs).
 - Updated release workflow support link to `discord.gg/rgxmods`.
+- Standardized release notes source to `docs/CHANGES.md` only (removed `docs/CHANGELOG.md` references).
+- Completed locale coverage:
+  - Added locale modules for `enGB`, `itIT`, `koKR`, `ptBR`, and `zhTW`.
+  - Filled all locale modules with full key coverage for runtime-safe lookups.
+- Updated options tab layout to dynamically fill the full tab row width with no trailing gap.
+- Refreshed the stylized root README and directory docs to match current commands, locale coverage, and assets.

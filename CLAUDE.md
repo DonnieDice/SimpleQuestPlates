@@ -38,10 +38,12 @@ Current tab set:
 - `/sqp anchor <LEFT|RIGHT>`
 - `/sqp reset`
 - `/sqp debug`
+- `/sqp debug target`
+- `/sqp debug nameplates`
 
 ## Release Notes Policy
 
-`docs/CHANGELOG.md` and `docs/CHANGES.md` must each contain only the current release section.
+`docs/CHANGES.md` must contain only the current release section.
 
 ## Version Management
 
@@ -49,7 +51,7 @@ When bumping versions:
 
 1. Update `SimpleQuestPlates.toc` (`## Version:`).
 2. Update `data/core.lua` (`SQP.VERSION`).
-3. Update `docs/CHANGELOG.md` and `docs/CHANGES.md` for the new version.
+3. Update `docs/CHANGES.md` for the new version.
 4. Create and push matching git tag (`vX.Y.Z`).
 
 ## Testing Expectations
@@ -60,3 +62,4 @@ Manual in-game checks:
 2. `/sqp status`
 3. `/sqp test`
 4. Options panel tab navigation + preview updates
+5. Locale fallback behavior (missing translated keys)

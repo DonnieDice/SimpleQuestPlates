@@ -17,4 +17,5 @@ packages/
 
 # User-specific files
 .env
-.claude/
+.claude/*
+!.claude/README.md
