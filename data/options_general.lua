@@ -96,6 +96,56 @@ function SQP:CreateGlobalOptions(content)
     self.optionControls.globalAnimationEnabled = globalAnimEnableFrame.checkbox
     yOffset = yOffset - 28
 
+    local function GetAnimationCombatMode()
+        local mode = SQPSettings.animationCombatMode
+        if mode ~= "always" and mode ~= "combat" and mode ~= "outofcombat" then
+            mode = "always"
+        end
+        return mode
+    end
+
+    local animModeLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+    animModeLabel:SetPoint("TOPLEFT", 20, yOffset)
+    animModeLabel:SetText("Animate When")
+    yOffset = yOffset - 20
+
+    local animAlwaysBtn = self:CreateStyledButton(leftColumn, "Always", 58, 22)
+    local animCombatBtn = self:CreateStyledButton(leftColumn, "Combat", 58, 22)
+    local animOutBtn = self:CreateStyledButton(leftColumn, "No Combat", 70, 22)
+    animAlwaysBtn:SetPoint("TOPLEFT", 20, yOffset)
+    animCombatBtn:SetPoint("LEFT", animAlwaysBtn, "RIGHT", 6, 0)
+    animOutBtn:SetPoint("LEFT", animCombatBtn, "RIGHT", 6, 0)
+    self.optionControls.animationCombatModeButtons = {
+        always = animAlwaysBtn,
+        combat = animCombatBtn,
+        outofcombat = animOutBtn,
+    }
+
+    local function UpdateAnimationModeButtons()
+        local mode = GetAnimationCombatMode()
+        animAlwaysBtn:SetAlpha(mode == "always" and 1 or 0.6)
+        animCombatBtn:SetAlpha(mode == "combat" and 1 or 0.6)
+        animOutBtn:SetAlpha(mode == "outofcombat" and 1 or 0.6)
+    end
+    UpdateAnimationModeButtons()
+    yOffset = yOffset - 30
+
+    animAlwaysBtn:SetScript("OnClick", function()
+        SQP:SetSetting('animationCombatMode', "always")
+        UpdateAnimationModeButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    animCombatBtn:SetScript("OnClick", function()
+        SQP:SetSetting('animationCombatMode', "combat")
+        UpdateAnimationModeButtons()
+        SQP:RefreshAllNameplates()
+    end)
+    animOutBtn:SetScript("OnClick", function()
+        SQP:SetSetting('animationCombatMode', "outofcombat")
+        UpdateAnimationModeButtons()
+        SQP:RefreshAllNameplates()
+    end)
+
     local globalIntensityLabel = leftColumn:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
     globalIntensityLabel:SetPoint("TOPLEFT", 20, yOffset)
     globalIntensityLabel:SetText(format("Global Intensity: %d%%", SQPSettings.globalAnimationIntensity or 100))

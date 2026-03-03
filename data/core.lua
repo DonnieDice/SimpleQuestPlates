@@ -51,6 +51,7 @@ local UnitIsPlayer = UnitIsPlayer
 local UnitIsFriend = UnitIsFriend
 local UnitIsEnemy = UnitIsEnemy
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitAffectingCombat = UnitAffectingCombat
 local GetBuildInfo = GetBuildInfo
 local PlaySound = PlaySound
 local GetCursorPosition = GetCursorPosition
@@ -147,6 +148,7 @@ SQP.DEFAULTS = {
     animateQuestIcons = true,
     useGlobalAnimationSettings = false,
     globalAnimationEnabled = true,
+    animationCombatMode = "always", -- always | combat | outofcombat
     globalAnimationIntensity = 100,
     killAnimationIntensity = 100,
     lootAnimationIntensity = 100,
@@ -190,22 +192,42 @@ SQP.DEFAULTS = {
 }
 
 -- Animation setting helpers
+function SQP:IsAnimationCombatAllowed()
+    local settings = SQPSettings or self.DEFAULTS or {}
+    local mode = settings.animationCombatMode
+
+    if mode ~= "always" and mode ~= "combat" and mode ~= "outofcombat" then
+        mode = "always"
+    end
+
+    if mode == "always" then
+        return true
+    end
+
+    local inCombat = UnitAffectingCombat and UnitAffectingCombat("player")
+    if mode == "combat" then
+        return inCombat and true or false
+    end
+    return not inCombat
+end
+
 function SQP:IsAnimationEnabled(typeKey, isTaskIcon)
     local settings = SQPSettings or self.DEFAULTS or {}
+    local baseEnabled = false
 
     if settings.useGlobalAnimationSettings == true then
-        return settings.globalAnimationEnabled ~= false
+        baseEnabled = settings.globalAnimationEnabled ~= false
+    elseif isTaskIcon then
+        baseEnabled = settings.animateQuestIcons == true
+    elseif typeKey and typeKey ~= "" then
+        baseEnabled = settings[typeKey .. "AnimateMain"] == true
     end
 
-    if isTaskIcon then
-        return settings.animateQuestIcons == true
+    if not baseEnabled then
+        return false
     end
 
-    if typeKey and typeKey ~= "" then
-        return settings[typeKey .. "AnimateMain"] == true
-    end
-
-    return false
+    return self:IsAnimationCombatAllowed()
 end
 
 function SQP:GetAnimationIntensity(typeKey)
@@ -417,6 +439,12 @@ function SQP:GetSavedSettings()
 
     -- Copy defaults if new or missing
     self:ApplyDefaults(SQPSettings)
+
+    -- Normalize animation combat mode
+    local animationMode = SQPSettings.animationCombatMode
+    if animationMode ~= "always" and animationMode ~= "combat" and animationMode ~= "outofcombat" then
+        SQPSettings.animationCombatMode = "always"
+    end
 
     -- Normalize boolean settings (older clients/checkbuttons may store 1/nil or strings)
     for key, defaultValue in pairs(self.DEFAULTS) do
