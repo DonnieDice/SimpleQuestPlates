@@ -145,6 +145,12 @@ SQP.DEFAULTS = {
     percentOutlineColor = {0, 0, 0},
     animateQuestIcon = false,
     animateQuestIcons = true,
+    useGlobalAnimationSettings = false,
+    globalAnimationEnabled = true,
+    globalAnimationIntensity = 100,
+    killAnimationIntensity = 100,
+    lootAnimationIntensity = 100,
+    percentAnimationIntensity = 100,
     showIconBackground = true, -- Legacy shared display style toggle
     killShowIconBackground = true,
     lootShowIconBackground = true,
@@ -182,6 +188,65 @@ SQP.DEFAULTS = {
     percentTintIconColor = {1, 1, 1},
     debug = false,
 }
+
+-- Animation setting helpers
+function SQP:IsAnimationEnabled(typeKey, isTaskIcon)
+    local settings = SQPSettings or self.DEFAULTS or {}
+
+    if settings.useGlobalAnimationSettings == true then
+        return settings.globalAnimationEnabled ~= false
+    end
+
+    if isTaskIcon then
+        return settings.animateQuestIcons == true
+    end
+
+    if typeKey and typeKey ~= "" then
+        return settings[typeKey .. "AnimateMain"] == true
+    end
+
+    return false
+end
+
+function SQP:GetAnimationIntensity(typeKey)
+    local settings = SQPSettings or self.DEFAULTS or {}
+    local intensity
+
+    if settings.useGlobalAnimationSettings == true then
+        intensity = settings.globalAnimationIntensity
+    elseif typeKey and typeKey ~= "" then
+        intensity = settings[typeKey .. "AnimationIntensity"]
+    end
+
+    if intensity == nil then
+        intensity = settings.globalAnimationIntensity
+    end
+
+    intensity = tonumber(intensity) or 100
+    if intensity < 25 then intensity = 25 end
+    if intensity > 200 then intensity = 200 end
+    return intensity
+end
+
+function SQP:GetAnimationDuration(typeKey, isMain)
+    local baseDuration = isMain and 0.5 or 0.6
+    local intensity = self:GetAnimationIntensity(typeKey)
+    local duration = baseDuration * (100 / intensity)
+    if duration < 0.15 then duration = 0.15 end
+    if duration > 2 then duration = 2 end
+    return duration
+end
+
+function SQP:ApplyPulseDuration(animationGroup, duration)
+    if not animationGroup or not duration then return end
+
+    if animationGroup._fadeOut and animationGroup._fadeOut.SetDuration then
+        animationGroup._fadeOut:SetDuration(duration)
+    end
+    if animationGroup._fadeIn and animationGroup._fadeIn.SetDuration then
+        animationGroup._fadeIn:SetDuration(duration)
+    end
+end
 
 -- Determine effective outline settings for a quest type (or global if typeKey is nil)
 function SQP:GetOutlineInfo(typeKey)
