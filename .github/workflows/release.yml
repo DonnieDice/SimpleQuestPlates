@@ -66,7 +66,7 @@ jobs:
       - name: Package and Release
         uses: BigWigsMods/packager@master
         with:
-          release-type: ${{ steps.set_release_type.outputs.release_type }}
+          'release-type': ${{ steps.set_release_type.outputs.release_type }}
 
       - name: Send Discord Notification
         if: success()
