@@ -1,9 +1,9 @@
-# <img src="https://github.com/donniedice/SimpleQuestPlates/blob/main/images/logo.png?raw=true" width="25" height="25"> <span style="color:#58be81">S</span><span style="color:#58be81">Q</span><span style="color:#58be81">P</span> <span style="color:#fff">|</span> <span style="color:#58be81">S</span><span style="color:#fff">imple </span><span style="color:#58be81">Q</span><span style="color:#fff">uest </span><span style="color:#58be81">P</span><span style="color:#fff">lates!</span>
+# <img src="images/logo.png" width="25" height="25"> <span style="color:#58be81">S</span><span style="color:#58be81">Q</span><span style="color:#58be81">P</span> <span style="color:#fff">|</span> <span style="color:#58be81">S</span><span style="color:#fff">imple </span><span style="color:#58be81">Q</span><span style="color:#fff">uest </span><span style="color:#58be81">P</span><span style="color:#fff">lates!</span>
 ## <img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif" height="20"> <span style="color:#8B1538">R</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#4ecdc4">Mods</span> <span style="color:#3598db">-</span> [<span style="color:#8B1538">R</span><span style="color:#7598b6">ealm</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span>](https://realmgx.com) <span style="color:#ff6b6b">Community Project</span>
 
 <div align="center">
 
-<img src="https://github.com/donniedice/SimpleQuestPlates/blob/main/images/logo.png?raw=true" alt="SQP Logo" width="128" height="128">
+<img src="images/logo.png" alt="SQP Logo" width="128" height="128">
 
 [![RGX Mods](https://img.shields.io/badge/RGX-Simple%20Quest%20Plates!-8B1538?style=for-the-badge&logo=github&logoColor=white)](https://github.com/donniedice/SimpleQuestPlates)
 [![RGX Mods](https://img.shields.io/badge/RGX-Mods%20Collection-8B1538?style=for-the-badge&logo=github&logoColor=white)](https://discord.gg/rgxmods)
@@ -62,7 +62,7 @@
 - <span style="color:#58be81">📢 **First to know**</span> <span style="color:#e67e23">about new</span> <span style="color:#8B1538">R</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#4ecdc4">Mods</span> <span style="color:#e67e23">releases</span>
 - <span style="color:#e67e23">🎉 **Events, giveaways**, and community activities</span>
 
-<img src="https://github.com/donniedice/SimpleQuestPlates/blob/main/images/kiwi.gif?raw=true" alt="RealmGX Kiwi" width="100">
+<img src="images/kiwi.gif" alt="RealmGX Kiwi" width="100">
 
 **<span style="color:#ff6b6b">⚠️ WARNING:</span>** <span style="color:#e67e23">May cause you to prioritize questing over literally everything else.</span>
 
@@ -72,6 +72,7 @@
 
 ---
 
+<a id="support"></a>
 ## <span style="color:#ff6b6b">💖 Support </span> <span style="color:#8B1538">R</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#4ecdc4">Mods</span>
 
 <div align="center">
@@ -94,7 +95,7 @@ _<span style="color:#e67e23">Every donation helps fund new features and improvem
 **<span style="color:#58be81">S</span><span style="color:#58be81">Q</span><span style="color:#58be81">P</span> <span style="color:#fff">|</span> <span style="color:#58be81">S</span><span style="color:#fff">imple </span><span style="color:#58be81">Q</span><span style="color:#fff">uest </span><span style="color:#58be81">P</span><span style="color:#fff">lates!</span>** <span style="color:#e67e23">enhances your</span> <span style="color:#06c">World of Warcraft</span> <span style="color:#e67e23">experience by displaying quest progress icons directly on enemy nameplates. Know at a glance which enemies you need to defeat for your quests, how many items they drop, and your overall progress — all without cluttering your interface.</span>
 
 <div align="center">
-<img src="https://github.com/donniedice/SimpleQuestPlates/blob/main/images/in-game-options.png?raw=true" alt="SQP Options Panel" width="600">
+<img src="images/in-game-options.png" alt="SQP Options Panel" width="600">
 </div>
 
 ### <span style="color:#58be81">🔥 Why Choose SQP?</span>
@@ -106,6 +107,7 @@ _<span style="color:#e67e23">Every donation helps fund new features and improvem
 
 ---
 
+<a id="features"></a>
 ## <span style="color:#ff6b6b">✨ Features</span>
 
 <div align="center">
@@ -150,6 +152,7 @@ _<span style="color:#ff6b6b">Want to help translate?</span> <span style="color:#
 
 ---
 
+<a id="quick-start"></a>
 ## <span style="color:#ff6b6b">🚀 Quick Start</span>
 
 1. **<span style="color:#2dc26b">Install</span>** <span style="color:#58be81">S</span><span style="color:#58be81">Q</span><span style="color:#58be81">P</span> <span style="color:#e67e23">from your preferred platform</span>
@@ -160,6 +163,7 @@ _<span style="color:#ff6b6b">Want to help translate?</span> <span style="color:#
 
 ---
 
+<a id="command-reference"></a>
 ## <span style="color:#ff6b6b">📋 Command Reference</span>
 
 <span style="color:#e67e23">Use</span> <span style="color:#2dc26b">`/sqp`</span> <span style="color:#e67e23">followed by</span><span style="color:#3598db">:</span>
@@ -185,6 +189,7 @@ _<span style="color:#ff6b6b">Want to help translate?</span> <span style="color:#
 
 ---
 
+<a id="compatibility"></a>
 ## <span style="color:#ff6b6b">📋 Compatibility</span>
 
 <div align="center">
@@ -197,6 +202,7 @@ _<span style="color:#ff6b6b">Want to help translate?</span> <span style="color:#
 
 ---
 
+<a id="installation"></a>
 ## <span style="color:#ff6b6b">📥 Installation</span>
 
 1. **<span style="color:#2dc26b">Download</span>** <span style="color:#e67e23">from your preferred platform</span><span style="color:#3598db">:</span>
@@ -307,7 +313,7 @@ _<span style="color:#e67e23">"Quest smarter, not harder."</span>_
 
 **<span style="color:#58be81">⚠️ WARNING:</span>** <span style="color:#e67e23">May cause you to prioritize questing over literally everything else.</span>
 
-<img src="https://github.com/donniedice/SimpleQuestPlates/blob/main/images/kiwi.gif?raw=true" alt="RealmGX Kiwi" width="80">
+<img src="images/kiwi.gif" alt="RealmGX Kiwi" width="80">
 
 **<span style="color:#2dc26b">The Kiwi Says:</span>** <span style="color:#b96ad9">"Bwwiiiee."</span>
 
@@ -317,6 +323,6 @@ _<span style="color:#e67e23">"Quest smarter, not harder."</span>_
 
 [<span style="color:#05dffa">BLU</span>](https://github.com/donniedice/BLU) | [<span style="color:#05dffa">BLU Classic</span>](https://github.com/donniedice/BLU_Classic) | [<span style="color:#9b59b6">CCU</span>](https://github.com/donniedice/CoordinationCloakUtility) | [<span style="color:#ffe568">FFLU</span>](https://github.com/donniedice/FFLU) | [<span style="color:#58be81">PetBuddy2</span>](https://github.com/donniedice/PetBuddy2) | [<span style="color:#e74c3c">RND</span>](https://github.com/donniedice/remove_nameplate_debuffs) | [<span style="color:#8B4513">SRLU</span>](https://github.com/donniedice/SRLU)
 
-**<span style="color:#8B1538">🎮</span> <span style="color:#8B1538">R</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#4ecdc4">Mods</span> <span style="color:#3598db">-</span> <span style="color:#e67e23">Powered by</span> [<span style="color:#8B1538">R</span><span style="color:#7598b6">ealm</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span>](https://realmgx.com) <span style="color:#e67e23">Community</span>**
+**<img src="https://raw.githubusercontent.com/donniedice/SimpleQuestPlates/main/images/kiwi.gif" width="18" height="18"> <span style="color:#8B1538">R</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#4ecdc4">Mods</span> <span style="color:#3598db">-</span> <span style="color:#e67e23">Powered by</span> [<span style="color:#8B1538">R</span><span style="color:#7598b6">ealm</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span>](https://realmgx.com) <span style="color:#e67e23">Community</span>**
 
 </div>
