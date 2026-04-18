@@ -5,7 +5,7 @@
 ## Author: DonnieDice
 ## Email: donniedice@protonmail.com
 ## SavedVariables: SQPSettings
-## IconTexture: Interface\AddOns\SimpleQuestPlates\images\icon
+## IconTexture: Interface\AddOns\SimpleQuestPlates\media\icon
 ## DefaultState: Enabled
 
 ## X-Category: UI Media, Questing & Leveling, Miscellaneous

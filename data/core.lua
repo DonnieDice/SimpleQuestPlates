@@ -86,7 +86,7 @@ SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQue
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
 SQP.ICON_TEXTURE = GetAddOnMetadataCompat(addonName, "IconTexture")
-    or ("Interface\\AddOns\\" .. (addonName or "SimpleQuestPlates") .. "\\images\\icon")
+    or ("Interface\\AddOns\\" .. (addonName or "SimpleQuestPlates") .. "\\media\\icon")
 
 do
     local _, _, _, tocversion = GetBuildInfo and GetBuildInfo() or nil
@@ -324,7 +324,7 @@ SQP.SOUND_KIT_ID_QUEST_ACCEPT = 815 -- UI_QuestLog_QuestAccepted
 -- Constants for UI
 SQP.PANEL_WIDTH = 700
 SQP.PANEL_HEIGHT = 600
-SQP.PANEL_NAME = format("|TInterface\AddOns\%s\images\icon:0|t |cff58be81S|r|cffffffffimple|r |cff58be81Q|r|cffffffffuest|r |cff58be81P|r|cfffffffflates|r|cff58be81!|r", addonName)
+SQP.PANEL_NAME = format("|TInterface\AddOns\%s\media\icon:0|t |cff58be81S|r|cffffffffimple|r |cff58be81Q|r|cffffffffuest|r |cff58be81P|r|cfffffffflates|r|cff58be81!|r", addonName)
 SQP.SECTION_COLOR = { r = 0.58, g = 0.79, b = 1, a = 1 } -- RGX Blue
 SQP.BACKDROP_DARK = {
     bgFile = "Interface/Tooltips/UI-Tooltip-Background",

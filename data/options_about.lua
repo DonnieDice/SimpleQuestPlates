@@ -58,7 +58,7 @@ function SQP:CreateAboutSection(content)
     local discordIcon = communityFrame:CreateTexture(nil, "ARTWORK")
     discordIcon:SetSize(34, 34)
     discordIcon:SetPoint("LEFT", 10, 0)
-    discordIcon:SetTexture("Interface\\AddOns\\SimpleQuestPlates\\images\\icon")
+    discordIcon:SetTexture("Interface\\AddOns\\SimpleQuestPlates\\media\\icon")
 
     local discordTitle = communityFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     discordTitle:SetPoint("TOPLEFT", discordIcon, "TOPRIGHT", 8, -4)

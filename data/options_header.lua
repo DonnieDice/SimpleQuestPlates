@@ -21,7 +21,7 @@ function SQP:CreatePanelHeader(container)
     local logo = header:CreateTexture(nil, "ARTWORK")
     logo:SetSize(44, 44)
     logo:SetPoint("LEFT", 12, 0)
-    logo:SetTexture("Interface\\AddOns\\SimpleQuestPlates\\images\\icon")
+    logo:SetTexture("Interface\\AddOns\\SimpleQuestPlates\\media\\icon")
 
     -- Title
     local title = header:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
