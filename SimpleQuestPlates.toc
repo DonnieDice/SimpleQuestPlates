@@ -7,7 +7,7 @@
 ## SavedVariables: SQPSettings
 ## IconTexture: Interface\AddOns\SimpleQuestPlates\media\icon
 ## DefaultState: Enabled
-## OptionalDeps: RGX-Framework
+## RequiredDeps: RGX-Framework
 
 ## X-Category: UI Media, Questing & Leveling, Miscellaneous
 ## X-Website: https://github.com/donniedice/SimpleQuestPlates

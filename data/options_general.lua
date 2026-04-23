@@ -10,7 +10,7 @@ local format = string.format
 
 function SQP:CreateGlobalOptions(content)
     if not self.optionControls then self.optionControls = {} end
-    local rgxFonts = _G.RGXFonts
+    local rgxFonts = SQP:GetRGXFonts()
     local rgxAccent = "bc6fa8"
 
     local leftColumn = CreateFrame("Frame", nil, content)
@@ -311,6 +311,6 @@ function SQP:CreateGlobalOptions(content)
         rgxMissing:SetPoint("TOPLEFT", 20, rightYOffset)
         rgxMissing:SetWidth(220)
         rgxMissing:SetJustifyH("LEFT")
-        rgxMissing:SetText("Install or enable RGX-Framework to use the shared categorized font dropdown here.")
+        rgxMissing:SetText("RGX-Framework font tools are unavailable right now.")
     end
 end

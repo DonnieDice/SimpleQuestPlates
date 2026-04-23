@@ -104,7 +104,7 @@ function SQP:CreateFontSection(parent, typeKey, yOffset, dropdownName, activateP
 
     local defaultSize = typeKey == "percent" and 8 or 12
     local defaultPath = "Fonts\\FRIZQT__.TTF"
-    local rgxFonts = _G.RGXFonts
+    local rgxFonts = SQP:GetRGXFonts()
 
     -- Section header
     local fontHeader = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
