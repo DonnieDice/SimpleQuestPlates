@@ -97,6 +97,7 @@ function SQP:CreateAboutSection(content)
         "|cff58be81/sqp test|r          Test quest detection\n" ..
         "|cff58be81/sqp reset|r         Reset all settings\n" ..
         "|cff58be81/sqp status|r        Show current settings\n" ..
+        "|cff58be81/sqp icon on|r       Show minimap icon\n" ..
         "|cff58be81/sqp scale 1.2|r     Set icon scale\n" ..
         "|cff58be81/sqp offset 0 3|r    Set X / Y offset"
     )
