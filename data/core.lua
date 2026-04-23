@@ -81,7 +81,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.9.6" -- Addon version (also in TOC file)
+SQP.VERSION = "1.9.8" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
@@ -101,46 +101,17 @@ do
 end
 
 function SQP:GetRGX()
-    local rgx = rawget(_G, "RGXFramework")
-    if type(rgx) == "table" then
-        return rgx
-    end
-
-    return nil
+    return rawget(_G, "RGXFramework")
 end
 
-function SQP:GetRGXModule(name, globalName)
-    if type(name) ~= "string" or name == "" then
-        return nil
-    end
-
+function SQP:GetRGXModule(name)
     local rgx = self:GetRGX()
-    if type(rgx) == "table" and type(rgx.RequireModule) == "function" then
-        local module = rgx:RequireModule(name)
-        if type(module) == "table" then
-            return module
-        end
-    end
-
-    if type(rgx) == "table" and type(rgx.GetModule) == "function" then
-        local module = rgx:GetModule(name)
-        if type(module) == "table" then
-            return module
-        end
-    end
-
-    if type(globalName) == "string" then
-        local module = rawget(_G, globalName)
-        if type(module) == "table" then
-            return module
-        end
-    end
-
-    return nil
+    return rgx and rgx:GetModule(name)
 end
 
 function SQP:GetRGXFonts()
-    return self:GetRGXModule("fonts", "RGXFonts")
+    local rgx = self:GetRGX()
+    return rgx and rgx:GetFonts()
 end
 
 -- Default settings (based on tuned in-game values)
