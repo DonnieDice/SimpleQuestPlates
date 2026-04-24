@@ -1,9 +1,7 @@
-# v1.9.8 - 2026-04-23
+# v1.9.9 - 2026-04-24
 
 ## Changes
-- Added RGX-Framework as RequiredDep for font tools.
-- Updated font initialization to use RGX.Font:Get() API.
-
-# v1.9.7 - 2026-04-23
-
-- TOC bump for interface 120005.
+- Rebuilt options panel on `RGXUI:CreateOptionsPanel` (RGX-Framework v1.2.0).
+- Flattened tab structure: General / Kill / Loot / Percent / About (removed nested Objectives container).
+- Live preview section wired as options panel banner — sits between header and tabs, switches mode automatically when Kill/Loot/Percent tabs are selected.
+- Deleted `options_tabs.lua` and `options_header.lua`; all tab/header layout now handled by the framework.
