@@ -1,7 +1,5 @@
-# v1.9.9 - 2026-04-24
+# v2.0.0 - 2026-04-25
 
 ## Changes
-- Rebuilt options panel on `RGXUI:CreateOptionsPanel` (RGX-Framework v1.2.0).
-- Flattened tab structure: General / Kill / Loot / Percent / About (removed nested Objectives container).
-- Live preview section wired as options panel banner — sits between header and tabs, switches mode automatically when Kill/Loot/Percent tabs are selected.
-- Deleted `options_tabs.lua` and `options_header.lua`; all tab/header layout now handled by the framework.
+- Full RGX-Framework native migration: removed manual `eventFrame`, all 14 events now registered via `RGX:RegisterEvent`. Slash command via `RGX:RegisterSlashCommand`. `C_Timer.After` replaced with `RGX:After`.
+- `RequiredDeps: RGX-Framework` declared in TOC — deterministic load order guaranteed.

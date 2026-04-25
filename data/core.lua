@@ -7,8 +7,9 @@
 
 local addonName, SQP = ...
 
+local RGX = assert(_G.RGXFramework, "SQP: RGX-Framework not loaded")
+
 -- Cache frequently used globals
-local C_Timer = C_Timer
 local pcall = pcall
 local tonumber = tonumber
 local tinsert = table.insert
@@ -81,7 +82,7 @@ local function GetAddOnMetadataCompat(name, field)
     return nil
 end
 
-SQP.VERSION = "1.9.9" -- Addon version (also in TOC file)
+SQP.VERSION = "2.0.0" -- Addon version (also in TOC file)
 SQP.NAME = GetAddOnMetadataCompat(addonName, "Title") or addonName or "SimpleQuestPlates"
 SQP.AUTHOR = GetAddOnMetadataCompat(addonName, "Author") or "DonnieDice"
 SQP.LOCALE = GetLocale()
