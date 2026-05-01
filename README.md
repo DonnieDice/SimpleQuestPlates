@@ -6,10 +6,10 @@
 <img src="images/logo.png" alt="SQP Logo" width="128" height="128">
 
 [![RGX Mods](https://img.shields.io/badge/RGX-Simple%20Quest%20Plates!-8B1538?style=for-the-badge&logo=github&logoColor=white)](https://github.com/donniedice/SimpleQuestPlates)
-[![RGX Mods](https://img.shields.io/badge/RGX-Mods%20Collection-8B1538?style=for-the-badge&logo=github&logoColor=white)](https://discord.gg/rgxmods)
+[![RGX Mods](https://img.shields.io/badge/RGX-Mods%20Collection-8B1538?style=for-the-badge&logo=github&logoColor=white)](https://discord.gg/N7kdKAHVVF)
 
 ### <span style="color:#ff6b6b">🌟 Join the </span> <span style="color:#8B1538">R</span><span style="color:#7598b6">ealm</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#4ecdc4">Community</span> <span style="color:#3598db">-</span> <span style="color:#8B1538">G</span><span style="color:#7598b6">amers e</span><span style="color:#8B1538">X</span><span style="color:#7598b6">treme!</span> <span style="color:#ff6b6b">🌟</span>
-[![Discord](https://img.shields.io/badge/Join%20Our%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/rgxmods)
+[![Discord](https://img.shields.io/badge/Join%20Our%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/N7kdKAHVVF)
 
 ### <span style="color:#58be81">🎯 </span> <span style="color:#e67e23">*See quest progress at a glance on enemy nameplates!*</span> <span style="color:#58be81">🎯</span>
 
@@ -50,7 +50,7 @@
 
 ### <span style="color:#b96ad9">💬 </span> <span style="color:#8B1538">R</span><span style="color:#7598b6">ealm</span><span style="color:#8B1538">G</span><span style="color:#8B1538">X</span> <span style="color:#58be81">Discord</span> <span style="color:#3598db">-</span> <span style="color:#2dc26b">Your Gaming Home!</span>
 
-[![Join Discord](https://img.shields.io/badge/Join%20Our%20Discord-RealmGX%20Community-7289da?style=for-the-badge&logo=discord&logoColor=white&labelColor=5865F2)](https://discord.gg/rgxmods)
+[![Join Discord](https://img.shields.io/badge/Join%20Our%20Discord-RealmGX%20Community-7289da?style=for-the-badge&logo=discord&logoColor=white&labelColor=5865F2)](https://discord.gg/N7kdKAHVVF)
 
 **<span style="color:#58be81">🎮 </span> [<span style="color:#8B1538">R</span><span style="color:#7598b6">ealm </span> <span style="color:#8B1538">G</span><span style="color:#7598b6">amers e</span><span style="color:#8B1538">X</span><span style="color:#7598b6">treme</span>](https://realmgx.com) <span style="color:#3598db">-</span> <span style="color:#4ecdc4">Where WoW Enthusiasts Unite!</span>**
 
@@ -265,7 +265,7 @@ _<span style="color:#e67e23">See</span> [<span style="color:#58be81">docs/CHANGE
 
 ## <span style="color:#ff6b6b">🐛 Known Issues</span>
 
-- <span style="color:#e67e23">No known issues at this time. Report any problems via</span> [<span style="color:#ff6b6b">GitHub Issues</span>](https://github.com/donniedice/SimpleQuestPlates/issues) <span style="color:#e67e23">or our</span> [<span style="color:#7289da">Discord</span>](https://discord.gg/rgxmods)<span style="color:#e67e23">.</span>
+- <span style="color:#e67e23">No known issues at this time. Report any problems via</span> [<span style="color:#ff6b6b">GitHub Issues</span>](https://github.com/donniedice/SimpleQuestPlates/issues) <span style="color:#e67e23">or our</span> [<span style="color:#7289da">Discord</span>](https://discord.gg/N7kdKAHVVF)<span style="color:#e67e23">.</span>
 
 ---
 
@@ -281,7 +281,7 @@ _<span style="color:#e67e23">See</span> [<span style="color:#58be81">docs/CHANGE
 - <span style="color:#e67e23">Reset all settings to defaults with</span> `/sqp reset`
 
 **<span style="color:#ff6b6b">Still having trouble?</span>**
-- <span style="color:#e67e23">Join our</span> [<span style="color:#7289da">Discord</span>](https://discord.gg/rgxmods) <span style="color:#e67e23">for instant support</span>
+- <span style="color:#e67e23">Join our</span> [<span style="color:#7289da">Discord</span>](https://discord.gg/N7kdKAHVVF) <span style="color:#e67e23">for instant support</span>
 - <span style="color:#e67e23">Open a</span> [<span style="color:#ff6b6b">GitHub Issue</span>](https://github.com/donniedice/SimpleQuestPlates/issues)
 
 ---
@@ -290,7 +290,7 @@ _<span style="color:#e67e23">See</span> [<span style="color:#58be81">docs/CHANGE
 
 <span style="color:#e67e23">Contributions are welcome! Feel free to</span><span style="color:#3598db">:</span>
 - <span style="color:#2dc26b">🐛 **Report bugs**</span> <span style="color:#e67e23">via</span> [<span style="color:#b96ad9">GitHub Issues</span>](https://github.com/donniedice/SimpleQuestPlates/issues)
-- <span style="color:#ff6b6b">💡 **Suggest features**</span> <span style="color:#e67e23">in our</span> [<span style="color:#7289da">Discord</span>](https://discord.gg/rgxmods)
+- <span style="color:#ff6b6b">💡 **Suggest features**</span> <span style="color:#e67e23">in our</span> [<span style="color:#7289da">Discord</span>](https://discord.gg/N7kdKAHVVF)
 - <span style="color:#4ecdc4">🌍 **Help with translations**</span> <span style="color:#e67e23">for global players</span>
 - <span style="color:#2dc26b">⭐ **Star the repository**</span> <span style="color:#e67e23">to show your support</span>
 
